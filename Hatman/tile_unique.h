@@ -1,0 +1,42 @@
+#pragma once
+
+/* Contains all unique types of tiles (classes derived from 'Tile' class) */
+
+#include "tile_base.h" // 'Tile' base class
+#include "collection.hpp" // 'Collection<>::handle' class
+#include "graphics.h" // 'Text' class (text collection handles)
+
+
+
+namespace tiles {
+
+	std::unique_ptr<Tile> make_tile(const Tileset &tileset, int id, const Vector2 &position);
+		// creates a tile of a correct class based on data from tileset and returns ownership
+
+
+
+	// # SaveOrb #
+	// - Saves the game when interacted with
+	class SaveOrb : public Tile {
+	public:
+		SaveOrb() = delete;
+		SaveOrb(const Tile &other);
+		SaveOrb(Tile &&other);
+
+		SaveOrb(const Tileset &tileset, int id, const Vector2 &position);
+
+		bool checkActivation() const override;
+		bool checkTrigger() const override; // checks if player is in range, and holds a 'USE' button
+		void activate() override;
+		void deactivate() override;
+		void trigger() override;
+
+	private:
+		Collection<Text>::handle popup_handle; // handle to popup creadted upon tile activation
+	};
+
+
+
+	// # TNT #
+	// - Explodes upon destruction
+}
