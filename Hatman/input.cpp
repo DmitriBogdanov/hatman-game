@@ -14,8 +14,8 @@ void Input::begin_new_frame() { // pressed/released keys matter only for current
 	// Get mouse position relative to the window and scale it to the natural 640x360 scale
 	int x, y;
 	SDL_GetMouseState(&x, &y); // returns (0, 0) if mouse is outside the window
-	this->mouse_position.x = x / Graphics::READ->scaling_factor() * Graphics::READ->camera->zoom;
-	this->mouse_position.y = y / Graphics::READ->scaling_factor() * Graphics::READ->camera->zoom;
+	this->mouse_position.x = x / Graphics::READ->scaling_factor();
+	this->mouse_position.y = y / Graphics::READ->scaling_factor();
 }
 
 void Input::event_KeyDown(const SDL_Event &event) {

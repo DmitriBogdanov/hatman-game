@@ -618,14 +618,24 @@
 	- Implemented uber-algorithm that for horizontal teleportation that respects terrain
 	and doesn't allow phasing through tiles
 
-# 21.08.13# 
+# 21.08.13 # 
 	- Made camera center at player immideately upon level creation, before first update(), nothing changed
 	visually but internally it's a more robust logic
 	- Implemented smooth camera that moves faster the furter away player is, mostly noticeble during teleportation
 
+# 21.08.14 #
+	- Refactored some old GUI code
+	- Implemented buttons that can display text, track being hovered over and pressed and change colors accordingly
+	- Implemented logic for generalized 'requests' to game that are handles at a specific time before update(),
+	currently such requests are used to change level, open and close menus
+	- Implemented Esc menu with working 'Resume' and 'Exit to desktop' buttons
+	- Implemented sounds for hovering over buttons and pressing them
+
 ### FIXES ###
+	- Make dRect constexpr
+	- Make Damage constexpr
+	- Make RGBColor constexpr
 	- Replace all initializer_list's that are still passed by reference
-	- Merge player healthbar sprites into a single spritesheet
 
 ### FIRST PRIORITY FEATURES ###
 	- NPC dialog GUI

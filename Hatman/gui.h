@@ -107,7 +107,7 @@ public:
 	GUI_FPSCounter();
 
 	void update(Milliseconds elapsedTime);
-	void draw() const; // non-const as it can set 'timeElapsed' and 'framesElapsed' to 0
+	void draw() const;
 
 private:
 	Vector2d position = Vector2d(2., 352.); // position is de-facto a constant
@@ -120,6 +120,62 @@ private:
 	int currentFPS;
 
 	Milliseconds UPDATE_RATE = 1000.; // time between FPS counter updates in ms
+};
+
+
+
+// # Gui_Button #
+class GUI_Button {
+public:
+	GUI_Button() = delete;
+
+	GUI_Button(const dRect& buttonRect, const std::string& displayedText, Font* font,
+		const RGBColor &color, const RGBColor& colorHovered, const RGBColor& colorPressed);
+
+	void update(Milliseconds elapsedTime);
+	void draw(); // displays text aligned to the center of the button
+
+	bool was_pressed() const;
+
+	void reset(); // resets .button_was_pressed
+
+private:
+	dRect button_rect;
+
+	bool button_hovered_over;
+	bool button_is_being_pressed;
+
+	bool button_was_pressed;
+
+	Vector2d text_pos; // we assume button stays static on the screen and precalculate text position
+	std::string displayed_text;
+	Font* font;
+
+	RGBColor color;
+	RGBColor color_hovered;
+	RGBColor color_pressed;
+};
+
+
+
+// # GUI_EscMenu #
+class GUI_EscMenu {
+public:
+	GUI_EscMenu() = delete;
+
+	GUI_EscMenu(Font* font);
+
+	void update(Milliseconds elapsedTime);
+	void draw() const;
+
+private:
+	Font* font;
+
+	std::unique_ptr<GUI_Button> button_resume;
+	std::unique_ptr<GUI_Button> button_controls;
+	std::unique_ptr<GUI_Button> button_start_from_checkpoint;
+	std::unique_ptr<GUI_Button> button_return_to_main_menu;
+	std::unique_ptr<GUI_Button> button_exit_to_desktop;
 };
 
 
@@ -174,24 +230,6 @@ private:
 	Vector2 size; // equal to the texture size
 
 	SDL_Texture* texture;
-};
-
-
-
-// # FormSelection #
-// - Slows time during selection
-class FormSelection {
-public:
-	FormSelection();
-
-	~FormSelection(); // sets timescale back to normal, changes player form
-
-	void update(Milliseconds elapsedTime);
-	void draw() const;
-
-	Side selected;
-
-	double original_timescale; // game timescale before selection popup was called
 };
 
 
@@ -305,6 +343,11 @@ public:
 	void FPSCounter_on();
 	void FPSCounter_off();
 
+	// Esc menu
+	void EscMenu_on();
+	void EscMenu_off();
+	void EscMenu_toggle();
+
 	// Character healthbar
 	void PlayerHealthbar_on();
 	void PlayerHealthbar_off();
@@ -316,10 +359,6 @@ public:
 	// Portrait
 	void Portrait_on();
 	void Portrait_off();
-
-	// FormSelection
-	void FormSelection_on();
-	void FormSelection_off();
 
 	void AllPlayerGUI_on(); // includes PlayerHealthbar + CDbar + Portrait
 	void AllPlayerGUI_off();
@@ -346,9 +385,9 @@ private:
 
 	// GUI elements that do NOT need to remember internal state while changing visibility
 	std::unique_ptr<GUI_FPSCounter> FPS_counter;
+	std::unique_ptr<GUI_EscMenu> esc_menu;
 	std::unique_ptr<GUI_PlayerHealthbar> player_healthbar;
 	std::unique_ptr<GUI_CDbar> cdbar;
 	std::unique_ptr<GUI_Portrait> portrait;
-	std::unique_ptr<FormSelection> form_selection;
 	std::unique_ptr<GUI_Fade> fade;
 };

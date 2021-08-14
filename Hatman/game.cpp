@@ -7,7 +7,8 @@
 #include "saver.h" // access to save loading
 #include "emit.h" // acess to 'EmitStorage' (DEV method _drawInfo())
 #include "globalconsts.hpp"
-#include "color.hpp" /// coloring F3 GUI
+#include "color.hpp" // coloring F3 GUI
+#include "controls.h" // controls for GUI
 
 
 
@@ -16,6 +17,14 @@ const Game* Game::READ;
 Game* Game::ACCESS;
 
 Game::Game() :
+	paused(false),
+	timescale(1.),
+	_true_time_elapsed(0.),
+	_requested_toggle_esc_menu(false),
+	_requested_toggle_F3(false),
+	_requested_exit_to_desktop(false),
+	_requested_level_change(false),
+	level_change_is_reload(false),
 	toggle_F3(false)
 {
 	this->READ = this;
@@ -29,12 +38,12 @@ Game::Game() :
 	// Turn GUI that isn't player GUI
 	Graphics::ACCESS->gui->FPSCounter_on();
 
-	this->play_Music("a_nights_respite.wav");
+	this->play_music("a_nights_respite.wav");
 
 	Graphics::ACCESS->camera->zoom = 0.5;
 
 	// Start the game loop
-	this->gameLoop();
+	this->game_loop();
 }
 
 Game::~Game() {
@@ -42,22 +51,22 @@ Game::~Game() {
 	SDL_Quit();
 }
 
-void Game::play_Music(const std::string &name) {
+void Game::play_music(const std::string &name) {
 	playMusic(("content/audio/mx/" + name).c_str(), static_cast<int>(SDL_MIX_MAXVOLUME * audio::MUSIC_VOLUME));
 }
 
-void Game::play_Sound(const std::string &name) {
+void Game::play_sound(const std::string &name) {
 	playSound(("content/audio/fx/" + name).c_str(), static_cast<int>(SDL_MIX_MAXVOLUME * audio::FX_VOLUME));
 }
 
-void Game::request_LevelChange(const std::string &newLevel, const Vector2d newPosition) {
-	if (level_change_requested) return; // do nothing, process has already been initiated
+void Game::request_levelChange(const std::string &newLevel, const Vector2d newPosition) {
+	if (_requested_level_change) return; // do nothing, process has already been initiated
 
 	Graphics::ACCESS->gui->AllPlayerGUI_off();
 
 	Graphics::ACCESS->gui->Fade_on(colors::BLACK.transparent(), colors::BLACK, defaults::LEVEL_CHANGE_FADE_DURATION);
 
-	this->level_change_requested = true;
+	this->_requested_level_change = true;
 
 	this->level_change_target = newLevel;
 	this->level_change_position = newPosition;
@@ -65,21 +74,33 @@ void Game::request_LevelChange(const std::string &newLevel, const Vector2d newPo
 	this->level_change_timer.start(defaults::LEVEL_CHANGE_FADE_DURATION);
 }
 
-void Game::request_LevelReload() {
-	if (level_change_requested) return; // do nothing, process has already been initiated
+void Game::request_levelReload() {
+	if (_requested_level_change) return; // do nothing, process has already been initiated
 
 	Graphics::ACCESS->gui->AllPlayerGUI_off();
 		// note that player GUI crashes if it's active while player is dead => we want it turned off
 
 	Graphics::ACCESS->gui->Fade_on(colors::BLACK.transparent(), colors::BLACK, defaults::LEVEL_CHANGE_FADE_DURATION);
 
-	this->level_change_requested = true;
+	this->_requested_level_change = true;
 	this->level_change_is_reload = true;
 
 	this->level_change_timer.start(defaults::LEVEL_CHANGE_FADE_DURATION);
 }
 
-void Game::gameLoop() {
+void Game::request_toggleEscMenu() {
+	this->_requested_toggle_esc_menu = true;
+}
+
+void Game::request_toggleF3() {
+	this->_requested_toggle_F3 = true;
+}
+
+void Game::request_exitToDesktop() {
+	this->_requested_exit_to_desktop = true;
+}
+
+void Game::game_loop() {
 	const auto FREQUENCY = static_cast<double>(SDL_GetPerformanceFrequency()); // platform specific frequency, does not change during runtime
 	auto LAST_UPDATE_TIME = SDL_GetPerformanceCounter();
 
@@ -109,20 +130,21 @@ void Game::gameLoop() {
 			}
 		}
 
-		// Top-level input handling goes here
-		if (this->input.key_pressed(SDL_SCANCODE_ESCAPE)) { // Esc exits the game
-			return;
-		}
-		else if (this->input.key_pressed(SDL_SCANCODE_F3)) {
-			this->toggle_F3 = !this->toggle_F3;
-		}
 		/// FOR TESTING TIMESCALE
 		if (this->input.key_pressed(SDL_SCANCODE_V)) {
 			this->timescale = 0.1;
 		}
 		else if (this->input.key_released(SDL_SCANCODE_V)) {
 			this->timescale = 1.;
-		}	
+		}
+
+		// Top-level input handling goes here
+		if (this->input.key_pressed(Controls::READ->ESC)) { // Esc exits the game
+			this->request_toggleEscMenu();
+		}
+		if (this->input.key_pressed(Controls::READ->F3)) {
+			this->request_toggleF3();
+		}
 
 		// Measure frame time (in ms) and update 
 		const auto CURRENT_TIME = SDL_GetPerformanceCounter();
@@ -133,24 +155,48 @@ void Game::gameLoop() {
 			// this means below 1000/50=20 FPS physics start to slow down 
 
 		this->_true_time_elapsed = ELAPSED_TIME;
+		
+		if (!this->handle_requests()) return;
 
-		// Handle level change
-		if (this->level_change_requested && this->level_change_timer.finished()) {
-			if (this->level_change_is_reload) {
-				this->_level_loadFromSave();
-			}
-			else {
-				this->_level_swapToTarget();
-			}
-		}
-
-		updateGame(ELAPSED_TIME * this->timescale); // this is all there is to timescale mechanic
-		drawGame();
+		this->update_everything(ELAPSED_TIME * this->timescale); // this is all there is to timescale mechanic
+		this->draw_everything();
 	}
 }
 
-void Game::updateGame(Milliseconds elapsedTime) {
-	this->level.update(elapsedTime);
+bool Game::handle_requests() {
+	// Handle esc menu toggle
+	if (this->_requested_toggle_esc_menu) {
+		Graphics::ACCESS->gui->EscMenu_toggle();
+		this->paused = !this->paused;
+
+		this->_requested_toggle_esc_menu = false;
+	}
+
+	// Handle F3 toggle
+	if (this->_requested_toggle_F3) {
+		this->toggle_F3 = !this->toggle_F3;
+
+		this->_requested_toggle_F3 = false;
+	}
+
+	// Handle exit to desktop
+	if (this->_requested_exit_to_desktop) return false;
+
+	// Handle level change
+	if (this->_requested_level_change && this->level_change_timer.finished()) {
+		if (this->level_change_is_reload) {
+			this->_level_loadFromSave();
+		}
+		else {
+			this->_level_swapToTarget();
+		}
+	}
+
+	return true;
+}
+
+void Game::update_everything(Milliseconds elapsedTime) {
+	if (!this->paused) this->level.update(elapsedTime);
 
 	Graphics::ACCESS->gui->update(elapsedTime);
 
@@ -161,7 +207,7 @@ void Game::updateGame(Milliseconds elapsedTime) {
 	Graphics::ACCESS->camera->position = this->level.player->cameraTrap_getPosition();
 }
 
-void Game::drawGame() {
+void Game::draw_everything() {
 	this->level.draw();
 
 	// In F3 mode draw info for testing
@@ -203,7 +249,7 @@ void Game::_level_swapToTarget() {
 		std::move(extractedPlayer)
 	); // constuct new level and transfer player to it
 
-	this->level_change_requested = false;
+	this->_requested_level_change = false;
 
 	Graphics::ACCESS->gui->AllPlayerGUI_on();
 
@@ -226,7 +272,7 @@ void Game::_level_loadFromSave() {
 		std::make_unique<ntt::player::Player>(savedPosition)
 	);	
 
-	this->level_change_requested = false;
+	this->_requested_level_change = false;
 	this->level_change_is_reload = false;
 
 	Graphics::ACCESS->gui->AllPlayerGUI_on();

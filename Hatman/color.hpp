@@ -35,20 +35,24 @@ struct RGBColor {
 		);
 	}
 
+	constexpr RGBColor set_alpha(Uint8 alpha) const { // returns partially transparent version of a color
+		return RGBColor(this->r, this->g, this->b, alpha);
+	}
+
 	constexpr RGBColor transparent() const { // returns fully transparent version of a color
 		return RGBColor(this->r, this->g, this->b, 0);
 	} 
 };
 
 namespace colors {
-	const RGBColor SH_BLACK(22, 22, 22);
-	const RGBColor SH_YELLOW(251, 242, 54);
-	const RGBColor SH_BLUE(95, 205, 228);
-	const RGBColor SH_GREEN(0, 255, 0);
+	constexpr auto SH_BLACK = RGBColor(22, 22, 22);
+	constexpr auto  SH_YELLOW = RGBColor(251, 242, 54);
+	constexpr auto  SH_BLUE = RGBColor(95, 205, 228);
+	constexpr auto  SH_GREEN = RGBColor(0, 255, 0);
 
 	/// Old colors, remove later
-	const RGBColor WHITE(255, 255, 255);
-	const RGBColor BLACK(0, 0, 0);
+	constexpr auto  WHITE = RGBColor(255, 255, 255);
+	constexpr auto  BLACK = RGBColor(0, 0, 0);
 
 	const RGBColor IVORY(255, 243, 214);
 }

@@ -266,8 +266,202 @@ void GUI_FPSCounter::update(Milliseconds elapsedTime) {
 		this->text_handle.get().set_color(0, 0, 0); // black
 	}
 }
+
 void GUI_FPSCounter::draw() const {
 	// empty, text drawing is handled by GUI object
+}
+
+
+
+// # GUI_Button #
+GUI_Button::GUI_Button(const dRect& buttonRect, const std::string& displayedText, Font* font,
+	const RGBColor& color, const RGBColor& colorHovered, const RGBColor& colorPressed) :
+	button_rect(buttonRect),
+	button_hovered_over(false),
+	button_is_being_pressed(false),
+	button_was_pressed(false),
+	text_pos(
+		buttonRect.getCenterX() - font->get_font_monospace().x / 2. * displayedText.length(),
+		buttonRect.getCenterY() - font->get_font_monospace().y / 2.
+	),
+	displayed_text(displayedText),
+	font(font),
+	color(color),
+	color_hovered(colorHovered),
+	color_pressed(colorPressed)	
+{}
+
+void GUI_Button::update(Milliseconds elapsedTime) {
+	auto &input = Game::ACCESS->input;
+
+	const bool mouseHover = this->button_rect.containsPoint(input.mousePosition());
+
+	if (mouseHover && this->button_hovered_over == false)
+		Game::ACCESS->play_sound("gui_click.wav"); // if mouse just started hovering over play sound
+
+	this->button_hovered_over = mouseHover;
+
+	if (this->button_hovered_over) {
+		if (input.mouse_pressed(Controls::READ->LMB)) {
+			Game::ACCESS->play_sound("gui_click.wav");
+			this->button_is_being_pressed = true;
+		}
+		else if (input.mouse_released(Controls::READ->LMB)) {
+			this->button_is_being_pressed = false;
+			this->button_was_pressed = true;	
+		}
+	}
+}
+
+void GUI_Button::draw() {
+	this->font->color_set(
+		this->button_is_being_pressed ? this->color_pressed :
+		this->button_hovered_over ? this->color_hovered :
+		this->color
+	);
+
+	this->font->draw_line(this->text_pos, this->displayed_text, true);
+}
+
+bool GUI_Button::was_pressed() const {
+	return this->button_was_pressed;
+}
+
+void GUI_Button::reset() {
+	this->button_was_pressed = false;
+}
+
+
+
+// # GUI_EscMenu $
+namespace GUI_EscMenu_consts {
+	constexpr double CENTER_X = natural::WIDTH / 2.;
+	constexpr double TOP_Y = 140.;
+
+	constexpr double BUTTON_PADDING_X = 8.; // buttons actual height is larget than just the height of the text
+	constexpr double BUTTON_PADDING_Y = 12.;
+
+	constexpr double GAP_BETWEEN_BUTTONS = 1.;
+
+	constexpr auto COLOR_TEXT = colors::SH_YELLOW;
+	constexpr auto COLOR_TEXT_HOVERED = colors::SH_YELLOW * 0.7 + colors::SH_BLACK * 0.3;
+	constexpr auto COLOR_TEXT_PRESSED = colors::SH_YELLOW * 0.5 + colors::SH_BLACK * 0.5;
+	constexpr auto COLOR_FADE = colors::SH_BLACK.set_alpha(100);
+
+	const std::string TEXT_RESUME = "resume";
+	const std::string TEXT_CONTROLS = "controls";
+	const std::string TEXT_START_FROM_CHECKPOINT = "restart";
+	const std::string TEXT_RETURN_TO_MENU = "return to main menu";
+	const std::string TEXT_EXIT_TO_DESKTOP = "exit to desktop";
+}
+
+GUI_EscMenu::GUI_EscMenu(Font* font) :
+	font(font)
+{
+	using namespace GUI_EscMenu_consts;
+
+	const auto monospace = this->font->get_font_monospace();
+
+	const double buttonWidth = BUTTON_PADDING_X + monospace.x * std::max({
+		TEXT_RESUME.length(),
+		TEXT_CONTROLS.length(),
+		TEXT_START_FROM_CHECKPOINT.length(),
+		TEXT_RETURN_TO_MENU.length(),
+		TEXT_EXIT_TO_DESKTOP.length()
+		});
+
+	const double buttonHeight = BUTTON_PADDING_Y + monospace.y;
+
+	double cursorY = TOP_Y;
+
+	this->button_resume = std::make_unique<GUI_Button>(
+		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+		TEXT_RESUME,
+		this->font,
+		COLOR_TEXT,
+		COLOR_TEXT_HOVERED,
+		COLOR_TEXT_PRESSED
+		);
+	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+
+	this->button_controls = std::make_unique<GUI_Button>(
+		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+		TEXT_CONTROLS,
+		this->font,
+		COLOR_TEXT,
+		COLOR_TEXT_HOVERED,
+		COLOR_TEXT_PRESSED
+		);
+	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+
+	this->button_start_from_checkpoint = std::make_unique<GUI_Button>(
+		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+		TEXT_START_FROM_CHECKPOINT,
+		this->font,
+		COLOR_TEXT,
+		COLOR_TEXT_HOVERED,
+		COLOR_TEXT_PRESSED
+		);
+	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+
+	this->button_return_to_main_menu = std::make_unique<GUI_Button>(
+		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+		TEXT_RETURN_TO_MENU,
+		this->font,
+		COLOR_TEXT,
+		COLOR_TEXT_HOVERED,
+		COLOR_TEXT_PRESSED
+		);
+	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+
+	this->button_exit_to_desktop = std::make_unique<GUI_Button>(
+		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+		TEXT_EXIT_TO_DESKTOP,
+		this->font,
+		COLOR_TEXT,
+		COLOR_TEXT_HOVERED,
+		COLOR_TEXT_PRESSED
+		);
+	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+}
+
+void GUI_EscMenu::update(Milliseconds elapsedTime) {
+	if (this->button_resume) {
+		this->button_resume->update(elapsedTime);
+
+		// Handle button press
+		if (this->button_resume->was_pressed())
+			Game::ACCESS->request_toggleEscMenu();
+	}
+
+	if (this->button_controls) {
+		this->button_controls->update(elapsedTime);
+	}
+
+	if (this->button_start_from_checkpoint) {
+		this->button_start_from_checkpoint->update(elapsedTime);
+	}
+
+	if (this->button_return_to_main_menu) { 
+		this->button_return_to_main_menu->update(elapsedTime); 
+	}
+
+	if (this->button_exit_to_desktop) {
+		this->button_exit_to_desktop->update(elapsedTime);
+
+		// Handle button press
+		if (this->button_exit_to_desktop->was_pressed())
+			Game::ACCESS->request_exitToDesktop();
+	}
+
+}
+
+void GUI_EscMenu::draw() const {
+	if (this->button_resume) this->button_resume->draw();
+	if (this->button_controls) this->button_controls->draw();
+	if (this->button_start_from_checkpoint) this->button_start_from_checkpoint->draw();
+	if (this->button_return_to_main_menu) this->button_return_to_main_menu->draw();
+	if (this->button_exit_to_desktop) this->button_exit_to_desktop->draw();
 }
 
 
@@ -380,116 +574,6 @@ void GUI_Portrait::draw() const {
 	};
 
 	Graphics::ACCESS->gui->textureToGUI(this->texture, NULL, &destRect);
-}
-
-
-
-// # FormSelection #
-const double FORM_SELECTION_TIMESCALE_FACTOR = 0.2 ;
-
-FormSelection::FormSelection() :
-	original_timescale(Game::READ->timescale)
-{
-	Game::ACCESS->timescale = this->original_timescale * FORM_SELECTION_TIMESCALE_FACTOR;
-
-	//Input &input = Game::ACCESS->input;
-	/// WHAT TO DO WITH A FORM CHANGE GUI?
-	/*
-	if (input.key_held(Controls::READ->FORM_CHANGE_LEFT)) {
-		this->selected = Side::LEFT;
-	}
-	else if (input.key_held(Controls::READ->FORM_CHANGE_RIGHT)) {
-		this->selected = Side::RIGHT;
-	}
-	else if (input.key_held(Controls::READ->FORM_CHANGE_UP)) {
-		this->selected = Side::TOP;
-	}
-	else if (input.key_held(Controls::READ->FORM_CHANGE_DOWN)) {
-		this->selected = Side::BOTTOM;
-	}
-	else {
-		this->selected = Side::NONE;
-	}
-	*/
-}
-
-FormSelection::~FormSelection() {
-	/// CHANGE PLAYER FORM TO SELECTED
-	Game::ACCESS->timescale = this->original_timescale;
-}
-
-void FormSelection::update(Milliseconds elapsedTime) {
-	//Input &input = Game::ACCESS->input;
-
-	// Last pressed key sets the selected option (1 out of 5)
-	/// WHAT TO DO WITH A FORM CHANGE GUI?
-	/*
-	if (input.key_pressed(Controls::READ->FORM_CHANGE_LEFT)) {
-		this->selected = Side::LEFT;
-	}
-	else if (input.key_pressed(Controls::READ->FORM_CHANGE_RIGHT)) {
-		this->selected = Side::RIGHT;
-	}
-	else if (input.key_pressed(Controls::READ->FORM_CHANGE_UP)) {
-		this->selected = Side::TOP;
-	}
-	else if (input.key_pressed(Controls::READ->FORM_CHANGE_DOWN)) {
-		this->selected = Side::BOTTOM;
-	}
-	else if (!
-		(input.key_held(Controls::READ->FORM_CHANGE_LEFT) ||
-		input.key_held(Controls::READ->FORM_CHANGE_RIGHT) ||
-		input.key_held(Controls::READ->FORM_CHANGE_UP) ||
-		input.key_held(Controls::READ->FORM_CHANGE_DOWN))
-		) {
-
-		this->selected = Side::NONE;
-	}
-	*/
-}
-
-void FormSelection::draw() const {
-	// Textures
-	SDL_Texture* hatTexture = Graphics::ACCESS->getTexture_GUI("hat.png");
-
-	// Consts
-	const Vector2 hatTextureSize(8, 6);
-	const int hatDistanceFromPlayer = 18;
-
-	// Positions
-	dRect hatDestRect(Game::READ->level.player->position.toVector2(), hatTextureSize, true);
-	double hatRotation = 0.0;
-
-	switch (this->selected) {
-	case Side::TOP:
-		hatDestRect.moveBy(0, -hatDistanceFromPlayer);
-		break;
-
-	case Side::LEFT:
-		hatDestRect.moveBy(-hatDistanceFromPlayer, 0);
-		hatRotation = -90.0;
-		break;
-
-	case Side::BOTTOM:
-		hatDestRect.moveBy(0, hatDistanceFromPlayer);
-		hatRotation = 180.0;
-		break;
-
-	case Side::RIGHT:
-		hatDestRect.moveBy(hatDistanceFromPlayer, 0);
-		hatRotation = 90.0;
-		break;
-
-	case Side::NONE:
-		const Vector2 hatAligment(0, -14); // aligns hat to be precisely on characters head
-		hatDestRect.moveBy(hatAligment.x, hatAligment.y);
-		break;
-	}
-
-	const auto hatDestRect_to_dstRect = hatDestRect.to_dstRect();
-
-	Graphics::ACCESS->camera->textureToCameraEx(hatTexture, NULL, &hatDestRect_to_dstRect, hatRotation, SDL_FLIP_NONE);
-		// hat is drawn to CAMERA, not GUI!
 }
 
 
@@ -681,13 +765,13 @@ void Gui::update(Milliseconds elapsedTime) {
 
 	this->inventoryGUI.update(elapsedTime); // non-optional
 
-	if (this->FPS_counter) { this->FPS_counter->update(elapsedTime); }
-	if (this->player_healthbar) { this->player_healthbar->update(elapsedTime); }
-	if (this->cdbar) { this->cdbar->update(elapsedTime); }
-	if (this->portrait) { this->portrait->update(elapsedTime); }
-	if (this->form_selection) { this->form_selection->update(elapsedTime); }
+	if (this->FPS_counter) this->FPS_counter->update(elapsedTime);
+	if (this->esc_menu) this->esc_menu->update(elapsedTime);
+	if (this->player_healthbar) this->player_healthbar->update(elapsedTime);
+	if (this->cdbar) this->cdbar->update(elapsedTime);
+	if (this->portrait) this->portrait->update(elapsedTime);
 
-	for (auto &text : this->texts) { text.update(elapsedTime); }
+	for (auto &text : this->texts) text.update(elapsedTime);
 }
 
 void Gui::draw() const {
@@ -695,13 +779,13 @@ void Gui::draw() const {
 
 	this->inventoryGUI.draw(); // non-optional
 
-	if (this->FPS_counter) { this->FPS_counter->draw(); }
-	if (this->player_healthbar) { this->player_healthbar->draw(); }
-	if (this->cdbar) { this->cdbar->draw(); }
-	if (this->portrait) { this->portrait->draw(); }
-	if (this->form_selection) { this->form_selection->draw(); }
+	if (this->FPS_counter) this->FPS_counter->draw();
+	if (this->esc_menu) this->esc_menu->draw();
+	if (this->player_healthbar) this->player_healthbar->draw();
+	if (this->cdbar) this->cdbar->draw();
+	if (this->portrait) this->portrait->draw();
 
-	for (const auto &text : this->texts) { text.draw(); } // text is drawn on top of everything else
+	for (const auto &text : this->texts) text.draw(); // text is drawn on top of everything else
 }
 
 
@@ -737,15 +821,36 @@ void Gui::FPSCounter_on() {
 		this->FPS_counter = std::make_unique<GUI_FPSCounter>();
 	}
 }
+
 void Gui::FPSCounter_off() {
 	this->FPS_counter.reset();
 }
 
+// Esc Menu
+void Gui::EscMenu_on() {
+	if (!this->esc_menu) {
+		// Darken the screen when in esc menu
+		this->Fade_on(GUI_EscMenu_consts::COLOR_FADE);
+
+		this->esc_menu = std::make_unique<GUI_EscMenu>(this->fonts.at("BLOCKY").get());
+	}
+}
+
+void Gui::EscMenu_off() {
+	this->Fade_off();
+
+	this->esc_menu.reset();
+}
+
+void Gui::EscMenu_toggle() {
+	if (this->esc_menu) this->EscMenu_off();
+	else this->EscMenu_on();
+}
+
 // Healthbar
 void Gui::PlayerHealthbar_on() {
-	if (!this->player_healthbar) {
+	if (!this->player_healthbar)
 		this->player_healthbar = std::make_unique<GUI_PlayerHealthbar>();
-	}
 }
 void Gui::PlayerHealthbar_off() {
 	this->player_healthbar.reset();
@@ -753,9 +858,8 @@ void Gui::PlayerHealthbar_off() {
 
 // CDbar
 void Gui::CDbar_on() {
-	if (!this->cdbar) {
+	if (!this->cdbar)
 		this->cdbar = std::make_unique<GUI_CDbar>();
-	}
 }
 void Gui::CDbar_off() {
 	this->cdbar.reset();
@@ -763,22 +867,11 @@ void Gui::CDbar_off() {
 
 // Portrait
 void Gui::Portrait_on() {
-	if (!this->portrait) {
+	if (!this->portrait)
 		this->portrait = std::make_unique<GUI_Portrait>();
-	}
 }
 void Gui::Portrait_off() {
 	this->portrait.reset();
-}
-
-// FormSelection
-void Gui::FormSelection_on() {
-	if (!this->form_selection) {
-		this->form_selection = std::make_unique<FormSelection>();
-	}
-}
-void Gui::FormSelection_off() {
-	this->form_selection.reset();
 }
 
 void Gui::AllPlayerGUI_on() {

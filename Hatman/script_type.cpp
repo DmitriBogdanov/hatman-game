@@ -18,7 +18,7 @@ bool scripts::LevelChange::checkTrigger() const {
 	return Game::ACCESS->level.player->solid->getHitbox().overlapsWithRect(this->hitbox);
 }
 void scripts::LevelChange::trigger() {
-	Game::ACCESS->request_LevelChange(this->goes_to_level, this->goes_to_pos);
+	Game::ACCESS->request_levelChange(this->goes_to_level, this->goes_to_pos);
 }
 
 
@@ -36,7 +36,7 @@ bool scripts::LevelSwitch::checkTrigger() const {
 		&& Game::ACCESS->input.key_pressed(Controls::READ->USE);
 }
 void scripts::LevelSwitch::trigger() {
-	Game::ACCESS->request_LevelChange(this->goes_to_level, this->goes_to_pos);
+	Game::ACCESS->request_levelChange(this->goes_to_level, this->goes_to_pos);
 }
 
 

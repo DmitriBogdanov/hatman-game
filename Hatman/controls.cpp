@@ -8,8 +8,14 @@ Controls* Controls::ACCESS;
 
 Controls::Controls() {
 	this->READ = this;
-	this->ACCESS = this;  
+	this->ACCESS = this; 
 
+	// Gui controls
+	this->LMB = SDL_BUTTON_LEFT;
+	this->ESC = SDL_SCANCODE_ESCAPE;
+	this->F3 = SDL_SCANCODE_F3;
+
+	// Game controls
 	this->LEFT = SDL_SCANCODE_A;
 	this->RIGHT = SDL_SCANCODE_D;
 	this->UP = SDL_SCANCODE_W;

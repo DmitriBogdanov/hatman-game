@@ -11,6 +11,12 @@ public:
 	static const Controls* READ;
 	static Controls* ACCESS;
 
+	// GUI controls
+	Uint8 LMB;
+	SDL_Scancode ESC;
+	SDL_Scancode F3;
+
+	// Game controls
 	SDL_Scancode LEFT;
 	SDL_Scancode RIGHT;
 	SDL_Scancode UP;

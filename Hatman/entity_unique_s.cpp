@@ -19,13 +19,13 @@ projectile::ArcaneProjectileBlue::ArcaneProjectileBlue(const Vector2d &position,
 
 	this->_init_solid(HITBOX_SIZE, speed);
 
-	Game::ACCESS->play_Sound("fire_cast.wav");
+	Game::ACCESS->play_sound("fire_cast.wav");
 }
 
 void projectile::ArcaneProjectileBlue::onCollision() {
 	Projectile::onCollision();
 
-	Game::ACCESS->play_Sound("fire_impact.wav");
+	Game::ACCESS->play_sound("fire_impact.wav");
 }
 
 

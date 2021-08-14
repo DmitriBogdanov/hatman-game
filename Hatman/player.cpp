@@ -544,7 +544,7 @@ void Player::draw() const {
 }
 
 void Player::deathTransition() {
-	Game::ACCESS->request_LevelReload();
+	Game::ACCESS->request_levelReload();
 }
 
 const Vector2d& Player::cameraTrap_getPosition() const {
