@@ -9,11 +9,14 @@ Hatman is a stylized 2D platformer in early development stage.
 
 ## Version History
 
-* 0.02
+* 00.03
+    * Compile-time optimizations and refactoring
+
+* 00.02
     * Implemented logic for GUI buttons
     * Implemented pause menu
 
-* 0.01
+* 00.01
     * Initial Release
 
 ## License
