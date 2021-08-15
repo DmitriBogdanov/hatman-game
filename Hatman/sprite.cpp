@@ -16,7 +16,7 @@ Animation::Animation(SDL_Texture* texture, std::vector<AnimationFrame> &&frames)
 	frames(std::move(frames))
 {}
 
-Animation::Animation(SDL_Texture* texture, const std::initializer_list<AnimationFrame> &frames) :
+Animation::Animation(SDL_Texture* texture, std::initializer_list<AnimationFrame> frames) :
 	texture(texture),
 	frames(frames)
 {}

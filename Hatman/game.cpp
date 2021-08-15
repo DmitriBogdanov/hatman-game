@@ -51,12 +51,12 @@ Game::~Game() {
 	SDL_Quit();
 }
 
-void Game::play_music(const std::string &name) {
-	playMusic(("content/audio/mx/" + name).c_str(), static_cast<int>(SDL_MIX_MAXVOLUME * audio::MUSIC_VOLUME));
+void Game::play_music(const std::string &name, double volumeMod) {
+	playMusic(("content/audio/mx/" + name).c_str(), static_cast<int>(SDL_MIX_MAXVOLUME * audio::MUSIC_VOLUME * volumeMod));
 }
 
-void Game::play_sound(const std::string &name) {
-	playSound(("content/audio/fx/" + name).c_str(), static_cast<int>(SDL_MIX_MAXVOLUME * audio::FX_VOLUME));
+void Game::play_sound(const std::string &name, double volumeMod) {
+	playSound(("content/audio/fx/" + name).c_str(), static_cast<int>(SDL_MIX_MAXVOLUME * audio::FX_VOLUME * volumeMod));
 }
 
 void Game::request_levelChange(const std::string &newLevel, const Vector2d newPosition) {
@@ -151,8 +151,9 @@ void Game::game_loop() {
 		Milliseconds ELAPSED_TIME = (CURRENT_TIME - LAST_UPDATE_TIME) * 1000. / FREQUENCY;
 		LAST_UPDATE_TIME = CURRENT_TIME;
 
-		if (ELAPSED_TIME > 50.) ELAPSED_TIME = 50.; // fix for physics bugging out in low FPS moments
-			// this means below 1000/50=20 FPS physics start to slow down 
+		if (ELAPSED_TIME > performance::MAX_FRAME_TIME_MS) ELAPSED_TIME = performance::MAX_FRAME_TIME_MS;
+			// fix for physics bugging out in low FPS moments
+			// this means below 1000/40=25 FPS physics start to slow down 
 
 		this->_true_time_elapsed = ELAPSED_TIME;
 		

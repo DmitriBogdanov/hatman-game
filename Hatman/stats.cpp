@@ -4,61 +4,6 @@
 
 
 
-// # Damage #
-Damage::Damage(Faction faction, double phys, double magic, double dot, double pure) :
-	phys(phys),
-	magic(magic),
-	dot(dot),
-	pure(pure),
-	faction(faction)
-{}
-
-Damage& Damage::operator+=(const Damage &other) {
-	this->phys += other.phys;
-	this->magic += other.magic;
-	this->dot += other.dot;
-	this->pure += other.pure;
-
-	return *this;
-}
-Damage Damage::operator+(const Damage &other) {
-	return Damage(
-		this->faction,
-		this->phys + other.phys,
-		this->magic + other.magic,
-		this->dot + other.dot,
-		this->pure + other.pure
-	);
-}
-Damage& Damage::operator*=(double modifier) {
-	this->phys *= modifier;
-	this->magic *= modifier;
-	this->dot *= modifier;
-	this->pure *= modifier;
-
-	return *this;
-}
-Damage Damage::operator*(double modifier) {
-	return Damage(
-		this->faction,
-		this->phys * modifier,
-		this->magic * modifier,
-		this->dot * modifier,
-		this->pure * modifier
-	);
-}
-
-Damage& Damage::modify(double modifierPhys, double modifierMagic, double modifierDot, double modifierPure) {
-	this->phys *= modifierPhys;
-	this->magic *= modifierMagic;
-	this->dot *= modifierDot;
-	this->pure *= modifierPure;
-
-	return *this;
-}
-
-
-
 // # Health #
 const sint MAX_RESISTANCE = 90;
 

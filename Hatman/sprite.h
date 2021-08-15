@@ -32,7 +32,7 @@ struct Animation {
 
 	Animation(SDL_Texture* texture, const std::vector<AnimationFrame> &frames);
 	Animation(SDL_Texture* texture, std::vector<AnimationFrame> &&frames); // move semantics
-	Animation(SDL_Texture* texture, const std::initializer_list<AnimationFrame> &frames);
+	Animation(SDL_Texture* texture, std::initializer_list<AnimationFrame> frames);
 	Animation(SDL_Texture* texture, const srcRect &frame); // creates single-frame animation
 
 	bool isSingleFrame() const; // if "Animation" has a single frame returns true

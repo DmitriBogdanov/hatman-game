@@ -623,7 +623,7 @@
 	visually but internally it's a more robust logic
 	- Implemented smooth camera that moves faster the furter away player is, mostly noticeble during teleportation
 
-# 21.08.14 #
+# 21.08.14 # 
 	- Refactored some old GUI code
 	- Implemented buttons that can display text, track being hovered over and pressed and change colors accordingly
 	- Implemented logic for generalized 'requests' to game that are handles at a specific time before update(),
@@ -631,32 +631,33 @@
 	- Implemented Esc menu with working 'Resume' and 'Exit to desktop' buttons
 	- Implemented sounds for hovering over buttons and pressing them
 
+# 21.08.15 #
+	- Lowered number of sounds played simultaneously, GUI sounds less ridiculous
+	- Made 'Damage' constexpr-friendly
+	- Cleared relic initializer_lists that were still passed by reference
+	- Finetuned performance-related consts
+	- Fixed a bug where character would sometimes fall through platforms during alt+tab
+	- Made the entirety of 'dRect' constexpr-friendly
+	- Made the rest of geometry_utils.h constexpr-frindly for the company
+	- Moved 'rand_...' methods out of the namespace to be less lenghty and more like original rand()
+
 ### FIXES ###
-	- Make dRect constexpr
-	- Make Damage constexpr
-	- Make RGBColor constexpr
-	- Replace all initializer_list's that are still passed by reference
 
 ### FIRST PRIORITY FEATURES ###
 	- NPC dialog GUI
 	- Storing of conditional flags (repurpose emits, add saving to JSON)
 	- Conditional loading
-	- Implement adding entities through 'entity tilesets' using 'insert Tile' feature
+	
 	
 
 ### SECOND PRIORITY FEATURES ###
-	- Add prompt for launch info
-	- Implement base for 'Esc' menu
+	- Implement adding entities through 'entity tilesets' using 'insert Tile' feature
 	- Implement changing and storing settings (controls) from menu
 	- Implement console for convenient debugging/testing
-	? Think about object parsing based on types instead of layers
-	? Screen shake
+
 	? Floaty damage numbers
-	? Parallax background
 	
 ### MISC ###
-	~ Decent Ghost sprite
-
 	Console commands
 	/hitboxes
 		/// toggles hitbox display

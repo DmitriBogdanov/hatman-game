@@ -20,8 +20,8 @@ public:
 	static const Game* READ; // used for aka 'global' access
 	static Game* ACCESS;
 
-	void play_music(const std::string &name);
-	void play_sound(const std::string &name);
+	void play_music(const std::string &name, double volumeMod = 1.);
+	void play_sound(const std::string &name, double volumeMod = 1.);
 
 	void request_levelChange(const std::string &newLevel, const Vector2d newPosition); // changes level to given, version is loaded from save
 	void request_levelReload();

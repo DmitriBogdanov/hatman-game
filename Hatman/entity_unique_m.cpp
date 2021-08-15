@@ -187,16 +187,16 @@ void m::enemy::Sludge::update_when_deaggroed(Milliseconds elapsedTime) {
 	case State::WANDER_STAND:
 		// Transition
 		if (this->state_isUnlocked()) {
-			const auto nextPhaseIsMove = helpers::rand_bool();
+			const auto nextPhaseIsMove = rand_bool();
 
 			if (nextPhaseIsMove) {
 				this->orientation = invert(this->orientation);
 
 				this->state_change(State::WANDER_MOVE);
-				this->state_lock(helpers::rand_double(Sludge_consts::WANDER_MOVE_TIMER_MIN, Sludge_consts::WANDER_MOVE_TIMER_MAX));
+				this->state_lock(rand_double(Sludge_consts::WANDER_MOVE_TIMER_MIN, Sludge_consts::WANDER_MOVE_TIMER_MAX));
 			}
 			else {
-				this->state_lock(helpers::rand_double(Sludge_consts::WANDER_STAND_TIMER_MIN, Sludge_consts::WANDER_STAND_TIMER_MAX));
+				this->state_lock(rand_double(Sludge_consts::WANDER_STAND_TIMER_MIN, Sludge_consts::WANDER_STAND_TIMER_MAX));
 			}
 		}
 		break;
@@ -210,16 +210,16 @@ void m::enemy::Sludge::update_when_deaggroed(Milliseconds elapsedTime) {
 
 		// Transition
 		if (this->state_isUnlocked()) {
-			const auto nextPhaseIsMove = helpers::rand_bool();
+			const auto nextPhaseIsMove = rand_bool();
 
 			if (nextPhaseIsMove) {
 				this->orientation = invert(this->orientation);
 
-				this->state_lock(helpers::rand_double(Sludge_consts::WANDER_MOVE_TIMER_MIN, Sludge_consts::WANDER_MOVE_TIMER_MAX));
+				this->state_lock(rand_double(Sludge_consts::WANDER_MOVE_TIMER_MIN, Sludge_consts::WANDER_MOVE_TIMER_MAX));
 			}
 			else {
 				this->state_change(State::WANDER_STAND);
-				this->state_lock(helpers::rand_double(Sludge_consts::WANDER_STAND_TIMER_MIN, Sludge_consts::WANDER_STAND_TIMER_MAX));
+				this->state_lock(rand_double(Sludge_consts::WANDER_STAND_TIMER_MIN, Sludge_consts::WANDER_STAND_TIMER_MAX));
 			}
 		}
 		break;
@@ -235,9 +235,9 @@ void m::enemy::Sludge::deathTransition() {
 	for (int i = 0; i < 16; ++i) {
 		Game::ACCESS->level.spawn(std::make_unique<s::particle::OnDeathParticle>(
 			this->position,
-			Vector2d(helpers::rand_double(-300., 300.), helpers::rand_double(-250., 0.)),
+			Vector2d(rand_double(-300., 300.), rand_double(-250., 0.)),
 			colors::SH_BLACK,
-			helpers::rand_double(Sludge_consts::PARTICLE_DURATION_MIN, Sludge_consts::PARTICLE_DURATION_MAX)
+			rand_double(Sludge_consts::PARTICLE_DURATION_MIN, Sludge_consts::PARTICLE_DURATION_MAX)
 			));
 	}
 }
@@ -327,7 +327,7 @@ m::enemy::SkeletonHalberd::SkeletonHalberd(const Vector2d &position) :
 
 	this->_optinit_death_delay(
 		this->_sprite->animation_duration("death") +
-		helpers::rand_double(SkeletonHalberd_consts::CORPSE_LIFETIME_MIN, SkeletonHalberd_consts::CORPSE_LIFETIME_MAX)
+		rand_double(SkeletonHalberd_consts::CORPSE_LIFETIME_MIN, SkeletonHalberd_consts::CORPSE_LIFETIME_MAX)
 	);
 }
 
@@ -427,19 +427,19 @@ void m::enemy::SkeletonHalberd::update_when_deaggroed(Milliseconds elapsedTime) 
 	case State::WANDER_STAND:
 		// Transition
 		if (this->state_isUnlocked() && this->_sprite->animation_awaitEnd()) {
-			const auto nextPhaseIsMove = helpers::rand_bool();
+			const auto nextPhaseIsMove = rand_bool();
 
 			if (nextPhaseIsMove) {
 				this->orientation = invert(this->orientation);
 				this->_sprite->animation_play("move", true);
 
 				this->state_change(State::WANDER_MOVE);
-				this->state_lock(helpers::rand_double(SkeletonHalberd_consts::WANDER_MOVE_TIMER_MIN, SkeletonHalberd_consts::WANDER_MOVE_TIMER_MAX));
+				this->state_lock(rand_double(SkeletonHalberd_consts::WANDER_MOVE_TIMER_MIN, SkeletonHalberd_consts::WANDER_MOVE_TIMER_MAX));
 			}
 			else {
 				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
 
-				this->state_lock(helpers::rand_double(SkeletonHalberd_consts::WANDER_STAND_TIMER_MIN, SkeletonHalberd_consts::WANDER_STAND_TIMER_MAX));
+				this->state_lock(rand_double(SkeletonHalberd_consts::WANDER_STAND_TIMER_MIN, SkeletonHalberd_consts::WANDER_STAND_TIMER_MAX));
 			}
 		}
 		break;
@@ -453,19 +453,19 @@ void m::enemy::SkeletonHalberd::update_when_deaggroed(Milliseconds elapsedTime) 
 
 		// Transition
 		if (this->state_isUnlocked() && this->_sprite->animation_awaitEnd()) {
-			const auto nextPhaseIsMove = helpers::rand_bool();
+			const auto nextPhaseIsMove = rand_bool();
 
 			if (nextPhaseIsMove) {
 				this->orientation = invert(this->orientation);
 				this->_sprite->animation_play("move", true);
 
-				this->state_lock(helpers::rand_double(SkeletonHalberd_consts::WANDER_MOVE_TIMER_MIN, SkeletonHalberd_consts::WANDER_MOVE_TIMER_MAX));
+				this->state_lock(rand_double(SkeletonHalberd_consts::WANDER_MOVE_TIMER_MIN, SkeletonHalberd_consts::WANDER_MOVE_TIMER_MAX));
 			}
 			else {
 				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
 
 				this->state_change(State::WANDER_STAND);
-				this->state_lock(helpers::rand_double(SkeletonHalberd_consts::WANDER_STAND_TIMER_MIN, SkeletonHalberd_consts::WANDER_STAND_TIMER_MAX));
+				this->state_lock(rand_double(SkeletonHalberd_consts::WANDER_STAND_TIMER_MIN, SkeletonHalberd_consts::WANDER_STAND_TIMER_MAX));
 			}
 		}
 		break;

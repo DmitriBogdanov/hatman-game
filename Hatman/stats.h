@@ -29,14 +29,60 @@ enum class Faction {
 struct Damage {
 	Damage() = default;
 
-	Damage(Faction faction, double phys = 0, double magic = 0, double dot = 0, double pure = 0);
+	constexpr Damage(Faction faction, double phys = 0, double magic = 0, double dot = 0, double pure = 0) :
+		phys(phys),
+		magic(magic),
+		dot(dot),
+		pure(pure),
+		faction(faction)
+	{}
 
-	Damage& operator+=(const Damage &other);
-	Damage operator+(const Damage &other);
-	Damage& operator*=(double modifier);
-	Damage operator*(double modifier);
+	constexpr Damage& operator+=(const Damage& other) {
+		this->phys += other.phys;
+		this->magic += other.magic;
+		this->dot += other.dot;
+		this->pure += other.pure;
 
-	Damage& modify(double modifierPhys, double modifierMagic, double modifierDot, double modifierPure);
+		return *this;
+	}
+
+	constexpr Damage operator+(const Damage& other) {
+		return Damage(
+			this->faction,
+			this->phys + other.phys,
+			this->magic + other.magic,
+			this->dot + other.dot,
+			this->pure + other.pure
+		);
+	}
+
+	constexpr Damage& operator*=(double modifier) {
+		this->phys *= modifier;
+		this->magic *= modifier;
+		this->dot *= modifier;
+		this->pure *= modifier;
+
+		return *this;
+	}
+
+	constexpr Damage operator*(double modifier) {
+		return Damage(
+			this->faction,
+			this->phys * modifier,
+			this->magic * modifier,
+			this->dot * modifier,
+			this->pure * modifier
+		);
+	}
+
+	constexpr Damage& modify(double modifierPhys, double modifierMagic, double modifierDot, double modifierPure) {
+		this->phys *= modifierPhys;
+		this->magic *= modifierMagic;
+		this->dot *= modifierDot;
+		this->pure *= modifierPure;
+
+		return *this;
+	}
 
 	double phys;
 	double magic;

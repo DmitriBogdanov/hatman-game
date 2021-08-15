@@ -297,7 +297,7 @@ void GUI_Button::update(Milliseconds elapsedTime) {
 	const bool mouseHover = this->button_rect.containsPoint(input.mousePosition());
 
 	if (mouseHover && this->button_hovered_over == false)
-		Game::ACCESS->play_sound("gui_click.wav"); // if mouse just started hovering over play sound
+		Game::ACCESS->play_sound("gui_click.wav", 0.8); // if mouse just started hovering over play sound
 
 	this->button_hovered_over = mouseHover;
 

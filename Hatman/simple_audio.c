@@ -46,7 +46,7 @@
 #define AUDIO_SAMPLES 4096
 
 /* Max number of sounds that can be in the audio queue at anytime, stops too much mixing */
-#define AUDIO_MAX_SOUNDS 25
+#define AUDIO_MAX_SOUNDS 4
 
 /* The rate at which the volume fades when musics transition. The higher number indicates music fading faster */
 #define AUDIO_MUSIC_FADE_VALUE 2
