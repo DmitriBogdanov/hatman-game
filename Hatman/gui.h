@@ -180,6 +180,29 @@ private:
 
 
 
+// # GUI_MainMenu #
+class GUI_MainMenu {
+public:
+	GUI_MainMenu() = delete;
+
+	GUI_MainMenu(Font* font);
+
+	void update(Milliseconds elapsedTime);
+	void draw() const;
+
+private:
+	Font* font;
+
+	std::unique_ptr<GUI_Button> button_continue;
+	std::unique_ptr<GUI_Button> button_new_game;
+	std::unique_ptr<GUI_Button> button_settings;
+	std::unique_ptr<GUI_Button> button_exit;
+
+	SDL_Texture* texture; // 640x360 background for main menu
+};
+
+
+
 // # GUI_PlayerHealthbar #
 class GUI_PlayerHealthbar {
 public:
@@ -343,6 +366,10 @@ public:
 	void FPSCounter_on();
 	void FPSCounter_off();
 
+	// Main menu
+	void MainMenu_on();
+	void MainMenu_off();
+
 	// Esc menu
 	void EscMenu_on();
 	void EscMenu_off();
@@ -385,6 +412,7 @@ private:
 
 	// GUI elements that do NOT need to remember internal state while changing visibility
 	std::unique_ptr<GUI_FPSCounter> FPS_counter;
+	std::unique_ptr<GUI_MainMenu> main_menu;
 	std::unique_ptr<GUI_EscMenu> esc_menu;
 	std::unique_ptr<GUI_PlayerHealthbar> player_healthbar;
 	std::unique_ptr<GUI_CDbar> cdbar;

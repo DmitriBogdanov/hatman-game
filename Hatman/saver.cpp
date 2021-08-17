@@ -45,9 +45,9 @@ void Saver::save() {
 
 // Recorders
 void Saver::record_Player() {
-	this->state["player"]["current_level"] = Game::ACCESS->level.getName();
-	this->state["player"]["x"] = Game::ACCESS->level.player->position.x;
-	this->state["player"]["y"] = Game::ACCESS->level.player->position.y;
+	this->state["player"]["current_level"] = Game::ACCESS->level->getName();
+	this->state["player"]["x"] = Game::ACCESS->level->player->position.x;
+	this->state["player"]["y"] = Game::ACCESS->level->player->position.y;
 }
 
 // Getters

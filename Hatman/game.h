@@ -23,9 +23,13 @@ public:
 	void play_music(const std::string &name, double volumeMod = 1.);
 	void play_sound(const std::string &name, double volumeMod = 1.);
 
+	bool is_running() const; // true when level is loaded and running, false in main menu and etc
+
+	void request_levelLoadFromSave();
 	void request_levelChange(const std::string &newLevel, const Vector2d newPosition); // changes level to given, version is loaded from save
 	void request_levelReload();
 
+	void request_goToMainMenu();
 	void request_toggleEscMenu();
 	void request_toggleF3();
 	void request_exitToDesktop();
@@ -33,7 +37,7 @@ public:
 	bool paused;
 	double timescale;
 
-	Level level;
+	std::unique_ptr<Level> level;
 
 	Input input;
 
@@ -49,9 +53,11 @@ private:
 	void draw_everything(); // draws everything, not const because level can add nullptrs to the tilemap during drawing
 
 	// GUI reauests
+	bool _requested_go_to_main_menu;
 	bool _requested_toggle_esc_menu;
 	bool _requested_toggle_F3;
 	bool _requested_exit_to_desktop;
+	bool _requested_level_load_from_save;
 	bool _requested_level_change;
 
 	// Level loading/changing

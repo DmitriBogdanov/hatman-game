@@ -274,7 +274,7 @@ void Player::update_case_ATTACK(Milliseconds elapsedTime) {
 					fire::CHAIN_RANGE_UP + fire::CHAIN_RANGE_DOWN
 				); // nasty geometry
 
-				for (auto& entity : Game::ACCESS->level.entities_killable)
+				for (auto& entity : Game::ACCESS->level->entities_killable)
 					if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
 						entity->health->applyDamage(fire::CHAIN_0_DAMAGE);
 
@@ -298,7 +298,7 @@ void Player::update_case_ATTACK(Milliseconds elapsedTime) {
 					fire::CHAIN_RANGE_UP + fire::CHAIN_RANGE_DOWN
 				); // nasty geometry
 
-				for (auto& entity : Game::ACCESS->level.entities_killable)
+				for (auto& entity : Game::ACCESS->level->entities_killable)
 					if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
 						entity->health->applyDamage(fire::CHAIN_2_DAMAGE);
 
@@ -379,7 +379,7 @@ void Player::update_case_ULT(Milliseconds elapsedTime) {
 					fire::ULT_RANGE_UP + fire::ULT_RANGE_DOWN
 				); // nasty geometry
 
-				for (auto& entity : Game::ACCESS->level.entities_killable)
+				for (auto& entity : Game::ACCESS->level->entities_killable)
 					if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
 						entity->health->applyDamage(fire::ULT_DAMAGE);
 
@@ -449,9 +449,9 @@ void Player::horizontal_blink(Orientation direction, double range) {
 
 		// We only need to check 3-tile tall strip in a blink direction for collisions
 		const int leftBound = centerIndex.x;
-		const int rightBound = std::min(helpers::divide32(playerRightGoesTo), Game::READ->level.getSizeX());
+		const int rightBound = std::min(helpers::divide32(playerRightGoesTo), Game::READ->level->getSizeX());
 		const int upperBound = std::max(centerIndex.y - 1, 0);
-		const int lowerBound = std::min(centerIndex.y + 1, Game::READ->level.getSizeY());
+		const int lowerBound = std::min(centerIndex.y + 1, Game::READ->level->getSizeY());
 
 		// Area that would be drawn if we 'continuously dragged' player hitbox to a new postion
 		const dRect areaToCheck(
@@ -462,7 +462,7 @@ void Player::horizontal_blink(Orientation direction, double range) {
 		// Go through tiles and determine where player would end up if we tried to 'continuously drag' hitbox
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
-				const auto tile = Game::ACCESS->level.getTile(X, Y);
+				const auto tile = Game::ACCESS->level->getTile(X, Y);
 
 				if (tile && tile->hitbox)
 					for (const auto hitboxRect : tile->hitbox->rectangles)
@@ -481,7 +481,7 @@ void Player::horizontal_blink(Orientation direction, double range) {
 		const int leftBound = std::max(helpers::divide32(playerLeftGoesTo), 0);
 		const int rightBound = centerIndex.x;
 		const int upperBound = std::max(centerIndex.y - 1, 0);
-		const int lowerBound = std::min(centerIndex.y + 1, Game::READ->level.getSizeY());
+		const int lowerBound = std::min(centerIndex.y + 1, Game::READ->level->getSizeY());
 
 		// Area that would be drawn if we 'continuously dragged' player hitbox to a new postion
 		const dRect areaToCheck(
@@ -492,7 +492,7 @@ void Player::horizontal_blink(Orientation direction, double range) {
 		// Go through tiles and determine where player would end up if we tried to 'continuously drag' hitbox
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
-				const auto tile = Game::ACCESS->level.getTile(X, Y);
+				const auto tile = Game::ACCESS->level->getTile(X, Y);
 
 				if (tile && tile->hitbox)
 					for (const auto hitboxRect : tile->hitbox->rectangles)

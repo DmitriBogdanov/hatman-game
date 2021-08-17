@@ -32,10 +32,6 @@ public:
 
 	Collection<Script> scripts;
 
-	/// REMOVE LATER
-	void damageInArea(const dRect &area, const Damage &damage);
-	// deals damage to every entity in given area (unless faction is the same)
-
 	// Getters
 	const Vector2& getSize() const;
 	int getSizeX() const;

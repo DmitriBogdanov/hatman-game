@@ -15,7 +15,7 @@ scripts::LevelChange::LevelChange(const dRect &hitbox, const std::string &goesTo
 {}
 
 bool scripts::LevelChange::checkTrigger() const {
-	return Game::ACCESS->level.player->solid->getHitbox().overlapsWithRect(this->hitbox);
+	return Game::ACCESS->level->player->solid->getHitbox().overlapsWithRect(this->hitbox);
 }
 void scripts::LevelChange::trigger() {
 	Game::ACCESS->request_levelChange(this->goes_to_level, this->goes_to_pos);
@@ -32,7 +32,7 @@ scripts::LevelSwitch::LevelSwitch(const dRect &hitbox, const std::string &goesTo
 
 bool scripts::LevelSwitch::checkTrigger() const {
 	return
-		Game::ACCESS->level.player->solid->getHitbox().overlapsWithRect(this->hitbox)
+		Game::ACCESS->level->player->solid->getHitbox().overlapsWithRect(this->hitbox)
 		&& Game::ACCESS->input.key_pressed(Controls::READ->USE);
 }
 void scripts::LevelSwitch::trigger() {
@@ -45,7 +45,7 @@ void scripts::LevelSwitch::trigger() {
 scripts::PlayerInArea::PlayerInArea(const dRect &hitbox) : hitbox(hitbox) {}
 
 bool scripts::PlayerInArea::checkTrigger() const {
-	return Game::ACCESS->level.player->solid->getHitbox().overlapsWithRect(this->hitbox);
+	return Game::ACCESS->level->player->solid->getHitbox().overlapsWithRect(this->hitbox);
 }
 
 

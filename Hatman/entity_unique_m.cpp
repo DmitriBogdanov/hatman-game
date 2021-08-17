@@ -233,7 +233,7 @@ void m::enemy::Sludge::deathTransition() {
 	Enemy::deathTransition();
 
 	for (int i = 0; i < 16; ++i) {
-		Game::ACCESS->level.spawn(std::make_unique<s::particle::OnDeathParticle>(
+		Game::ACCESS->level->spawn(std::make_unique<s::particle::OnDeathParticle>(
 			this->position,
 			Vector2d(rand_double(-300., 300.), rand_double(-250., 0.)),
 			colors::SH_BLACK,
@@ -545,5 +545,5 @@ m::destructible::TNT::TNT(const Vector2d &position) :
 void m::destructible::TNT::effect() {
 	const dRect area(this->position, Vector2d(50., 50.), true);
 	const Damage damage(this->health->faction, 400);
-	Game::ACCESS->level.damageInArea(area, damage);
+	///Game::ACCESS->level->damageInArea(area, damage);
 }

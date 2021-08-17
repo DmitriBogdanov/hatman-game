@@ -274,23 +274,6 @@ void Level::add_Entity(const std::string &type, const std::string &name, Vector2
 	this->_insertNewEntity(std::move(entity));
 }
 
-// Utility
-void Level::damageInArea(const dRect &area, const Damage &damage) {
-	// Look for entities that should be damaged
-	for (auto &entity : this->entities) {
-		// Deal damage if entity has health+hitbox, is in the area, and of the enemy faction
-		if (entity->health && entity->solid && area.overlapsWithRect(entity->solid->getHitbox())) {
-			entity->health->applyDamage(damage);
-		}
-	}
-
-	// Check the same for player
-	if (area.overlapsWithRect(this->player->solid->getHitbox())) {
-		this->player->health->applyDamage(damage);
-	}
-}
-
-
 // Parsing
 void Level::parseFromJSON(const std::string &filePath) {
 	// Load JSON doc

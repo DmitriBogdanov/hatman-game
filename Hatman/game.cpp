@@ -20,10 +20,12 @@ Game::Game() :
 	paused(false),
 	timescale(1.),
 	_true_time_elapsed(0.),
+	_requested_go_to_main_menu(false),
 	_requested_toggle_esc_menu(false),
 	_requested_toggle_F3(false),
 	_requested_exit_to_desktop(false),
 	_requested_level_change(false),
+	_requested_level_load_from_save(false),
 	level_change_is_reload(false),
 	toggle_F3(false)
 {
@@ -33,16 +35,16 @@ Game::Game() :
 	SDL_Init(SDL_INIT_EVERYTHING);
 	initAudio();
 
-	this->_level_loadFromSave();
+	// Load main menu
+	this->request_goToMainMenu();
 
-	// Turn GUI that isn't player GUI
 	Graphics::ACCESS->gui->FPSCounter_on();
-
 	this->play_music("a_nights_respite.wav");
 
-	Graphics::ACCESS->camera->zoom = 0.5;
+	///this->_level_loadFromSave();
+	///Graphics::ACCESS->camera->zoom = 0.5;
 
-	// Start the game loop
+	// Start the main loop
 	this->game_loop();
 }
 
@@ -57,6 +59,14 @@ void Game::play_music(const std::string &name, double volumeMod) {
 
 void Game::play_sound(const std::string &name, double volumeMod) {
 	playSound(("content/audio/fx/" + name).c_str(), static_cast<int>(SDL_MIX_MAXVOLUME * audio::FX_VOLUME * volumeMod));
+}
+
+bool Game::is_running() const {
+	return static_cast<bool>(this->level);
+}
+
+void  Game::request_levelLoadFromSave() {
+	this->_requested_level_load_from_save = true;
 }
 
 void Game::request_levelChange(const std::string &newLevel, const Vector2d newPosition) {
@@ -88,6 +98,10 @@ void Game::request_levelReload() {
 	this->level_change_timer.start(defaults::LEVEL_CHANGE_FADE_DURATION);
 }
 
+void Game::request_goToMainMenu() {
+	this->_requested_go_to_main_menu = true;
+}
+
 void Game::request_toggleEscMenu() {
 	this->_requested_toggle_esc_menu = true;
 }
@@ -102,7 +116,7 @@ void Game::request_exitToDesktop() {
 
 void Game::game_loop() {
 	const auto FREQUENCY = static_cast<double>(SDL_GetPerformanceFrequency()); // platform specific frequency, does not change during runtime
-	auto LAST_UPDATE_TIME = SDL_GetPerformanceCounter();
+	auto lastUpdateTime = SDL_GetPerformanceCounter();
 
 	while (true) {
 		// Poll events to the input object
@@ -131,40 +145,48 @@ void Game::game_loop() {
 		}
 
 		/// FOR TESTING TIMESCALE
-		if (this->input.key_pressed(SDL_SCANCODE_V)) {
+		/*if (this->input.key_pressed(SDL_SCANCODE_V)) {
 			this->timescale = 0.1;
 		}
 		else if (this->input.key_released(SDL_SCANCODE_V)) {
 			this->timescale = 1.;
-		}
-
-		// Top-level input handling goes here
-		if (this->input.key_pressed(Controls::READ->ESC)) { // Esc exits the game
-			this->request_toggleEscMenu();
-		}
-		if (this->input.key_pressed(Controls::READ->F3)) {
-			this->request_toggleF3();
-		}
+		}*/
+		/// ^^^
 
 		// Measure frame time (in ms) and update 
-		const auto CURRENT_TIME = SDL_GetPerformanceCounter();
-		Milliseconds ELAPSED_TIME = (CURRENT_TIME - LAST_UPDATE_TIME) * 1000. / FREQUENCY;
-		LAST_UPDATE_TIME = CURRENT_TIME;
+		const auto currentTime = SDL_GetPerformanceCounter();
+		Milliseconds elapsedTime = (currentTime - lastUpdateTime) * 1000. / FREQUENCY;
+		lastUpdateTime = currentTime;
 
-		if (ELAPSED_TIME > performance::MAX_FRAME_TIME_MS) ELAPSED_TIME = performance::MAX_FRAME_TIME_MS;
+		if (elapsedTime > performance::MAX_FRAME_TIME_MS) elapsedTime = performance::MAX_FRAME_TIME_MS;
 			// fix for physics bugging out in low FPS moments
 			// this means below 1000/40=25 FPS physics start to slow down 
 
-		this->_true_time_elapsed = ELAPSED_TIME;
+		this->_true_time_elapsed = elapsedTime;
 		
 		if (!this->handle_requests()) return;
 
-		this->update_everything(ELAPSED_TIME * this->timescale); // this is all there is to timescale mechanic
+		this->update_everything(elapsedTime * this->timescale); // this is all there is to timescale mechanic
 		this->draw_everything();
 	}
 }
 
 bool Game::handle_requests() {
+	// Handle main menu toggle
+	if (this->_requested_go_to_main_menu) {
+		// Return to main menu from game
+		if (this->is_running()) {
+			this->level.reset();
+			Graphics::ACCESS->gui->MainMenu_on();
+		}
+		// Start up main menu
+		else {
+			Graphics::ACCESS->gui->MainMenu_on();
+		}
+
+		this->_requested_go_to_main_menu = false;
+	}
+
 	// Handle esc menu toggle
 	if (this->_requested_toggle_esc_menu) {
 		Graphics::ACCESS->gui->EscMenu_toggle();
@@ -193,26 +215,37 @@ bool Game::handle_requests() {
 		}
 	}
 
+	// Handle loading from save
+	if (this->_requested_level_load_from_save) {
+		this->_level_loadFromSave();
+		Graphics::ACCESS->gui->MainMenu_off();
+
+		this->_requested_level_load_from_save = false;
+	}
+
 	return true;
 }
 
 void Game::update_everything(Milliseconds elapsedTime) {
-	if (!this->paused) this->level.update(elapsedTime);
+	// Update during gameplay
+	if (this->is_running() && !this->paused) {
+		this->level->update(elapsedTime);
 
+		Graphics::ACCESS->camera->position = this->level->player->cameraTrap_getPosition();
+	}
+
+	// Updated regardless
 	Graphics::ACCESS->gui->update(elapsedTime);
 
 	EmitStorage::ACCESS->update(elapsedTime);
 
 	TimerController::ACCESS->update(elapsedTime);
-
-	Graphics::ACCESS->camera->position = this->level.player->cameraTrap_getPosition();
 }
 
 void Game::draw_everything() {
-	this->level.draw();
+	if (this->is_running()) this->level->draw();
 
-	// In F3 mode draw info for testing
-	if (this->toggle_F3) {
+	if (this->is_running() && this->toggle_F3) { /// prehaps move to GUI
 		this->_drawHitboxes();
 		this->_drawInfo();
 	}
@@ -220,19 +253,19 @@ void Game::draw_everything() {
 	Graphics::ACCESS->gui->draw();
 
 	// Render to screen
-	Graphics::ACCESS->camera->cameraToRenderer(); // draw camera content first
+	if (this->is_running()) Graphics::ACCESS->camera->cameraToRenderer(); // draw camera content first
 	Graphics::ACCESS->gui->GUIToRenderer(); // draw GUI content on top
 	Graphics::ACCESS->rendererToWindow(); // apply renderer to screen
 
 	// Clear all rendering textures
-	Graphics::ACCESS->camera->cameraClear(); // clear camera backbuffer
+	if (this->is_running()) Graphics::ACCESS->camera->cameraClear(); // clear camera backbuffer
 	Graphics::ACCESS->gui->GUIClear(); // clear GUI backbuffer
 	Graphics::ACCESS->rendererClear(); // clear renderer
 }
 
 // Level loading/changing
 void Game::_level_swapToTarget() {
-	auto extractedPlayer = this->level._extractPlayer(); // extract player
+	auto extractedPlayer = this->level->_extractPlayer(); // extract player
 
 	auto playerPtr = static_cast<ntt::player::Player*>(extractedPlayer.get());
 
@@ -245,7 +278,7 @@ void Game::_level_swapToTarget() {
 		// center camera at the player to prevent situation where player doesn't get
 		// updated due to being too far away from camera
 
-	this->level = Level(
+	this->level = std::make_unique<Level>(
 		this->level_change_target,
 		std::move(extractedPlayer)
 	); // constuct new level and transfer player to it
@@ -265,10 +298,11 @@ void Game::_level_loadFromSave() {
 		
 	constructedPlayer->cameraTrap_center();
 	Graphics::ACCESS->camera->position = constructedPlayer->cameraTrap_getPosition();
+	Graphics::ACCESS->camera->zoom = natural::ZOOM;
 		// center camera at the player to prevent situation where player doesn't get
 		// updated due to being too far away from camera
 
-	this->level = Level(
+	this->level = std::make_unique<Level>(
 		savedLevel,
 		std::make_unique<ntt::player::Player>(savedPosition)
 	);	
@@ -287,19 +321,19 @@ void Game::_drawHitboxes() {
 	SDL_Texture* tileHitboxBorder = Graphics::ACCESS->getTexture("content/textures/hitbox_border_tile.png");
 	SDL_Texture* tileActionboxBorder = Graphics::ACCESS->getTexture("content/textures/actionbox_border_tile.png");
 
-	const auto cameraPos = this->level.player->cameraTrap_getPosition();
+	const auto cameraPos = this->level->player->cameraTrap_getPosition();
 
 	const Vector2 centerIndex = helpers::divide32(cameraPos);
 
 	const int leftBound = std::max(centerIndex.x - performance::TILE_FREEZE_RANGE_X, 0);
-	const int rightBound = std::min(centerIndex.x + performance::TILE_FREEZE_RANGE_X, this->level.getSizeX());
+	const int rightBound = std::min(centerIndex.x + performance::TILE_FREEZE_RANGE_X, this->level->getSizeX());
 	const int upperBound = std::max(centerIndex.y - performance::TILE_FREEZE_RANGE_Y, 0);
-	const int lowerBound = std::min(centerIndex.y + performance::TILE_FREEZE_RANGE_Y, this->level.getSizeY());
+	const int lowerBound = std::min(centerIndex.y + performance::TILE_FREEZE_RANGE_Y, this->level->getSizeY());
 
 	// Update tiles
 	for (int X = leftBound; X <= rightBound; ++X)
 		for (int Y = upperBound; Y <= lowerBound; ++Y) {
-			const auto tile = this->level.getTile(X, Y);
+			const auto tile = this->level->getTile(X, Y);
 
 			if (tile) {
 				// Draw hibox if present
@@ -319,7 +353,7 @@ void Game::_drawHitboxes() {
 	// Draw entity hitboxes
 	SDL_Texture* entityHitboxBorder = Graphics::ACCESS->getTexture("content/textures/hitbox_border_entity.png");
 
-	for (const auto &entity : this->level.entities_solid) {
+	for (const auto &entity : this->level->entities_solid) {
 		const dstRect destRect = entity->solid->getHitbox().to_dstRect();
 		Graphics::ACCESS->camera->textureToCamera(entityHitboxBorder, NULL, &destRect);
 	}
@@ -334,7 +368,7 @@ void Game::_drawInfo() const {
 	constexpr double gapY = 8.;
 
 	// TEMP
-	const auto &player = this->level.player;
+	const auto &player = this->level->player;
 	font->color_set(colors::SH_GREEN);
 	// player state
 	font->draw_line(gap + Vector2d(0 * gapX, 0 * gapY), "state:");

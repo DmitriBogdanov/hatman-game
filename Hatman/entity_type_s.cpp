@@ -50,7 +50,7 @@ void s_type::Projectile::onCollision() {
 	const auto area = dRect(this->position, this->AOE, true);
 
 	// Look for entities that should be damaged, deal damage and knockback
-	for (auto &entity : Game::ACCESS->level.entities_killable)
+	for (auto &entity : Game::ACCESS->level->entities_killable)
 		if (area.overlapsWithRect(entity->solid->getHitbox())) {
 			entity->health->applyDamage(this->damage);
 

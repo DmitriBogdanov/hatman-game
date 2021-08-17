@@ -89,7 +89,7 @@ bool m_type::Enemy::update(Milliseconds elapsedTime) {
 	if (!Creature::update(elapsedTime) || !this->creature_is_alive) return false;
 
 	// Check validity of the target (aka target still alive/exists)
-	if (this->target && !Game::ACCESS->level.entities_type[TypeId::CREATURE].count(this->target)) {
+	if (this->target && !Game::ACCESS->level->entities_type[TypeId::CREATURE].count(this->target)) {
 		this->target = nullptr;
 		this->state_change(this->default_deaggroed_state);
 		this->deaggroTransition();
@@ -111,7 +111,7 @@ bool m_type::Enemy::update(Milliseconds elapsedTime) {
 	else {
 		this->update_when_deaggroed(elapsedTime);
 
-		for (const auto& entity : Game::ACCESS->level.entities_type[TypeId::CREATURE]) {
+		for (const auto& entity : Game::ACCESS->level->entities_type[TypeId::CREATURE]) {
 			const auto creature = static_cast<Creature*>(entity); // we 100% know that it's creature
 
 			if (creature->health->faction != this->health->faction && this->aggroCondition(creature)) {
@@ -180,7 +180,7 @@ bool m_type::ItemEntity::update(Milliseconds elapsedTime) {
 
 // Checks
 bool m_type::ItemEntity::checkActivation() const {
-	if (this->solid && this->solid->getHitbox().overlapsWithRect(Game::ACCESS->level.player->solid->getHitbox()))
+	if (this->solid && this->solid->getHitbox().overlapsWithRect(Game::ACCESS->level->player->solid->getHitbox()))
 		return true;
 
 	return false;
@@ -204,7 +204,7 @@ void m_type::ItemEntity::activate() {
 
 void m_type::ItemEntity::trigger() {
 	auto item = items::make_item(this->name);
-	Game::ACCESS->level.player->inventory.addItem(*item);
+	Game::ACCESS->level->player->inventory.addItem(*item);
 
 	this->mark_for_erase();
 }

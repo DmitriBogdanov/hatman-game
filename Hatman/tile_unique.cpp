@@ -46,7 +46,7 @@ tiles::SaveOrb::SaveOrb(const Tileset &tileset, int id, const Vector2 &position)
 
 bool tiles::SaveOrb::checkActivation() const {
 	// Check if player is in range
-	return this->interaction->actionbox.containsPoint(Game::ACCESS->level.player->position);
+	return this->interaction->actionbox.containsPoint(Game::ACCESS->level->player->position);
 }
 bool tiles::SaveOrb::checkTrigger() const {
 	// Check if player pressed USE button

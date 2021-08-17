@@ -334,7 +334,7 @@ void GUI_Button::reset() {
 
 
 // # GUI_EscMenu $
-namespace GUI_EscMenu_consts {
+namespace EscMenu_consts {
 	constexpr double CENTER_X = natural::WIDTH / 2.;
 	constexpr double TOP_Y = 140.;
 
@@ -358,7 +358,7 @@ namespace GUI_EscMenu_consts {
 GUI_EscMenu::GUI_EscMenu(Font* font) :
 	font(font)
 {
-	using namespace GUI_EscMenu_consts;
+	using namespace EscMenu_consts;
 
 	const auto monospace = this->font->get_font_monospace();
 
@@ -436,14 +436,20 @@ void GUI_EscMenu::update(Milliseconds elapsedTime) {
 
 	if (this->button_controls) {
 		this->button_controls->update(elapsedTime);
+
+		/// NOT IMPLEMENTED
 	}
 
 	if (this->button_start_from_checkpoint) {
 		this->button_start_from_checkpoint->update(elapsedTime);
+
+		/// NOT IMPLEMENTED
 	}
 
 	if (this->button_return_to_main_menu) { 
-		this->button_return_to_main_menu->update(elapsedTime); 
+		this->button_return_to_main_menu->update(elapsedTime);
+
+		/// NOT IMPLEMENTED
 	}
 
 	if (this->button_exit_to_desktop) {
@@ -466,6 +472,130 @@ void GUI_EscMenu::draw() const {
 
 
 
+// # GUI_MainMenu #
+namespace MainMenu_consts {
+	constexpr double CENTER_X = natural::WIDTH / 2.;
+	constexpr double TOP_Y = 150.;
+
+	constexpr double BUTTON_PADDING_X = 8.; // buttons actual height is larget than just the height of the text
+	constexpr double BUTTON_PADDING_Y = 12.;
+
+	constexpr double GAP_BETWEEN_BUTTONS = 1.;
+
+	constexpr auto COLOR_TEXT = colors::SH_YELLOW;
+	constexpr auto COLOR_TEXT_HOVERED = colors::SH_YELLOW * 0.7 + colors::SH_BLACK * 0.3;
+	constexpr auto COLOR_TEXT_PRESSED = colors::SH_YELLOW * 0.5 + colors::SH_BLACK * 0.5;
+
+	const std::string TEXT_CONTINUE = "continue";
+	const std::string TEXT_NEW_GAME = "new game";
+	const std::string TEXT_SETTINGS = "settings";
+	const std::string TEXT_EXIT = "exit";
+}
+
+GUI_MainMenu::GUI_MainMenu(Font* font) :
+	font(font)
+{
+	this->texture = Graphics::ACCESS->getTexture_GUI("main_menu_background.png");
+
+	using namespace MainMenu_consts;
+
+	const auto monospace = this->font->get_font_monospace();
+
+	const double buttonWidth = BUTTON_PADDING_X + monospace.x * std::max({
+		TEXT_CONTINUE.length(),
+		TEXT_NEW_GAME.length(),
+		TEXT_SETTINGS.length(),
+		TEXT_EXIT.length()
+		});
+
+	const double buttonHeight = BUTTON_PADDING_Y + monospace.y;
+
+	double cursorY = TOP_Y;
+
+	this->button_continue = std::make_unique<GUI_Button>(
+		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+		TEXT_CONTINUE,
+		this->font,
+		COLOR_TEXT,
+		COLOR_TEXT_HOVERED,
+		COLOR_TEXT_PRESSED
+		);
+	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+
+	this->button_new_game = std::make_unique<GUI_Button>(
+		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+		TEXT_NEW_GAME,
+		this->font,
+		COLOR_TEXT,
+		COLOR_TEXT_HOVERED,
+		COLOR_TEXT_PRESSED
+		);
+	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+
+	this->button_settings = std::make_unique<GUI_Button>(
+		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+		TEXT_SETTINGS,
+		this->font,
+		COLOR_TEXT,
+		COLOR_TEXT_HOVERED,
+		COLOR_TEXT_PRESSED
+		);
+	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+
+	this->button_exit = std::make_unique<GUI_Button>(
+		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+		TEXT_EXIT,
+		this->font,
+		COLOR_TEXT,
+		COLOR_TEXT_HOVERED,
+		COLOR_TEXT_PRESSED
+		);
+	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+}
+
+void GUI_MainMenu::update(Milliseconds elapsedTime) {
+	if (this->button_continue) {
+		this->button_continue->update(elapsedTime);
+
+		// Handle button press
+		if (this->button_continue->was_pressed()) {
+			Game::ACCESS->request_levelLoadFromSave();
+		}
+	}
+
+	if (this->button_new_game) {
+		this->button_new_game->update(elapsedTime);
+
+		// Handle button press
+		if (this->button_new_game->was_pressed()) {
+
+		}
+	}
+
+	if (this->button_settings) {
+		this->button_settings->update(elapsedTime);
+	}
+
+	if (this->button_exit) {
+		this->button_exit->update(elapsedTime);
+
+		// Handle button press
+		if (this->button_exit->was_pressed())
+			Game::ACCESS->request_exitToDesktop();
+	}
+}
+
+void GUI_MainMenu::draw() const {
+	Graphics::ACCESS->gui->textureToGUI(this->texture, NULL, NULL);
+
+	if (this->button_continue) this->button_continue->draw();
+	if (this->button_new_game) this->button_new_game->draw();
+	if (this->button_settings) this->button_settings->draw();
+	if (this->button_exit) this->button_exit->draw();
+}
+
+
+
 // # GUI_PlayerHealthbar #
 GUI_PlayerHealthbar::GUI_PlayerHealthbar() {
 	this->texture_border = Graphics::ACCESS->getTexture_GUI("player_healthbar_border.png");
@@ -473,7 +603,7 @@ GUI_PlayerHealthbar::GUI_PlayerHealthbar() {
 }
 
 void GUI_PlayerHealthbar::update(Milliseconds elapsedTime) {
-	this->percentage = Game::READ->level.player->health->percentage();
+	this->percentage = Game::READ->level->player->health->percentage();
 }
 void GUI_PlayerHealthbar::draw() const {
 	// Position/size/aligment consts
@@ -514,8 +644,8 @@ GUI_CDbar::GUI_CDbar() {
 
 void GUI_CDbar::update(Milliseconds elapsedTime) {
 	/// CHECK PLAYER CD PERCENTAGE
-	///this->percentage = Game::READ->level.player->health->percentage(); /// TEMP
-	///const Timer &cooldown = Game::READ->level.player->form_change_cooldown;
+	///this->percentage = Game::READ->level->player->health->percentage(); /// TEMP
+	///const Timer &cooldown = Game::READ->level->player->form_change_cooldown;
 
 	///this->percentage = cooldown.finished() ? 1. : (cooldown.elapsed() / cooldown.duration());
 }
@@ -688,7 +818,7 @@ void Gui::InventoryGUI::draw_tab_items() const {
 	const Vector2d page_number_1 = this->position + Vector2d(136., 179.);
 	const Vector2d page_number_2 = this->position + Vector2d(156., 179.);
 
-	const Inventory &inventory = Game::ACCESS->level.player->inventory;
+	const Inventory &inventory = Game::ACCESS->level->player->inventory;
 
 	Font* const font = Graphics::ACCESS->gui->fonts.at("BLOCKY").get();
 	font->color_set(colors::IVORY);
@@ -761,15 +891,27 @@ Gui::~Gui() {
 }
 
 void Gui::update(Milliseconds elapsedTime) {
+	// Handle GUI-realted inputs handling goes here
+	auto &game = Game::ACCESS;
+	auto &input = game->input;
+	
+	if (input.key_pressed(Controls::READ->ESC) && game->is_running()) {
+		game->request_toggleEscMenu();
+	}
+	if (input.key_pressed(Controls::READ->F3) && game->is_running()) {
+		game->request_toggleF3();
+	}
+
 	if (this->fade) { this->fade->update(elapsedTime); }
 
 	this->inventoryGUI.update(elapsedTime); // non-optional
 
 	if (this->FPS_counter) this->FPS_counter->update(elapsedTime);
+	if (this->main_menu) this->main_menu->update(elapsedTime);
 	if (this->esc_menu) this->esc_menu->update(elapsedTime);
-	if (this->player_healthbar) this->player_healthbar->update(elapsedTime);
-	if (this->cdbar) this->cdbar->update(elapsedTime);
-	if (this->portrait) this->portrait->update(elapsedTime);
+	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->update(elapsedTime);
+	if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->update(elapsedTime);
+	if (Game::ACCESS->is_running() && this->portrait) this->portrait->update(elapsedTime);
 
 	for (auto &text : this->texts) text.update(elapsedTime);
 }
@@ -780,10 +922,11 @@ void Gui::draw() const {
 	this->inventoryGUI.draw(); // non-optional
 
 	if (this->FPS_counter) this->FPS_counter->draw();
+	if (this->main_menu) this->main_menu->draw();
 	if (this->esc_menu) this->esc_menu->draw();
-	if (this->player_healthbar) this->player_healthbar->draw();
-	if (this->cdbar) this->cdbar->draw();
-	if (this->portrait) this->portrait->draw();
+	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->draw();
+	if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->draw();
+	if (Game::ACCESS->is_running() && this->portrait) this->portrait->draw();
 
 	for (const auto &text : this->texts) text.draw(); // text is drawn on top of everything else
 }
@@ -826,11 +969,21 @@ void Gui::FPSCounter_off() {
 	this->FPS_counter.reset();
 }
 
+// Main menu
+void Gui::MainMenu_on() {
+	if (!this->main_menu)
+		this->main_menu = std::make_unique<GUI_MainMenu>(this->fonts.at("BLOCKY").get());
+}
+
+void Gui::MainMenu_off() {
+	this->main_menu.reset();
+}
+
 // Esc Menu
 void Gui::EscMenu_on() {
 	if (!this->esc_menu) {
 		// Darken the screen when in esc menu
-		this->Fade_on(GUI_EscMenu_consts::COLOR_FADE);
+		this->Fade_on(EscMenu_consts::COLOR_FADE);
 
 		this->esc_menu = std::make_unique<GUI_EscMenu>(this->fonts.at("BLOCKY").get());
 	}

@@ -78,13 +78,13 @@ Tile* SolidRectangle::getFirstCollision_Tile() const {
 	const Vector2 centerIndex = helpers::divide32(this->parent_position);
 
 	const int leftBound = std::max(centerIndex.x - performance::COLLISION_CHECK_DEPH, 0);
-	const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level.getSizeX());
+	const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeX());
 	const int upperBound = std::max(centerIndex.y - performance::COLLISION_CHECK_DEPH, 0);
-	const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level.getSizeY());
+	const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY());
 
 	for (int X = leftBound; X <= rightBound; ++X)
 		for (int Y = upperBound; Y <= lowerBound; ++Y) {
-			const auto tile = Game::ACCESS->level.getTile(X, Y);
+			const auto tile = Game::ACCESS->level->getTile(X, Y);
 
 			// Go over tile hitbox rects and check for collisions
 			if (tile && tile->hitbox)
@@ -99,7 +99,7 @@ Tile* SolidRectangle::getFirstCollision_Tile() const {
 ntt::Entity* SolidRectangle::getFirstCollision_DifferentFactionEntity(Faction faction) const {
 	const dRect entityRect = this->getHitbox();
 
-	for (auto &otherEntity : Game::ACCESS->level.entities_killable)
+	for (auto &otherEntity : Game::ACCESS->level->entities_killable)
 		if (otherEntity->health->faction != faction && entityRect.overlapsWithRect(otherEntity->solid->getHitbox()))
 			return otherEntity;
 	
@@ -217,13 +217,13 @@ void SolidRectangle::apply_TileCollisions() {
 	// Collisions happens at RIGHT => iterate over 6 tiles at right
 	if (this->movement.x > 0.) { 
 		const int leftBound = std::max(centerIndex.x, 0); // no need to check left column
-		const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level.getSizeX());
+		const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeX());
 		const int upperBound = std::max(centerIndex.y - performance::COLLISION_CHECK_DEPH, 0);
-		const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level.getSizeY());
+		const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY());
 
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
-				const auto tile = Game::ACCESS->level.getTile(X, Y);
+				const auto tile = Game::ACCESS->level->getTile(X, Y);
 
 				// Go over tile hitbox rects and check for collisions
 				if (tile && tile->hitbox)
@@ -237,13 +237,13 @@ void SolidRectangle::apply_TileCollisions() {
 	// Collisions happens at LEFT => iterate over 6 tiles at left
 	else if (this->movement.x < 0.) {
 		const int leftBound = std::max(centerIndex.x - performance::COLLISION_CHECK_DEPH, 0);
-		const int rightBound = std::min(centerIndex.x, Game::READ->level.getSizeX()); // no need to check right column
+		const int rightBound = std::min(centerIndex.x, Game::READ->level->getSizeX()); // no need to check right column
 		const int upperBound = std::max(centerIndex.y - performance::COLLISION_CHECK_DEPH, 0);
-		const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level.getSizeY());
+		const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY());
 
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
-				const auto tile = Game::ACCESS->level.getTile(X, Y);
+				const auto tile = Game::ACCESS->level->getTile(X, Y);
 
 				// Go over tile hitbox rects and check for collisions
 				if (tile && tile->hitbox)
@@ -260,13 +260,13 @@ void SolidRectangle::apply_TileCollisions() {
 	// Collisions happens at BOTTOM => iterate over 6 tiles at bottom
 	if (this->movement.y > 0.) {
 		const int leftBound = std::max(centerIndex.x - performance::COLLISION_CHECK_DEPH, 0);
-		const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level.getSizeX());
+		const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeX());
 		const int upperBound = std::max(centerIndex.y, 0); // no need to check upper row
-		const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level.getSizeY());
+		const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY());
 
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
-				const auto tile = Game::ACCESS->level.getTile(X, Y);
+				const auto tile = Game::ACCESS->level->getTile(X, Y);
 
 				// Go over tile hitbox rects and check for collisions
 				if (tile && tile->hitbox)
@@ -290,13 +290,13 @@ void SolidRectangle::apply_TileCollisions() {
 	// Collisions happens at TOP => iterate over 6 tiles at top
 	else if (this->movement.y < 0.) {
 		const int leftBound = std::max(centerIndex.x - performance::COLLISION_CHECK_DEPH, 0);
-		const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level.getSizeX());
+		const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeX());
 		const int upperBound = std::max(centerIndex.y - performance::COLLISION_CHECK_DEPH, 0);
-		const int lowerBound = std::min(centerIndex.y, Game::READ->level.getSizeY()); // no need to check lower row
+		const int lowerBound = std::min(centerIndex.y, Game::READ->level->getSizeY()); // no need to check lower row
 
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
-				const auto tile = Game::ACCESS->level.getTile(X, Y);
+				const auto tile = Game::ACCESS->level->getTile(X, Y);
 
 				// Go over tile hitbox rects and check for collisions
 				if (tile && tile->hitbox)
@@ -313,8 +313,8 @@ void SolidRectangle::apply_TileCollisions() {
 
 void SolidRectangle::apply_LevelBorderCollisions() {
 	const dRect entityHitbox = this->getHitbox();
-	const double levelWidth = Game::READ->level.getSize().x * natural::TILE_SIZE; // Assumes rendering size is equal to physica;
-	const double levelHeight = Game::READ->level.getSize().y * natural::TILE_SIZE;
+	const double levelWidth = Game::READ->level->getSize().x * natural::TILE_SIZE; // Assumes rendering size is equal to physica;
+	const double levelHeight = Game::READ->level->getSize().y * natural::TILE_SIZE;
 
 	/// TEMP, REMOVE LATER
 	if (entityHitbox.getBottom() > levelHeight) {
