@@ -1,10 +1,13 @@
 #pragma once
 
 #include <unordered_set> // related type ('TimerController' storage)
+#include <limits> // infinity
 
 
 
 using Milliseconds = double;
+
+constexpr auto MAX_POSSIBLE_TIME = std::numeric_limits<double>::max();
 
 constexpr inline double sec_to_ms(double seconds) { return seconds * 1000.; }
 

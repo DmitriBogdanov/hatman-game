@@ -9,6 +9,7 @@
 #include "globalconsts.hpp"
 #include "color.hpp" // coloring F3 GUI
 #include "controls.h" // controls for GUI
+#include "debug_tools.hpp" // for calling 'begin_new_frame()' function
 
 
 
@@ -176,6 +177,8 @@ void Game::game_loop() {
 		this->_true_time_elapsed = elapsedTime;
 		
 		if (!this->handle_requests()) return;
+
+		DEBUG_SINGLETON::get().begin_new_frame(); // reset internal counters
 
 		this->update_everything(elapsedTime * this->timescale); // this is all there is to timescale mechanic
 		this->draw_everything();

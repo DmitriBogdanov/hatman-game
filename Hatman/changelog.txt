@@ -653,6 +653,13 @@
 	- Got 'New game' and 'Exit' buttons in main menu working
 	- Made transition from menu into the game smooth
 
+# 21.08.20 #
+	- Implemented new enemy 'Devourer' that ambushes player when he looks away
+	- Fixed enemies not deaggroing properly
+	- Found solution for enemies getting stuck in the last frame of animation when their state changes
+	at a certain precise time
+	- Added new header with methods for faster testing/debugging
+
 ### FIXES ###
 	- Separate state methods for enemies into different functions like player does
 

@@ -88,6 +88,38 @@ namespace ntt::m {
 			Timer wander_timer; // used to make random turns while wandering
 			bool wander_move; // decides whether enemy will more or stand still for the timer duration
 		};
+
+
+
+		// # Devourer #
+		// - Fast enemy that attacks only when player looks in opposite direction
+		class Devourer : public m_type::Enemy {
+		public:
+			Devourer() = delete;
+
+			Devourer(const Vector2d& position);
+
+		private:
+			enum class State {
+				STAND,
+				CHASE
+			};
+
+			bool aggroCondition(Creature* creature) override;
+			bool deaggroCondition(Creature* creature) override;
+
+			void aggroTransition() override;
+			void deaggroTransition() override;
+
+			void update_when_aggroed(Milliseconds elapsedTime) override;
+			void update_when_deaggroed(Milliseconds elapsedTime) override;
+
+			void deathTransition() override;
+
+			Timer attack_cd;
+			Milliseconds time_target_was_looking_away;
+			Milliseconds time_target_was_looking_towards;
+		};
 	}
 
 

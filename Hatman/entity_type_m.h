@@ -38,7 +38,8 @@ namespace ntt::m_type {
 		bool state_isLocked() const;
 		bool state_isUnlocked() const;
 
-		void state_lock(Milliseconds duration); // prevents state change for duration
+		void state_lock(Milliseconds duration = MAX_POSSIBLE_TIME); // prevents state change for duration, locks forever by default
+		void state_unlock();
 
 		template<typename StateEnum>
 		void state_tryChange(StateEnum newState) {

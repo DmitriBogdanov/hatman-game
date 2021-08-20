@@ -45,6 +45,10 @@ void m_type::Creature::state_lock(Milliseconds duration) {
 	this->state_lock_timer.start(duration);
 }
 
+void m_type::Creature::state_unlock() {
+	this->state_lock_timer.stop();
+}
+
 void m_type::Creature::_init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames) {
 	this->_parse_controllable_sprite(folder, animationNames);
 

@@ -923,7 +923,7 @@ void Gui::update(Milliseconds elapsedTime) {
 	if (this->FPS_counter) this->FPS_counter->update(elapsedTime);
 	if (this->main_menu) this->main_menu->update(elapsedTime);
 	if (this->esc_menu) this->esc_menu->update(elapsedTime);
-	///if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->update(elapsedTime);
+	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->update(elapsedTime);
 	///if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->update(elapsedTime);
 	///if (Game::ACCESS->is_running() && this->portrait) this->portrait->update(elapsedTime);
 
@@ -938,7 +938,7 @@ void Gui::draw() const {
 	if (this->FPS_counter) this->FPS_counter->draw();
 	if (this->main_menu) this->main_menu->draw();
 	if (this->esc_menu) this->esc_menu->draw();
-	///if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->draw();
+	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->draw();
 	///if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->draw();
 	///if (Game::ACCESS->is_running() && this->portrait) this->portrait->draw();
 
