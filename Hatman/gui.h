@@ -391,8 +391,8 @@ public:
 	void AllPlayerGUI_off();
 
 	// Fade
-	void Fade_on(const RGBColor &color); // makes a static fade effect
-	void Fade_on(const RGBColor &colorStart, const RGBColor &colorEnd, Milliseconds duration); // makes a smooth fade effect
+	void Fade_on(const RGBColor &color, bool overrideGUI = true); // makes a static fade effect
+	void Fade_on(const RGBColor &colorStart, const RGBColor &colorEnd, Milliseconds duration, bool overrideGUI = true); // makes a smooth fade effect
 	void Fade_off();
 
 
@@ -418,4 +418,5 @@ private:
 	std::unique_ptr<GUI_CDbar> cdbar;
 	std::unique_ptr<GUI_Portrait> portrait;
 	std::unique_ptr<GUI_Fade> fade;
+	bool fade_override_gui; // if false other GUI elements have higher rendering priority than fade
 };

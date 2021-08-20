@@ -58,16 +58,18 @@ private:
 	bool _requested_toggle_F3;
 	bool _requested_exit_to_desktop;
 	bool _requested_level_load_from_save;
+
 	bool _requested_level_change;
 
-	// Level loading/changing
 	bool level_change_is_reload; // true if level change is reload from save
-
 	std::string level_change_target; // name of the level to change
-	Vector2d level_change_position; // player position on a new level
+	Vector2d level_change_position;
+		// player position on a new level
 		// note that if level is loaded frome save these parameters are not used in any way
 
-	Timer level_change_timer; // waits for level change animation to finish
+	Timer smooth_transition_timer; // waits for fade animations to finish
+
+	
 
 	void _level_swapToTarget();
 	void _level_loadFromSave();

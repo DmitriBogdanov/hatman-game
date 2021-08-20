@@ -115,6 +115,8 @@ public:
 	void applyDamage(const Damage &damage);
 	void applyHeal(double heal);
 
+	void instakill();
+
 	// Getters
 	bool dead() const; // true if hp < 0
 	double percentage() const; // returns values from 0.0 to 1.0

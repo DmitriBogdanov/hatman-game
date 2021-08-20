@@ -50,7 +50,8 @@ namespace colors {
 	constexpr auto  SH_BLUE = RGBColor(95, 205, 228);
 	constexpr auto  SH_GREEN = RGBColor(0, 255, 0);
 
-	/// Old colors, remove later
+	constexpr auto ESC_MENU_FADE_COLOR = SH_BLACK.set_alpha(100);
+
 	constexpr auto  WHITE = RGBColor(255, 255, 255);
 	constexpr auto  BLACK = RGBColor(0, 0, 0);
 

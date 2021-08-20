@@ -8,43 +8,52 @@
 
 
 // # Saver #
+namespace Saver_consts {
+	const std::string FIRST_LEVEL = "shadow_test";
+	constexpr auto FIRST_SPAWNPOINT = Vector2d(450., 240.);
+}
+
+
 const Saver* Saver::READ;
 Saver* Saver::ACCESS;
 
 Saver::Saver(const std::string &filePath) :
-	save_filepath(filePath)
+	save_filepath(filePath),
+	save_is_present(false)
 {
 	this->READ = this;
 	this->ACCESS = this;
 
 	std::ifstream inFile(this->save_filepath);
+	this->save_is_present = inFile.good();
 
-	if (inFile.good())
+	if (this->save_is_present)
 		this->state = nlohmann::json::parse(inFile); // savefile is present => load
-	else
-		this->makeNewSave(); // savefile not present => create new
-	
 }
 
-void Saver::makeNewSave() {
-	const std::string firstLevel = "house"; /// temp
-	const Vector2d playerSpawnpoint(100., 240.);
-	
-	this->state["player"]["current_level"] = firstLevel;
-	this->state["player"]["x"] = playerSpawnpoint.x;
-	this->state["player"]["y"] = playerSpawnpoint.y;
-
-	this->save();
+bool Saver::save_present() const {
+	return this->save_is_present;
 }
 
-void Saver::save() {
+
+void Saver::create_new() {
+	using namespace Saver_consts;
+
+	this->state["player"]["current_level"] = FIRST_LEVEL;
+	this->state["player"]["x"] = FIRST_SPAWNPOINT.x;
+	this->state["player"]["y"] = FIRST_SPAWNPOINT.y;
+
+	this->write();
+}
+
+void Saver::write() {
 	std::ofstream file(this->save_filepath);
 	file << std::setw(4) << this->state; // setw() 'pretifies' JSON so it is no a single unreadable line
 	file.close();
 }
 
 // Recorders
-void Saver::record_Player() {
+void Saver::record_state() {
 	this->state["player"]["current_level"] = Game::ACCESS->level->getName();
 	this->state["player"]["x"] = Game::ACCESS->level->player->position.x;
 	this->state["player"]["y"] = Game::ACCESS->level->player->position.y;
@@ -58,13 +67,3 @@ std::string Saver::get_CurrentLevel() const {
 Vector2d Saver::get_PlayerPosition() const {
 	return Vector2d(this->state["player"]["x"].get<double>(), this->state["player"]["y"].get<double>());
 }
-
-/// Stays purely here for reference
-//std::string Saver::get_LevelVersion(const std::string &levelName) const {
-//	if (this->state["levels"].find(levelName) != this->state["levels"].end()) {
-//		return this->state["levels"][levelName].get<std::string>();
-//	}
-//	else {
-//		return "default";
-//	}
-//}

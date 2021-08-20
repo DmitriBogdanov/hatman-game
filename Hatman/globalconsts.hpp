@@ -60,7 +60,7 @@ namespace physics {
 // defaults::
 // - Default values for mostly visual settings
 namespace defaults {
-	constexpr double LEVEL_CHANGE_FADE_DURATION = 500.;
+	constexpr double TRANSITION_FADE_DURATION = 500.;
 }
 
 

@@ -61,6 +61,8 @@ namespace ntt::player {
 		Inventory inventory;
 
 	private:
+		std::unique_ptr<HealthbarDisplay> healthbar_display;
+
 		Vector2d camera_trap_pos;
 		Vector2d camera_pos;
 

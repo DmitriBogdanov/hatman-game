@@ -66,40 +66,51 @@ bool Game::is_running() const {
 }
 
 void  Game::request_levelLoadFromSave() {
+	if (this->_requested_level_load_from_save) return; // do nothing, process has already been initiated
+
 	this->_requested_level_load_from_save = true;
+
+	Graphics::ACCESS->gui->Fade_on(colors::SH_BLACK.transparent(), colors::SH_BLACK, defaults::TRANSITION_FADE_DURATION);
+	this->smooth_transition_timer.start(defaults::TRANSITION_FADE_DURATION);
 }
 
 void Game::request_levelChange(const std::string &newLevel, const Vector2d newPosition) {
 	if (_requested_level_change) return; // do nothing, process has already been initiated
 
-	Graphics::ACCESS->gui->AllPlayerGUI_off();
-
-	Graphics::ACCESS->gui->Fade_on(colors::BLACK.transparent(), colors::BLACK, defaults::LEVEL_CHANGE_FADE_DURATION);
-
 	this->_requested_level_change = true;
+
+	Graphics::ACCESS->gui->AllPlayerGUI_off();
 
 	this->level_change_target = newLevel;
 	this->level_change_position = newPosition;
 
-	this->level_change_timer.start(defaults::LEVEL_CHANGE_FADE_DURATION);
+	Graphics::ACCESS->gui->Fade_on(colors::SH_BLACK.transparent(), colors::SH_BLACK, defaults::TRANSITION_FADE_DURATION);
+	this->smooth_transition_timer.start(defaults::TRANSITION_FADE_DURATION);
 }
 
 void Game::request_levelReload() {
 	if (_requested_level_change) return; // do nothing, process has already been initiated
 
-	Graphics::ACCESS->gui->AllPlayerGUI_off();
-		// note that player GUI crashes if it's active while player is dead => we want it turned off
-
-	Graphics::ACCESS->gui->Fade_on(colors::BLACK.transparent(), colors::BLACK, defaults::LEVEL_CHANGE_FADE_DURATION);
-
 	this->_requested_level_change = true;
 	this->level_change_is_reload = true;
 
-	this->level_change_timer.start(defaults::LEVEL_CHANGE_FADE_DURATION);
+	Graphics::ACCESS->gui->AllPlayerGUI_off();
+		// note that player GUI crashes if it's active while player is dead => we want it turned off
+
+	Graphics::ACCESS->gui->Fade_on(colors::SH_BLACK.transparent(), colors::SH_BLACK, defaults::TRANSITION_FADE_DURATION);
+	this->smooth_transition_timer.start(defaults::TRANSITION_FADE_DURATION);
 }
 
 void Game::request_goToMainMenu() {
+	if (this->_requested_go_to_main_menu) return; // do nothing, process has already been initiated
+
 	this->_requested_go_to_main_menu = true;
+
+	// Transition from game to menu also need smooth fade
+	if (this->is_running()) {
+		Graphics::ACCESS->gui->Fade_on(colors::ESC_MENU_FADE_COLOR, colors::SH_BLACK, defaults::TRANSITION_FADE_DURATION);
+		this->smooth_transition_timer.start(defaults::TRANSITION_FADE_DURATION);
+	}
 }
 
 void Game::request_toggleEscMenu() {
@@ -172,8 +183,16 @@ void Game::game_loop() {
 }
 
 bool Game::handle_requests() {
+	// Handle esc menu toggle
+	if (this->_requested_toggle_esc_menu && this->smooth_transition_timer.finished()) {
+		Graphics::ACCESS->gui->EscMenu_toggle();
+		this->paused = !this->paused;
+
+		this->_requested_toggle_esc_menu = false;
+	}
+
 	// Handle main menu toggle
-	if (this->_requested_go_to_main_menu) {
+	if (this->_requested_go_to_main_menu && this->smooth_transition_timer.finished()) {
 		// Return to main menu from game
 		if (this->is_running()) {
 			this->level.reset();
@@ -184,16 +203,10 @@ bool Game::handle_requests() {
 			Graphics::ACCESS->gui->MainMenu_on();
 		}
 
+		Graphics::ACCESS->gui->Fade_on(colors::SH_BLACK, colors::SH_BLACK.transparent(), defaults::TRANSITION_FADE_DURATION);
+
 		this->_requested_go_to_main_menu = false;
-	}
-
-	// Handle esc menu toggle
-	if (this->_requested_toggle_esc_menu) {
-		Graphics::ACCESS->gui->EscMenu_toggle();
-		this->paused = !this->paused;
-
-		this->_requested_toggle_esc_menu = false;
-	}
+	}	
 
 	// Handle F3 toggle
 	if (this->_requested_toggle_F3) {
@@ -206,17 +219,22 @@ bool Game::handle_requests() {
 	if (this->_requested_exit_to_desktop) return false;
 
 	// Handle level change
-	if (this->_requested_level_change && this->level_change_timer.finished()) {
+	if (this->_requested_level_change && this->smooth_transition_timer.finished()) {
 		if (this->level_change_is_reload) {
+			Graphics::ACCESS->gui->Fade_on(colors::SH_BLACK, colors::SH_BLACK.transparent(), defaults::TRANSITION_FADE_DURATION);
 			this->_level_loadFromSave();
 		}
 		else {
+			Graphics::ACCESS->gui->Fade_on(colors::SH_BLACK, colors::SH_BLACK.transparent(), defaults::TRANSITION_FADE_DURATION);
 			this->_level_swapToTarget();
 		}
+
+		this->_requested_level_change = false;
 	}
 
 	// Handle loading from save
-	if (this->_requested_level_load_from_save) {
+	if (this->_requested_level_load_from_save && this->smooth_transition_timer.finished()) {
+		Graphics::ACCESS->gui->Fade_on(colors::SH_BLACK, colors::SH_BLACK.transparent(), defaults::TRANSITION_FADE_DURATION);
 		this->_level_loadFromSave();
 		Graphics::ACCESS->gui->MainMenu_off();
 
@@ -286,8 +304,6 @@ void Game::_level_swapToTarget() {
 	this->_requested_level_change = false;
 
 	Graphics::ACCESS->gui->AllPlayerGUI_on();
-
-	Graphics::ACCESS->gui->Fade_on(colors::BLACK, colors::BLACK.transparent(), defaults::LEVEL_CHANGE_FADE_DURATION);
 }
 
 void Game::_level_loadFromSave() {
@@ -305,14 +321,12 @@ void Game::_level_loadFromSave() {
 	this->level = std::make_unique<Level>(
 		savedLevel,
 		std::make_unique<ntt::player::Player>(savedPosition)
-	);	
+	);
 
 	this->_requested_level_change = false;
 	this->level_change_is_reload = false;
 
 	Graphics::ACCESS->gui->AllPlayerGUI_on();
-
-	Graphics::ACCESS->gui->Fade_on(colors::BLACK, colors::BLACK.transparent(), defaults::LEVEL_CHANGE_FADE_DURATION);
 }
 
 // Testing

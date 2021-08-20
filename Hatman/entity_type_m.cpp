@@ -77,7 +77,6 @@ m_type::Enemy::Enemy(const Vector2d &position) :
 	Creature(position),
 	target(nullptr),
 	target_relative_pos(0, 0),
-	healthbar_display(nullptr),
 	death_delay(0.)
 {
 	this->state_change(this->default_deaggroed_state);

@@ -62,6 +62,6 @@ void tiles::SaveOrb::deactivate() {
 	this->popup_handle.erase();
 }
 void tiles::SaveOrb::trigger() {
-	Saver::ACCESS->record_Player();
-	Saver::ACCESS->save(); 
+	Saver::ACCESS->record_state();
+	Saver::ACCESS->write(); 
 }

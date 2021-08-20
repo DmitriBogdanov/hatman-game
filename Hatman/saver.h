@@ -13,22 +13,26 @@
 // - Records and saves game progress
 class Saver {
 public:
-	Saver(const std::string &filePath = "temp/save.json"); // takes filepath to savefile
+	Saver(const std::string &filePath); // takes filepath to savefile
 
 	static const Saver* READ; // used for aka 'global' access
 	static Saver* ACCESS;
 
-	void makeNewSave();
-	void save();
+	bool save_present() const; // return whether save exists
 
-	void record_Level(const std::string &name, const std::string &version = "default");
-	void record_Player(); /// ADD OTHER STATS LATER
+	void create_new();
+
+	void write(); // writes state to file
+
+	void record_state();
 
 	std::string get_CurrentLevel() const;
 	Vector2d get_PlayerPosition() const;
 
 private:
-	nlohmann::json state;
-
 	std::string save_filepath;
+
+	bool save_is_present;
+
+	nlohmann::json state;
 };

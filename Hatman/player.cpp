@@ -7,8 +7,6 @@
 #include "entity_unique_s.h" // for spawning projectile entities
 #include "ct_math.hpp" // for calculating jump speed
 
-#include <iostream> /// TEST
-
 
 
 using namespace ntt;

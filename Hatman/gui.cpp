@@ -5,6 +5,7 @@
 #include "item_base.h" // 'Inventory' and 'Item' classes (inventory GUI)
 #include "game.h" // access to game state
 #include "controls.h" // access to control keys
+#include "saver.h" // checking wheter save exists upon main menu startup
 
 
 
@@ -346,7 +347,7 @@ namespace EscMenu_consts {
 	constexpr auto COLOR_TEXT = colors::SH_YELLOW;
 	constexpr auto COLOR_TEXT_HOVERED = colors::SH_YELLOW * 0.7 + colors::SH_BLACK * 0.3;
 	constexpr auto COLOR_TEXT_PRESSED = colors::SH_YELLOW * 0.5 + colors::SH_BLACK * 0.5;
-	constexpr auto COLOR_FADE = colors::SH_BLACK.set_alpha(100);
+	constexpr auto COLOR_FADE = colors::ESC_MENU_FADE_COLOR;
 
 	const std::string TEXT_RESUME = "resume";
 	const std::string TEXT_CONTROLS = "controls";
@@ -443,13 +444,20 @@ void GUI_EscMenu::update(Milliseconds elapsedTime) {
 	if (this->button_start_from_checkpoint) {
 		this->button_start_from_checkpoint->update(elapsedTime);
 
-		/// NOT IMPLEMENTED
+		// Handle button press
+		if (this->button_start_from_checkpoint->was_pressed()) {
+			Game::ACCESS->request_toggleEscMenu();
+			Game::ACCESS->level->player->health->instakill();
+		}	
 	}
 
 	if (this->button_return_to_main_menu) { 
 		this->button_return_to_main_menu->update(elapsedTime);
 
-		/// NOT IMPLEMENTED
+		if (this->button_return_to_main_menu->was_pressed()) {
+			Game::ACCESS->request_toggleEscMenu();			
+			Game::ACCESS->request_goToMainMenu();
+		}
 	}
 
 	if (this->button_exit_to_desktop) {
@@ -512,15 +520,18 @@ GUI_MainMenu::GUI_MainMenu(Font* font) :
 
 	double cursorY = TOP_Y;
 
-	this->button_continue = std::make_unique<GUI_Button>(
-		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
-		TEXT_CONTINUE,
-		this->font,
-		COLOR_TEXT,
-		COLOR_TEXT_HOVERED,
-		COLOR_TEXT_PRESSED
-		);
-	cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+	// Show 'continue' button if game save already exists
+	if (Saver::READ->save_present()) {
+		this->button_continue = std::make_unique<GUI_Button>(
+			dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
+			TEXT_CONTINUE,
+			this->font,
+			COLOR_TEXT,
+			COLOR_TEXT_HOVERED,
+			COLOR_TEXT_PRESSED
+			);
+		cursorY += buttonHeight + GAP_BETWEEN_BUTTONS;
+	}
 
 	this->button_new_game = std::make_unique<GUI_Button>(
 		dRect(CENTER_X, cursorY, buttonWidth, buttonHeight, true),
@@ -568,12 +579,15 @@ void GUI_MainMenu::update(Milliseconds elapsedTime) {
 
 		// Handle button press
 		if (this->button_new_game->was_pressed()) {
-
+			Saver::ACCESS->create_new();
+			Game::ACCESS->request_levelLoadFromSave();
 		}
 	}
 
 	if (this->button_settings) {
 		this->button_settings->update(elapsedTime);
+
+		/// TO BE IMPLEMENTED
 	}
 
 	if (this->button_exit) {
@@ -870,7 +884,7 @@ void Gui::InventoryGUI::draw_tab_items() const {
 
 // # Gui #
 Gui::Gui() :
-	FPS_counter(nullptr)
+	fade_override_gui(false)
 {
 	this->backbuffer = SDL_CreateTexture(
 		Graphics::ACCESS->getRenderer(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
@@ -909,26 +923,28 @@ void Gui::update(Milliseconds elapsedTime) {
 	if (this->FPS_counter) this->FPS_counter->update(elapsedTime);
 	if (this->main_menu) this->main_menu->update(elapsedTime);
 	if (this->esc_menu) this->esc_menu->update(elapsedTime);
-	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->update(elapsedTime);
-	if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->update(elapsedTime);
-	if (Game::ACCESS->is_running() && this->portrait) this->portrait->update(elapsedTime);
+	///if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->update(elapsedTime);
+	///if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->update(elapsedTime);
+	///if (Game::ACCESS->is_running() && this->portrait) this->portrait->update(elapsedTime);
 
 	for (auto &text : this->texts) text.update(elapsedTime);
 }
 
 void Gui::draw() const {
-	if (this->fade) { this->fade->draw(); }
+	if (this->fade && !this->fade_override_gui) this->fade->draw(); // if fade doesn't override GUI
 
 	this->inventoryGUI.draw(); // non-optional
 
 	if (this->FPS_counter) this->FPS_counter->draw();
 	if (this->main_menu) this->main_menu->draw();
 	if (this->esc_menu) this->esc_menu->draw();
-	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->draw();
-	if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->draw();
-	if (Game::ACCESS->is_running() && this->portrait) this->portrait->draw();
+	///if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->draw();
+	///if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->draw();
+	///if (Game::ACCESS->is_running() && this->portrait) this->portrait->draw();
 
 	for (const auto &text : this->texts) text.draw(); // text is drawn on top of everything else
+
+	if (this->fade && this->fade_override_gui) this->fade->draw(); // if fade overrides GUI
 }
 
 
@@ -983,7 +999,7 @@ void Gui::MainMenu_off() {
 void Gui::EscMenu_on() {
 	if (!this->esc_menu) {
 		// Darken the screen when in esc menu
-		this->Fade_on(EscMenu_consts::COLOR_FADE);
+		this->Fade_on(EscMenu_consts::COLOR_FADE, false);
 
 		this->esc_menu = std::make_unique<GUI_EscMenu>(this->fonts.at("BLOCKY").get());
 	}
@@ -1039,18 +1055,21 @@ void Gui::AllPlayerGUI_off() {
 }
 
 // Fade
-void Gui::Fade_on(const RGBColor &color) {
-	// New fade replaces existing fade
-	if (this->fade) { this->Fade_off(); }
+void Gui::Fade_on(const RGBColor &color, bool overrideGUI) {
+	this->fade_override_gui = overrideGUI;
+
+	if (this->fade) this->Fade_off(); // new fade replaces existing fade
 
 	this->fade = std::make_unique<GUI_Fade>(color);
 }
-void Gui::Fade_on(const RGBColor &colorStart, const RGBColor &colorEnd, Milliseconds duration) {
-	if (this->fade) { this->Fade_off(); }
+void Gui::Fade_on(const RGBColor &colorStart, const RGBColor &colorEnd, Milliseconds duration, bool overrideGUI) {
+	this->fade_override_gui = overrideGUI;
+
+	if (this->fade) this->Fade_off(); // new fade replaces existing fade
 
 	this->fade = std::make_unique<GUI_SmoothFade>(colorStart, colorEnd, duration);
 }
-void Gui::Fade_off() {	
+void Gui::Fade_off() {
 	this->fade.reset();
 }
 

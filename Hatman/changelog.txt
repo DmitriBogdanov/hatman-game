@@ -648,6 +648,10 @@
 	- Refactored main loop in a way the separates level and object updating and allows using menus without
 	having a loaded level and camera
 	- Deprecated 'damageInArea()'
+	- Updated 'Saver' class to be in a the same style as newer code
+	- Implemented conditional dislaying of 'Continue' button in main menu
+	- Got 'New game' and 'Exit' buttons in main menu working
+	- Made transition from menu into the game smooth
 
 ### FIXES ###
 	- Separate state methods for enemies into different functions like player does
@@ -657,7 +661,7 @@
 		-> Continue (inactive if no save present)
 		-> New game
 		-> Settings (window size)
-		-> Exit
+
 	- Implement new enemy: 'Devourer'
 	- Make 'Sound' object with multiple sound channels (GUI, player, effects) and volume control
 	

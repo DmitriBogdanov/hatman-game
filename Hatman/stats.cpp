@@ -89,8 +89,6 @@ void Health::applyDamage(const Damage &damage) {
 }
 
 void Health::applyHeal(double heal) {
-	
-
 	if (this->hp < this->total_maxHp) {
 		this->hp += heal;
 
@@ -99,6 +97,10 @@ void Health::applyHeal(double heal) {
 			this->hp = this->total_maxHp;
 		}
 	}
+}
+
+void Health::instakill() {
+	this->hp = -666666;
 }
 
 bool Health::dead() const {
