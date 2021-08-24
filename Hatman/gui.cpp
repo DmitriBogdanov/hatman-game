@@ -611,41 +611,63 @@ void GUI_MainMenu::draw() const {
 
 
 // # GUI_PlayerHealthbar #
-GUI_PlayerHealthbar::GUI_PlayerHealthbar() {
-	this->texture_border = Graphics::ACCESS->getTexture_GUI("player_healthbar_border.png");
-	this->texture_fill = Graphics::ACCESS->getTexture_GUI("player_healthbar_fill.png");
-}
+GUI_PlayerHealthbar::GUI_PlayerHealthbar() :
+	texture(Graphics::ACCESS->getTexture_GUI("player_healthbar.png")),
+	percentage(1.)
+{}
 
 void GUI_PlayerHealthbar::update(Milliseconds elapsedTime) {
 	this->percentage = Game::READ->level->player->health->percentage();
 }
+
 void GUI_PlayerHealthbar::draw() const {
-	// Position/size/aligment consts
-	const Vector2 fill_size(10, 71); // size of the texture
-	const Vector2 border_size(20, 93); // size of the texture
+	// Position of healthbar on the screen
+	constexpr double HEALTHBAR_LEFT = 2.;
+	constexpr double HEALTHBAR_BOTTOM = natural::HEIGHT - 14.;
 
-	const Vector2d fill_aligment(5., 11.); // aligment of fill relative to border
-	const double fill_bottom_aligment = 82.; // position of the bottom side of hp-bar
-	const Vector2d fill_visibleSize(fill_size.x, fill_size.y * this->percentage); // hp size based on hp percentage
+	// Source rects on the texture
+	constexpr auto BORDER_CORNER = Vector2(0, 0);
+	constexpr auto BORDER_SIZE = Vector2(16, 82);
 
-	const srcRect sourceRect_fill = {
-		0,
-		static_cast<int>(fill_size.y * (1. - this->percentage)),
-		static_cast<int>(fill_visibleSize.x),
-		static_cast<int>(fill_visibleSize.y)
+	constexpr auto FILL_CORNER = Vector2(17, 1);
+	constexpr auto FILL_SIZE = Vector2(14, 80);
+
+	constexpr auto FILL_ALIGMENT = Vector2d(1., 1.); // aligment of fill corner relative to border on the screen
+
+	constexpr srcRect BORDER_SOURCE_RECT = {
+		BORDER_CORNER.x,
+		BORDER_CORNER.y,
+		BORDER_SIZE.x,
+		BORDER_SIZE.y
+	};
+	
+	const int fillDisplayedHeight = static_cast<int>(FILL_SIZE.y * this->percentage); 
+
+	const srcRect fillSourceRect = {
+		FILL_CORNER.x,
+		FILL_CORNER.y + FILL_SIZE.y - fillDisplayedHeight,
+		FILL_SIZE.x,
+		fillDisplayedHeight
 	};
 
-	dRect destRect_fill(this->position + fill_aligment, fill_visibleSize);
-	destRect_fill.moveBottomTo(this->position.y + fill_bottom_aligment); // move hpbar in proper place	
+	// Dest rects
+	constexpr dstRect BORDER_DEST_RECT = {
+		HEALTHBAR_LEFT,
+		HEALTHBAR_BOTTOM - BORDER_SIZE.y,
+		BORDER_SIZE.x,
+		BORDER_SIZE.y
+	};
 
-	const dRect destRect_border(this->position, border_size);
-
-	const auto destRect_fill_to_dstRect = destRect_fill.to_dstRect();
-	const auto destRect_border_to_dstRect = destRect_border.to_dstRect();
+	const dstRect fillDestRect = {
+		BORDER_DEST_RECT.x + FILL_ALIGMENT.x,
+		BORDER_DEST_RECT.y + FILL_ALIGMENT.y + FILL_SIZE.y - fillDisplayedHeight,
+		FILL_SIZE.x,
+		static_cast<double>(fillDisplayedHeight)
+	};
 
 	// Draw
-	Graphics::ACCESS->gui->textureToGUI(this->texture_fill, &sourceRect_fill, &destRect_fill_to_dstRect);
-	Graphics::ACCESS->gui->textureToGUI(this->texture_border, NULL, &destRect_border_to_dstRect);
+	Graphics::ACCESS->gui->textureToGUI(this->texture, &fillSourceRect, &fillDestRect);
+	Graphics::ACCESS->gui->textureToGUI(this->texture, &BORDER_SOURCE_RECT, &BORDER_DEST_RECT);
 }
 
 
@@ -699,22 +721,28 @@ void GUI_CDbar::draw() const {
 
 
 
-// # GUI_Portrait
-GUI_Portrait::GUI_Portrait() {
-	this->texture = Graphics::ACCESS->getTexture_GUI("portrait_human.png");
-
+// # GUI_PlayerPortrait
+GUI_PlayerPortrait::GUI_PlayerPortrait() :
+	texture(Graphics::ACCESS->getTexture_GUI("player_portrait.png"))
+{
 	// Set size
-	SDL_QueryTexture(this->texture, NULL, NULL, &this->size.x, &this->size.y);
+	int sizeX, sizeY;
+	SDL_QueryTexture(this->texture, NULL, NULL, &sizeX, &sizeY);
+
+	this->size = Vector2d(sizeX, sizeY);
 }
 
-void GUI_Portrait::update(Milliseconds elapsedTime) {}
+void GUI_PlayerPortrait::update(Milliseconds elapsedTime) {}
 
-void GUI_Portrait::draw() const {
+void GUI_PlayerPortrait::draw() const {
+	constexpr double PORTRAIT_LEFT = 25.;
+	constexpr double PORTRAIT_BOTTOM = natural::HEIGHT - 14.;
+
 	const dstRect destRect = {
-		this->position.x - this->size.x / 2.,
-		this->position.y - this->size.y,
-		static_cast<double>(this->size.x),
-		static_cast<double>(this->size.y)
+		PORTRAIT_LEFT,
+		PORTRAIT_BOTTOM - this->size.y,
+		this->size.x,
+		this->size.y
 	};
 
 	Graphics::ACCESS->gui->textureToGUI(this->texture, NULL, &destRect);
@@ -925,7 +953,7 @@ void Gui::update(Milliseconds elapsedTime) {
 	if (this->esc_menu) this->esc_menu->update(elapsedTime);
 	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->update(elapsedTime);
 	///if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->update(elapsedTime);
-	///if (Game::ACCESS->is_running() && this->portrait) this->portrait->update(elapsedTime);
+	if (Game::ACCESS->is_running() && this->player_portrait) this->player_portrait->update(elapsedTime);
 
 	for (auto &text : this->texts) text.update(elapsedTime);
 }
@@ -940,7 +968,7 @@ void Gui::draw() const {
 	if (this->esc_menu) this->esc_menu->draw();
 	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->draw();
 	///if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->draw();
-	///if (Game::ACCESS->is_running() && this->portrait) this->portrait->draw();
+	if (Game::ACCESS->is_running() && this->player_portrait) this->player_portrait->draw();
 
 	for (const auto &text : this->texts) text.draw(); // text is drawn on top of everything else
 
@@ -1036,11 +1064,11 @@ void Gui::CDbar_off() {
 
 // Portrait
 void Gui::Portrait_on() {
-	if (!this->portrait)
-		this->portrait = std::make_unique<GUI_Portrait>();
+	if (!this->player_portrait)
+		this->player_portrait = std::make_unique<GUI_PlayerPortrait>();
 }
 void Gui::Portrait_off() {
-	this->portrait.reset();
+	this->player_portrait.reset();
 }
 
 void Gui::AllPlayerGUI_on() {

@@ -660,17 +660,18 @@
 	at a certain precise time
 	- Added new header with methods for faster testing/debugging
 
+# 21.08.24 #
+	- Refactored player healthbar and changed it to fit new style
+	- Refactored player portrait and changed it to fit new style
+
 ### FIXES ###
 	- Separate state methods for enemies into different functions like player does
+	- Added 4 new items to the game: 'Spider Signet', 'Power Shard', 'Eldritch Battery', 'Watching Eye'
 
 ### FIRST PRIORITY FEATURES ###
-	- Main menu
-		-> Continue (inactive if no save present)
-		-> New game
-		-> Settings (window size)
-
-	- Implement new enemy: 'Devourer'
+	- Redo inventory to fit new style
 	- Make 'Sound' object with multiple sound channels (GUI, player, effects) and volume control
+	
 	
 
 ### SECOND PRIORITY FEATURES ###

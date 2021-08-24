@@ -24,6 +24,10 @@ std::unique_ptr<UniqueEntity> make_derived(const Vector2d &position) {
 
 // !!! NAMES !!!
 const std::unordered_map<std::string, make_derived_ptr> ENTITY_MAKERS = {
+	{"item-spider_signet", make_derived<m::item_entity::SpiderSignet>},
+	{"item-power_shard", make_derived<m::item_entity::PowerShard>},
+	{"item-eldritch_battery", make_derived<m::item_entity::EldritchBattery>},
+	{"item-watching_eye", make_derived<m::item_entity::WatchingEye>},
 	{"item-brass_relic", make_derived<m::item_entity::BrassRelic>},
 	{"item-paper", make_derived<m::item_entity::Paper>},
 	{"destructible-tnt", make_derived<m::destructible::TNT>},
@@ -713,6 +717,50 @@ void m::enemy::Devourer::deathTransition() {
 
 
 /* ### item_entity:: ### */
+
+// # SpiderSignet #
+m::item_entity::SpiderSignet::SpiderSignet(const Vector2d &position) :
+	ItemEntity(position)
+{
+	constexpr auto HITBOX_SIZE = Vector2d(14., 11.);
+	this->_init_solid(HITBOX_SIZE);
+	this->_init_sprite(false, "item_spider_signet");
+
+	this->name = "spider_signet";
+}
+
+// # SpiderSignet #
+m::item_entity::PowerShard::PowerShard(const Vector2d& position) :
+	ItemEntity(position)
+{
+	constexpr auto HITBOX_SIZE = Vector2d(12., 12.);
+	this->_init_solid(HITBOX_SIZE);
+	this->_init_sprite(false, "item_power_shard");
+
+	this->name = "power_shard";
+}
+
+// # SpiderSignet #
+m::item_entity::EldritchBattery::EldritchBattery(const Vector2d& position) :
+	ItemEntity(position)
+{
+	constexpr auto HITBOX_SIZE = Vector2d(9., 13.);
+	this->_init_solid(HITBOX_SIZE);
+	this->_init_sprite(false, "item_eldritch_battery");
+
+	this->name = "eldritch_battery";
+}
+
+// # SpiderSignet #
+m::item_entity::WatchingEye::WatchingEye(const Vector2d& position) :
+	ItemEntity(position)
+{
+	constexpr auto HITBOX_SIZE = Vector2d(14., 14.);
+	this->_init_solid(HITBOX_SIZE);
+	this->_init_sprite(false, "item_watching_eye");
+
+	this->name = "watching_eye";
+}
 
 // # BrassRelic #
 m::item_entity::BrassRelic::BrassRelic(const Vector2d &position) :

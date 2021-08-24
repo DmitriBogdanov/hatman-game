@@ -125,6 +125,35 @@ namespace ntt::m {
 
 
 	namespace item_entity {
+		// # SpiderSignet #
+		struct SpiderSignet : public m_type::ItemEntity {
+			SpiderSignet() = delete;
+
+			SpiderSignet(const Vector2d& position);
+		};
+
+		// # PowerShard #
+		struct PowerShard : public m_type::ItemEntity {
+			PowerShard() = delete;
+
+			PowerShard(const Vector2d& position);
+		};
+
+		// # EldritchBattery #
+		struct EldritchBattery : public m_type::ItemEntity {
+			EldritchBattery() = delete;
+
+			EldritchBattery(const Vector2d& position);
+		};
+
+		// # WatchingEye #
+		struct WatchingEye : public m_type::ItemEntity {
+			WatchingEye() = delete;
+
+			WatchingEye(const Vector2d& position);
+		};
+
+		
 		// # BrassRelic #
 		struct BrassRelic : public m_type::ItemEntity {
 			BrassRelic() = delete;

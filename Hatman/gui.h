@@ -212,12 +212,9 @@ public:
 	void draw() const;
 
 private:
-	Vector2d position = Vector2d(2., 255.); // position is de-facto a constant
+	SDL_Texture* texture;
 
-	SDL_Texture* texture_border;
-	SDL_Texture* texture_fill;
-
-	double percentage = 1.;
+	double percentage;
 };
 
 
@@ -241,16 +238,15 @@ private:
 
 
 // # GUI_FormPortrait #
-class GUI_Portrait {
+class GUI_PlayerPortrait {
 public:
-	GUI_Portrait();
+	GUI_PlayerPortrait();
 
 	void update(Milliseconds elapsedTime); // empty
 	void draw() const;
 
 private:
-	Vector2d position = Vector2d(61., 336.); // X is for CENTER, Y if for BOTTOM of the image!
-	Vector2 size; // equal to the texture size
+	Vector2d size; // equal to the texture size
 
 	SDL_Texture* texture;
 };
@@ -416,7 +412,7 @@ private:
 	std::unique_ptr<GUI_EscMenu> esc_menu;
 	std::unique_ptr<GUI_PlayerHealthbar> player_healthbar;
 	std::unique_ptr<GUI_CDbar> cdbar;
-	std::unique_ptr<GUI_Portrait> portrait;
+	std::unique_ptr<GUI_PlayerPortrait> player_portrait;
 	std::unique_ptr<GUI_Fade> fade;
 	bool fade_override_gui; // if false other GUI elements have higher rendering priority than fade
 };

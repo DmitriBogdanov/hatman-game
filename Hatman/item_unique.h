@@ -13,6 +13,26 @@ namespace items {
 
 
 
+	// # SpiderSignet #
+	struct SpiderSignet : public Item {
+		SpiderSignet();
+	};
+
+	// # PowerShard #
+	struct PowerShard : public Item {
+		PowerShard();
+	};
+
+	// # EldritchBattery #
+	struct EldritchBattery : public Item {
+		EldritchBattery();
+	};
+
+	// # WatchingEye #
+	struct WatchingEye : public Item {
+		WatchingEye();
+	};
+
 	// #BrassRelic #
 	struct BrassRelic : public Item {
 		BrassRelic();
