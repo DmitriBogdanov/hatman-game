@@ -663,13 +663,20 @@
 # 21.08.24 #
 	- Refactored player healthbar and changed it to fit new style
 	- Refactored player portrait and changed it to fit new style
-
-### FIXES ###
-	- Separate state methods for enemies into different functions like player does
+	- Refactored player inventory and changed it to fit new style
 	- Added 4 new items to the game: 'Spider Signet', 'Power Shard', 'Eldritch Battery', 'Watching Eye'
 
+# 21.08.26 #
+	- Redrew save orb and changed its GUI to fit new style
+
+# 21.08.27 #
+	- Made save orb display a message when game is saved
+
+### FIXES ###
+	- Try making fonts const and outside of GUI object
+	
+
 ### FIRST PRIORITY FEATURES ###
-	- Redo inventory to fit new style
 	- Make 'Sound' object with multiple sound channels (GUI, player, effects) and volume control
 	
 	

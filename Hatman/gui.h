@@ -100,6 +100,16 @@ private:
 
 
 
+//// # GUI_CornerText #
+//// - Slowly fading messages that appear in the corner of hte screen
+//class GUI_CornerText {
+//public:
+//	GUI_CornerText() = delete;
+//	GUI_CornerText(const std::string& text, const dRect& bounds, Font* font, Milliseconds delay)
+//};
+
+
+
 // # GUI_FPSCounter #
 // - Counts FPS and displays it
 class GUI_FPSCounter {
@@ -199,6 +209,22 @@ private:
 	std::unique_ptr<GUI_Button> button_exit;
 
 	SDL_Texture* texture; // 640x360 background for main menu
+};
+
+
+
+// # GUI_Inventory #
+class GUI_Inventory {
+public:
+	GUI_Inventory() = delete;
+
+	GUI_Inventory(Font* font);
+
+	void update(Milliseconds elapsedTime); // empty
+	void draw() const;
+
+private:
+	Font* font;
 };
 
 
@@ -308,55 +334,20 @@ public:
 	void draw() const;
 
 	// Text
+	std::unordered_map<std::string, std::unique_ptr<Font>> fonts;
+	Collection<Text> texts;
+
 	// pass (overlay == false) to draw as an object rather than as overlay
 	Collection<Text>::handle make_text(const std::string &text, const dRect &field); // makes text
 	Collection<Text>::handle make_line(const std::string &line, const Vector2d &position); // makes single-line text
 	Collection<Text>::handle make_line_centered(const std::string &line, const Vector2d &position);
 
-	std::unordered_map<std::string, std::unique_ptr<Font>> fonts;
-	Collection<Text> texts;
+	// For displaying fading messages in the corner
+	void make_corner_message(const std::string& message); /// Implement
+
 
 	/// Entity healthbars
 	///void drawHealthbar(const Vector2d &bottomMiddlePosition, double percentage);
-
-	// # Gui::InventoryGUI #
-	class InventoryGUI {
-	public:
-		InventoryGUI(); // sets up textures
-
-		void update(Milliseconds elapsedTime);
-		void draw() const;
-
-		void show();
-		void hide();
-		bool toggle(); // switches visibility to oppposite, returns visibility bool
-
-		enum class Tab {
-			ITEMS
-		};
-
-		Tab next_tab(); // swithces current tab to next, returns new current tab
-
-
-		Tab currentTab;
-
-		Vector2d position; // position of top-left corner
-
-	private:
-		bool visible;
-
-		void draw_tab_current() const;
-		Vector2d tab_size = Vector2d(293., 192.); // size of the inventory tab on the screen
-
-		void draw_tab_items() const;
-		SDL_Texture* tab_items_texture;
-
-
-		//void draw_tab_quests() const;
-		//void draw_tab_stats() const;
-		//void draw_tab_cards() const;
-		//void draw_tab_journal() const;
-	};
 
 	// FPSCounter
 	void FPSCounter_on();
@@ -371,7 +362,12 @@ public:
 	void EscMenu_off();
 	void EscMenu_toggle();
 
-	// Character healthbar
+	// Inventory
+	void Inventory_on();
+	void Inventory_off();
+	void Inventory_toggle();
+
+	// Player healthbar
 	void PlayerHealthbar_on();
 	void PlayerHealthbar_off();
 
@@ -379,7 +375,7 @@ public:
 	void CDbar_on();
 	void CDbar_off();
 
-	// Portrait
+	// Player portrait
 	void Portrait_on();
 	void Portrait_off();
 
@@ -400,9 +396,6 @@ public:
 	void GUIToRenderer();
 	void GUIClear();
 
-	// GUI elements that need to remember internal state while changing visibility
-	InventoryGUI inventoryGUI;
-
 private:
 	SDL_Texture* backbuffer; // requires destruction!
 
@@ -410,6 +403,7 @@ private:
 	std::unique_ptr<GUI_FPSCounter> FPS_counter;
 	std::unique_ptr<GUI_MainMenu> main_menu;
 	std::unique_ptr<GUI_EscMenu> esc_menu;
+	std::unique_ptr<GUI_Inventory> inventory_menu;
 	std::unique_ptr<GUI_PlayerHealthbar> player_healthbar;
 	std::unique_ptr<GUI_CDbar> cdbar;
 	std::unique_ptr<GUI_PlayerPortrait> player_portrait;

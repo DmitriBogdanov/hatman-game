@@ -164,7 +164,8 @@ bool Player::update(Milliseconds elapsedTime) {
 
 	// GUI
 	if (input.key_pressed(Controls::READ->INVENTORY)) {
-		Graphics::ACCESS->gui->inventoryGUI.toggle();
+		///Graphics::ACCESS->gui->inventoryGUI.toggle();
+		Graphics::ACCESS->gui->Inventory_toggle();
 	}
 
 	return true;

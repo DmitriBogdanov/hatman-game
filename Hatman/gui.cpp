@@ -610,6 +610,78 @@ void GUI_MainMenu::draw() const {
 
 
 
+// # GUI_Inventory #
+GUI_Inventory::GUI_Inventory(Font* font) :
+	font(font)
+{}
+
+void GUI_Inventory::update(Milliseconds elapsedTime) {}
+
+void GUI_Inventory::draw() const {
+	// Formatting consts
+	constexpr int ROWS = 6;
+	constexpr int COLUMNS = 4;
+
+	constexpr double ICON_SIZE = 16.;
+	constexpr double TEXT_ICON_GAP = 2.; // gap between item icon and item quantity
+
+	constexpr double FONT_WIDTH = 6.; // includes font gaps
+	constexpr double FONT_HEIGHT = 5.;
+
+	constexpr double GRID_GAP_X = 2.;
+	constexpr double GRID_GAP_Y = 2.;
+
+	constexpr auto GRID_MONOSPACE = Vector2d(ICON_SIZE + GRID_GAP_X, ICON_SIZE + TEXT_ICON_GAP + FONT_HEIGHT + GRID_GAP_Y);
+	
+	// Deduce size of the entire grid
+	constexpr auto GRID_SIZE = Vector2d(GRID_MONOSPACE.x * COLUMNS, GRID_MONOSPACE.y * ROWS);
+
+	// Center grid precisely at the center of the screen
+	constexpr auto GRID_CORNER = Vector2d(
+		natural::WIDTH / 2. - GRID_SIZE.x / 2. ,
+		natural::HEIGHT / 2. - GRID_SIZE.y / 2.
+	);
+
+	// Position 'Inventory' text above the grid
+	constexpr double TEXT_GRID_GAP = 4.; // gap between 'Inventory' text and grid itself
+	constexpr auto TEXT_CORNER = Vector2d(
+		natural::WIDTH / 2. - FONT_WIDTH * 9. / 2., // '9' is the amount of letters in a word 'Inventory'
+		GRID_CORNER.y - TEXT_GRID_GAP - FONT_HEIGHT
+	);
+
+	// Draw text
+	this->font->color_set(colors::SH_BLACK);
+
+	this->font->draw_line(TEXT_CORNER, "Inventory");
+
+	// Draw grid of items from player inventory
+	const auto &inventory = Game::ACCESS->level->player->inventory;
+
+	Vector2d cursor = GRID_CORNER;
+
+	for (const auto& stack : inventory.stacks) {
+		// Move cursor to the next line if out of bounds
+		if (cursor.x >= GRID_CORNER.x + GRID_SIZE.x) {
+			cursor.x = GRID_CORNER.x;
+			cursor.y += GRID_MONOSPACE.y;
+		}
+
+		// Draw item icon at cursor
+		stack.item().drawAt(cursor);
+
+		// Draw item quantity below the icon
+		const std::string quantityString = std::to_string(stack.quantity());
+		const double textWidth = quantityString.length() * FONT_WIDTH;
+
+		font->draw_line(
+			cursor + Vector2d(ICON_SIZE / 2. - textWidth / 2., ICON_SIZE + TEXT_ICON_GAP),
+			quantityString
+		);
+
+		cursor.x += GRID_MONOSPACE.x;
+	}
+}
+
 // # GUI_PlayerHealthbar #
 GUI_PlayerHealthbar::GUI_PlayerHealthbar() :
 	texture(Graphics::ACCESS->getTexture_GUI("player_healthbar.png")),
@@ -661,7 +733,7 @@ void GUI_PlayerHealthbar::draw() const {
 	const dstRect fillDestRect = {
 		BORDER_DEST_RECT.x + FILL_ALIGMENT.x,
 		BORDER_DEST_RECT.y + FILL_ALIGMENT.y + FILL_SIZE.y - fillDisplayedHeight,
-		FILL_SIZE.x,
+		static_cast<double>(FILL_SIZE.x),
 		static_cast<double>(fillDisplayedHeight)
 	};
 
@@ -790,125 +862,6 @@ void GUI_SmoothFade::update(Milliseconds elapsedTime) {
 }
 
 
-// # Gui::InventoryGUI #
-Gui::InventoryGUI::InventoryGUI() :
-	currentTab(Tab::ITEMS),
-	visible(false)
-{
-	this->tab_items_texture = Graphics::ACCESS->getTexture_GUI("tab_inventory.png");
-	this->position = Vector2d(
-		natural::WIDTH / 2. - this->tab_size.x / 2.,
-		natural::HEIGHT / 2. - this->tab_size.y / 2.);
-}
-
-void Gui::InventoryGUI::update(Milliseconds elapsedTime) {}
-
-void Gui::InventoryGUI::draw() const {
-	if (this->visible) {
-		// draw currently selected tab
-		this->draw_tab_current();
-	}
-}
- 
-void Gui::InventoryGUI::show() {
-	this->visible = true;
-}
-
-void Gui::InventoryGUI::hide() {
-	this->visible = false;
-}
-
-bool Gui::InventoryGUI::toggle() {
-	if (this->visible) {
-		this->hide();
-	}
-	else {
-		this->show();
-	}
-
-	return this->visible;
-}
-
-Gui::InventoryGUI::Tab Gui::InventoryGUI::next_tab() {
-	/// IMPLEMENT -> SWITCH TO THE NEXT TAB
-	return this->currentTab;
-}
-
-void Gui::InventoryGUI::draw_tab_current() const {
-	// draw currently selected tab
-	switch (this->currentTab) {
-	case Tab::ITEMS:
-		this->draw_tab_items();
-		break;
-
-		//other tabs go there
-	}
-}
-
-void Gui::InventoryGUI::draw_tab_items() const {
-	// setup consts
-	const Vector2d grid_start = this->position + Vector2(21, 21);
-	const Vector2d grid_size(252., 150.);
-
-	const Vector2d cell_size(21., 25.);
-	const Vector2d cell_icon(2., 1.);
-	const Vector2d cell_stack(
-		cell_icon.x + natural::ITEM_SIZE / 2.,
-		cell_icon.y + natural::ITEM_SIZE + 1.
-	); // CENTER, NOT CORNER
-
-	const Vector2d page_number_1 = this->position + Vector2d(136., 179.);
-	const Vector2d page_number_2 = this->position + Vector2d(156., 179.);
-
-	const Inventory &inventory = Game::ACCESS->level->player->inventory;
-
-	Font* const font = Graphics::ACCESS->gui->fonts.at("BLOCKY").get();
-	font->color_set(colors::IVORY);
-
-	const Vector2d font_monospace = font->get_font_monospace(); // to avoid excessive calls during iteration
-	const Vector2d font_gap = font->get_font_gap(); // to avoid excessive calls during iteration
-
-	// Draw the tab itself
-	dstRect destRect = { this->position.x, this->position.y, this->tab_size.x, this->tab_size.y };
-	Graphics::ACCESS->gui->textureToGUI(this->tab_items_texture, NULL, &destRect);
-
-	// Draw grid of items (from player inventory) inside the tab
-	Vector2d cursor = grid_start;
-
-	for (const auto &stack : inventory.stacks) {
-		// move cursor to the next line if out of bounds
-		if (cursor.x >= grid_start.x + grid_size.x) {
-			cursor.x = grid_start.x;
-			cursor.y += cell_size.y;
-		}
-
-		// draw item icon at cursor
-		stack.item().drawAt(cursor + cell_icon);
-
-		const std::string quantityString = std::to_string(stack.quantity());
-
-		font->draw_line(
-			cursor + cell_stack - Vector2d((quantityString.length() * font_monospace.x - font_gap.x) / 2., 0.),
-			quantityString
-		);
-
-		cursor.x += cell_size.x;
-	}
-
-	// Draw page number
-	const std::string pageNum1 = "1"; /// TEMP, WILL DISPLAY CURRENT PAGE NUMBER LATER
-	const std::string pageNum2 = "4"; /// TEMP, WILL DISPLAY LAST PAGE NUMBER LATER
-
-	font->draw_line(
-		page_number_1 - Vector2d((pageNum1.length() * font_monospace.x - font_gap.x) / 2., 0.),
-		pageNum1
-	);
-	font->draw_line(
-		page_number_2 - Vector2d((pageNum2.length() * font_monospace.x - font_gap.x) / 2., 0.),
-		pageNum2
-	);
-}
-
 
 // # Gui #
 Gui::Gui() :
@@ -946,11 +899,12 @@ void Gui::update(Milliseconds elapsedTime) {
 
 	if (this->fade) { this->fade->update(elapsedTime); }
 
-	this->inventoryGUI.update(elapsedTime); // non-optional
+	///this->inventoryGUI.update(elapsedTime); // non-optional
 
 	if (this->FPS_counter) this->FPS_counter->update(elapsedTime);
 	if (this->main_menu) this->main_menu->update(elapsedTime);
 	if (this->esc_menu) this->esc_menu->update(elapsedTime);
+	if (Game::ACCESS->is_running() && this->inventory_menu) this->inventory_menu->update(elapsedTime);
 	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->update(elapsedTime);
 	///if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->update(elapsedTime);
 	if (Game::ACCESS->is_running() && this->player_portrait) this->player_portrait->update(elapsedTime);
@@ -961,11 +915,12 @@ void Gui::update(Milliseconds elapsedTime) {
 void Gui::draw() const {
 	if (this->fade && !this->fade_override_gui) this->fade->draw(); // if fade doesn't override GUI
 
-	this->inventoryGUI.draw(); // non-optional
+	///this->inventoryGUI.draw(); // non-optional
 
 	if (this->FPS_counter) this->FPS_counter->draw();
 	if (this->main_menu) this->main_menu->draw();
 	if (this->esc_menu) this->esc_menu->draw();
+	if (Game::ACCESS->is_running() && this->inventory_menu) this->inventory_menu->draw();
 	if (Game::ACCESS->is_running() && this->player_healthbar) this->player_healthbar->draw();
 	///if (Game::ACCESS->is_running() && this->cdbar) this->cdbar->draw();
 	if (Game::ACCESS->is_running() && this->player_portrait) this->player_portrait->draw();
@@ -1044,7 +999,22 @@ void Gui::EscMenu_toggle() {
 	else this->EscMenu_on();
 }
 
-// Healthbar
+// Inventory
+void Gui::Inventory_on() {
+	if (!this->inventory_menu)
+		this->inventory_menu = std::make_unique<GUI_Inventory>(this->fonts.at("BLOCKY").get());
+}
+
+void Gui::Inventory_off() {
+	this->inventory_menu.reset();
+}
+
+void Gui::Inventory_toggle() {
+	if (this->inventory_menu) this->Inventory_off();
+	else this->Inventory_on();
+}
+
+// Player healthbar
 void Gui::PlayerHealthbar_on() {
 	if (!this->player_healthbar)
 		this->player_healthbar = std::make_unique<GUI_PlayerHealthbar>();
