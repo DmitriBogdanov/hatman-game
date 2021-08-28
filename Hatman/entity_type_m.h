@@ -42,11 +42,6 @@ namespace ntt::m_type {
 		void state_unlock();
 
 		template<typename StateEnum>
-		void state_tryChange(StateEnum newState) {
-			if (this->state_lock_timer.finished()) { this->state = static_cast<int>(newState); }
-		}
-
-		template<typename StateEnum> // ignores state lock
 		void state_change(StateEnum newState) {
 			this->state = static_cast<int>(newState);
 		}

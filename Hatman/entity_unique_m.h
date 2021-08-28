@@ -120,6 +120,36 @@ namespace ntt::m {
 			Milliseconds time_target_was_looking_away;
 			Milliseconds time_target_was_looking_towards;
 		};
+
+
+
+		// # SpiritBomber #
+		class SpiritBomber : public m_type::Enemy {
+		public:
+			SpiritBomber() = delete;
+
+			SpiritBomber(const Vector2d& position);
+
+		private:
+			enum class State {
+				STAND,
+				ATTACK_WINDUP,
+				ATTACK_RECOVER
+			};
+
+			bool aggroCondition(Creature* creature) override;
+			bool deaggroCondition(Creature* creature) override;
+
+			void aggroTransition() override;
+			void deaggroTransition() override;
+
+			void update_when_aggroed(Milliseconds elapsedTime) override;
+			void update_when_deaggroed(Milliseconds elapsedTime) override;
+
+			void deathTransition() override;
+
+			Timer attack_cd;
+		};
 	}
 
 
@@ -153,22 +183,6 @@ namespace ntt::m {
 			WatchingEye(const Vector2d& position);
 		};
 
-		
-		// # BrassRelic #
-		struct BrassRelic : public m_type::ItemEntity {
-			BrassRelic() = delete;
-
-			BrassRelic(const Vector2d &position);
-		};
-
-
-
-		// # Paper #
-		struct Paper : public m_type::ItemEntity {
-			Paper() = delete;
-
-			Paper(const Vector2d &position);
-		};
 	}
 
 

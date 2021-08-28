@@ -164,7 +164,6 @@ bool Player::update(Milliseconds elapsedTime) {
 
 	// GUI
 	if (input.key_pressed(Controls::READ->INVENTORY)) {
-		///Graphics::ACCESS->gui->inventoryGUI.toggle();
 		Graphics::ACCESS->gui->Inventory_toggle();
 	}
 
@@ -182,7 +181,6 @@ void Player::update_case_STAND(Milliseconds elapsedTime) {
 		else if (input.key_released(Controls::READ->DOWN)) this->jump_down_end();
 		else if (this->solid->is_grounded) this->jump();
 	}
-	///if (input.key_pressed(Controls::READ->JUMP) && this->solid->is_grounded) this->jump();
 
 	// Transitions
 	bool leftHeld = input.key_held(Controls::READ->LEFT);
@@ -277,9 +275,11 @@ void Player::update_case_ATTACK(Milliseconds elapsedTime) {
 					if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
 						entity->health->applyDamage(fire::CHAIN_0_DAMAGE);
 
-						const auto sign = helpers::sign(entity->position.x - this->position.x);
-						entity->solid->addImpulse_Horizontal(fire::CHAIN_0_KNOCKBACK_X * sign);
-						entity->solid->addImpulse_Up(fire::CHAIN_0_KNOCKBACK_Y);
+						if (this->health->faction != entity->health->faction) {
+							const auto sign = helpers::sign(entity->position.x - this->position.x);
+							entity->solid->addImpulse_Horizontal(fire::CHAIN_0_KNOCKBACK_X * sign);
+							entity->solid->addImpulse_Up(fire::CHAIN_0_KNOCKBACK_Y);
+						}					
 					}
 
 				sprite->animation_play("fire_chain_1");
@@ -301,9 +301,11 @@ void Player::update_case_ATTACK(Milliseconds elapsedTime) {
 					if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
 						entity->health->applyDamage(fire::CHAIN_2_DAMAGE);
 
-						const auto sign = helpers::sign(entity->position.x - this->position.x);
-						entity->solid->addImpulse_Horizontal(fire::CHAIN_2_KNOCKBACK_X * sign);
-						entity->solid->addImpulse_Up(fire::CHAIN_2_KNOCKBACK_Y);
+						if (this->health->faction != entity->health->faction) {
+							const auto sign = helpers::sign(entity->position.x - this->position.x);
+							entity->solid->addImpulse_Horizontal(fire::CHAIN_2_KNOCKBACK_X * sign);
+							entity->solid->addImpulse_Up(fire::CHAIN_2_KNOCKBACK_Y);
+						}
 					}
 
 				sprite->animation_play("fire_chain_2");

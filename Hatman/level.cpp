@@ -409,10 +409,10 @@ void Level::parse_objectgroup_entity(const nlohmann::json &objectgroup_node) {
 	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
 	for (const auto &object_node : objects_array_node) {
 		// Parse position
-		const Vector2 entityPosition(
-			object_node["x"].get<int>(),
-			object_node["y"].get<int>()
-		);
+		const Vector2d entityPosition(
+			object_node["x"].get<int>() + natural::TILE_SIZE / 2.,
+			object_node["y"].get<int>() + natural::TILE_SIZE / 2.
+		); // add TILE_SIZE / 2 because all entites are parsed from 32x32 'custom tile objects'
 
 		// Parse custom properties
 		std::string entityName;

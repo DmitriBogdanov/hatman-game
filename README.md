@@ -9,6 +9,10 @@ Hatman is a stylized 2D platformer in early development stage.
 
 ## Version History
 
+* 00.09
+    * Added new enemy 'Spirit Bomber'
+    * Added new type of projectiles
+
 * 00.08
     * Reworked inventory GUI
     * Changed save orb to fit new style and provide feedback upon interaction
@@ -19,7 +23,7 @@ Hatman is a stylized 2D platformer in early development stage.
     * Implemented tools for faster testing
 
 * 00.06
-    * Added new enemy
+    * Added new enemy 'Devourer'
     * Fixed a bumber of bugs in enemy behaviour
 
 * 00.05

@@ -54,8 +54,11 @@ void s_type::Projectile::onCollision() {
 		if (area.overlapsWithRect(entity->solid->getHitbox())) {
 			entity->health->applyDamage(this->damage);
 
-			const auto knockbackDirection = (entity->position - this->position).normalized();
-			entity->solid->addImpulse(knockbackDirection * this->knockback);
+			// Don't knockback friendly faction
+			if (this->damage.faction != entity->health->faction) {
+				const auto knockbackDirection = (entity->position - this->position).normalized();
+				entity->solid->addImpulse(knockbackDirection * this->knockback);
+			}		
 		}
 
 	this->_sprite->animation_play("explosion");

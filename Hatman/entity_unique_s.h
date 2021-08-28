@@ -28,6 +28,19 @@ namespace ntt::s {
 		private:
 			void onCollision() override;
 		};
+
+		// # SpiritBomb #
+		// - Arching projectile with big AOE
+		// - Used by Spirit bombers
+		class SpiritBomb : public s_type::Projectile {
+		public:
+			SpiritBomb() = delete;
+
+			SpiritBomb(const Vector2d& position, const Vector2d& speed, const Damage& damage, double knockback, const Vector2d& AOE);
+		
+		private:
+			void onCollision() override;
+		};
 	}
 
 

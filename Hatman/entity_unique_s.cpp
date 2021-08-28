@@ -30,6 +30,27 @@ void projectile::ArcaneProjectileBlue::onCollision() {
 
 
 
+// # SpiritBomb #
+projectile::SpiritBomb::SpiritBomb(const Vector2d& position, const Vector2d& speed, const Damage& damage, double knockback, const Vector2d& AOE) :
+	Projectile(position, damage, knockback, AOE)
+{
+	this->_init_sprite("projectile_spirit_bomb");
+
+	constexpr auto HITBOX_SIZE = Vector2d(4., 4.);
+
+	this->_init_solid(HITBOX_SIZE, speed);
+
+	Game::ACCESS->play_sound("fire_cast.wav");
+}
+
+void projectile::SpiritBomb::onCollision() {
+	Projectile::onCollision();
+
+	Game::ACCESS->play_sound("fire_impact.wav");
+}
+
+
+
 /* ### particle:: ### */
 
 // # OnDeathParticle #

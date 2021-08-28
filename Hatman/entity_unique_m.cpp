@@ -7,6 +7,8 @@
 #include "controls.h" // access to control keys
 #include "entity_unique_s.h" // particles and projectiles
 #include "ct_math.hpp" // for compile-time math
+#include "globalconsts.hpp" // physical consts
+#include "debug_tools.hpp" /// TEMP
 
 
 
@@ -24,16 +26,19 @@ std::unique_ptr<UniqueEntity> make_derived(const Vector2d &position) {
 
 // !!! NAMES !!!
 const std::unordered_map<std::string, make_derived_ptr> ENTITY_MAKERS = {
+	// enemies
+	{"enemy-sludge", make_derived<m::enemy::Sludge>},
+	{"enemy-skeleton_halberd", make_derived<m::enemy::SkeletonHalberd>},
+	{"enemy-devourer", make_derived<m::enemy::Devourer>},
+	{"enemy-spirit_bomber", make_derived<m::enemy::SpiritBomber>},
+	// items
 	{"item-spider_signet", make_derived<m::item_entity::SpiderSignet>},
 	{"item-power_shard", make_derived<m::item_entity::PowerShard>},
 	{"item-eldritch_battery", make_derived<m::item_entity::EldritchBattery>},
 	{"item-watching_eye", make_derived<m::item_entity::WatchingEye>},
-	{"item-brass_relic", make_derived<m::item_entity::BrassRelic>},
-	{"item-paper", make_derived<m::item_entity::Paper>},
-	{"destructible-tnt", make_derived<m::destructible::TNT>},
-	{"enemy-sludge", make_derived<m::enemy::Sludge>},
-	{"enemy-skeleton_halberd", make_derived<m::enemy::SkeletonHalberd>},
-	{"enemy-devourer", make_derived<m::enemy::Devourer>}
+	// destructibles
+	{"destructible-tnt", make_derived<m::destructible::TNT>}
+
 	/// new entities go there
 };
 
@@ -54,7 +59,7 @@ namespace Sludge_consts {
 	constexpr double FRICTION = 0.6;
 
 	// Stats
-	constexpr Faction FACTION = Faction::UNDEAD;
+	constexpr Faction FACTION = Faction::SHADOW;
 	constexpr uint MAX_HP = 1900;
 	constexpr sint REGEN = 40;
 	constexpr sint PHYS_RES = 50;
@@ -170,7 +175,7 @@ void m::enemy::Sludge::update_when_aggroed(Milliseconds elapsedTime) {
 		
 		// Transition
 		if (hitboxOverlapArea > HITBOX_OVERLAP_REQUIRED_TO_ATTACK) {
-			this->state_tryChange(State::ATTACK);
+			this->state_change(State::ATTACK);
 		}
 
 		break;
@@ -186,7 +191,7 @@ void m::enemy::Sludge::update_when_aggroed(Milliseconds elapsedTime) {
 
 		// Transition
 		if (hitboxOverlapArea < HITBOX_OVERLAP_REQUIRED_TO_ATTACK) {
-			this->state_tryChange(State::CHASE);
+			this->state_change(State::CHASE);
 		}
 
 		break;
@@ -273,7 +278,7 @@ namespace SkeletonHalberd_consts {
 	constexpr double FRICTION = 0.95;
 
 	// Stats
-	constexpr Faction FACTION = Faction::UNDEAD;
+	constexpr Faction FACTION = Faction::SHADOW;
 	constexpr uint MAX_HP = 1300;
 	constexpr sint REGEN = 40;
 	constexpr sint PHYS_RES = 20;
@@ -523,7 +528,7 @@ namespace Devourer_consts {
 	constexpr double FRICTION = 0.95;
 
 	// Stats
-	constexpr Faction FACTION = Faction::UNDEAD;
+	constexpr Faction FACTION = Faction::SHADOW;
 	constexpr uint MAX_HP = 2100;
 	constexpr sint REGEN = 60;
 	constexpr sint PHYS_RES = 0;
@@ -716,6 +721,194 @@ void m::enemy::Devourer::deathTransition() {
 
 
 
+// # SpiritBomber #
+namespace SpiritBomber_consts {
+	// Physics
+	constexpr auto HITBOX_SIZE = Vector2d(12., 16.);
+	constexpr auto SOLID_FLAGS = SolidFlags::SOLID | SolidFlags::AFFECTED_BY_GRAVITY;
+	constexpr double MASS = 80.;
+	constexpr double FRICTION = 0.95;
+
+	// Stats
+	constexpr Faction FACTION = Faction::SHADOW;
+	constexpr uint MAX_HP = 900;
+	constexpr sint REGEN = 60;
+	constexpr sint PHYS_RES = 0;
+	constexpr sint MAGIC_RES = 40;
+	constexpr sint DOT_RES = 0;
+
+	// Chase
+	constexpr double MOVEMENT_SPEED_CHASE = 100.;
+	constexpr double MOVEMENT_ACCELERATION_CHASE = 900.;
+	constexpr double MOVEMENT_FORCE_CHASE = MASS * MOVEMENT_ACCELERATION_CHASE;
+
+	// Attack
+	constexpr Milliseconds ATTACK_CD = sec_to_ms(1.7);
+	const auto ATTACK_DAMAGE = Damage(FACTION, 200., 0., 0., 100.);
+	constexpr double ATTACK_KNOCKBACK = 110. * 100.;
+	constexpr double ATTACK_PROJECTILE_SPEED = 200.;
+
+	constexpr double PROJECTILE_SPAWN_ALIGNMENT_X = -2.;
+	constexpr double PROJECTILE_SPAWN_ALIGNMENT_Y = -4.;
+
+	// Behaviour
+	constexpr double AGGRO_RANGE_X = 180.;
+	constexpr double AGGRO_RANGE_Y = 100.;
+	constexpr double DEAGGRO_RANGE_X = 200.;
+	constexpr double DEAGGRO_RANGE_Y = 120.;
+
+	constexpr double ORIENTAION_CHANGE_RANGE = 10.; // don't change orientation if target closer than that
+
+	constexpr double ANIMATION_SPEEDUP = 2.;
+
+	// Death
+	constexpr int PARTICLE_COUNT = 10;
+	constexpr double PARTICLE_MAX_SPEED_X = 150.;
+	constexpr double PARTICLE_MAX_SPEED_Y = 150.;
+	constexpr Milliseconds PARTICLE_DURATION_MIN = sec_to_ms(1.);
+	constexpr Milliseconds PARTICLE_DURATION_MAX = sec_to_ms(6.);
+}
+
+m::enemy::SpiritBomber::SpiritBomber(const Vector2d& position) :
+	Enemy(position)
+{
+	using namespace SpiritBomber_consts;
+
+	// Init modules
+	this->_init_sprite("enemy_spirit_bomber", { DEFAULT_ANIMATION_NAME, "attack_windup", "attack_recover" });
+
+	this->_init_solid(
+		HITBOX_SIZE,
+		SOLID_FLAGS,
+		MASS,
+		FRICTION
+	);
+
+	this->_init_health(
+		FACTION,
+		MAX_HP,
+		REGEN,
+		PHYS_RES,
+		MAGIC_RES,
+		DOT_RES
+	);
+
+	// Init members
+	this->_init_default_aggroed_state(State::STAND);
+	this->_init_default_deaggroed_state(State::STAND);
+
+	const double HITBOX_GAP = 3.;
+	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+}
+
+bool m::enemy::SpiritBomber::aggroCondition(Creature* creature) {
+	const auto creatureRelativePos = this->position - creature->position;
+
+	return
+		std::abs(creatureRelativePos.x) < SpiritBomber_consts::AGGRO_RANGE_X &&
+		std::abs(creatureRelativePos.y) < SpiritBomber_consts::AGGRO_RANGE_Y;
+}
+
+bool m::enemy::SpiritBomber::deaggroCondition(Creature* creature) {
+	const auto creatureRelativePos = this->position - creature->position;
+
+	return
+		std::abs(creatureRelativePos.x) > SpiritBomber_consts::DEAGGRO_RANGE_X ||
+		std::abs(creatureRelativePos.y) > SpiritBomber_consts::DEAGGRO_RANGE_Y;
+}
+
+void m::enemy::SpiritBomber::aggroTransition() {
+	this->state_lock();
+}
+
+void m::enemy::SpiritBomber::deaggroTransition() {
+	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+}
+
+void m::enemy::SpiritBomber::update_when_aggroed(Milliseconds elapsedTime) {
+	using namespace SpiritBomber_consts;
+
+	const auto currentState = static_cast<State>(this->state_get());
+
+	const auto targetPosSign = sign(this->target_relative_pos.x);
+
+	switch (currentState) {
+	case State::STAND:
+		if (std::abs(this->target_relative_pos.x) > ORIENTAION_CHANGE_RANGE)
+			this->orientation = targetPosSign < 0 ? Orientation::LEFT : Orientation::RIGHT;
+
+		// Transition
+		if (this->attack_cd.finished())
+			this->state_unlock();
+		
+		if (this->state_isUnlocked() && this->_sprite->animation_rushToEnd(ANIMATION_SPEEDUP)) {
+			this->_sprite->animation_play("attack_windup");
+			this->state_change(State::ATTACK_WINDUP);
+			this->state_lock();
+		}
+
+		break;
+
+	case State::ATTACK_WINDUP:
+		// Transition
+		if (this->_sprite->animation_finished())
+			this->state_unlock();
+		
+		if (this->state_isUnlocked()) {
+			// Spawn projectile aimed at the target
+			Game::ACCESS->level->spawn(std::make_unique<s::projectile::SpiritBomb>(
+				this->position + Vector2d(PROJECTILE_SPAWN_ALIGNMENT_X * sign(this->orientation), PROJECTILE_SPAWN_ALIGNMENT_Y),
+				this->target_relative_pos.normalized() * ATTACK_PROJECTILE_SPEED,
+				ATTACK_DAMAGE,
+				ATTACK_KNOCKBACK,
+				Vector2d(20, 20))
+			);
+			this->attack_cd.start(ATTACK_CD);
+
+			this->_sprite->animation_play("attack_recover");
+			this->state_change(State::ATTACK_RECOVER);
+			this->state_lock();
+		}
+
+		break;
+
+	case State::ATTACK_RECOVER:
+		// Transitions
+		if (this->_sprite->animation_finished())
+			this->state_unlock();
+
+		if (this->state_isUnlocked()) {
+			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			this->state_change(State::STAND);
+			this->state_lock();
+		}
+
+	default:
+		break;
+	}
+}
+
+void m::enemy::SpiritBomber::update_when_deaggroed(Milliseconds elapsedTime) {
+	// Stand idle when deaggroed
+}
+
+void m::enemy::SpiritBomber::deathTransition() {
+	Enemy::deathTransition();
+
+	using namespace SpiritBomber_consts;
+
+	for (int i = 0; i < PARTICLE_COUNT; ++i) {
+		Game::ACCESS->level->spawn(std::make_unique<s::particle::OnDeathParticle>(
+			this->position,
+			Vector2d(rand_double(-PARTICLE_MAX_SPEED_X, PARTICLE_MAX_SPEED_X), rand_double(-PARTICLE_MAX_SPEED_Y, 0.)),
+			colors::SH_BLACK,
+			rand_double(PARTICLE_DURATION_MIN, PARTICLE_DURATION_MAX)
+			));
+	}
+}
+
+
+
 /* ### item_entity:: ### */
 
 // # SpiderSignet #
@@ -760,34 +953,6 @@ m::item_entity::WatchingEye::WatchingEye(const Vector2d& position) :
 	this->_init_sprite(false, "item_watching_eye");
 
 	this->name = "watching_eye";
-}
-
-// # BrassRelic #
-m::item_entity::BrassRelic::BrassRelic(const Vector2d &position) :
-	ItemEntity(position)
-{
-	// Init members
-	this->name = "brass_relic";
-
-	// Init modules
-	this->_init_sprite(true, "item_brass_relic");
-
-	this->_init_solid(Vector2d(14., 10.));
-}
-
-
-
-// # Paper #
-m::item_entity::Paper::Paper(const Vector2d &position) :
-	ItemEntity(position)
-{
-	// Init members
-	this->name = "paper";
-
-	// Init modules
-	this->_init_sprite(false, "item_paper");
-
-	this->_init_solid(Vector2d(14., 14.));
 }
 
 

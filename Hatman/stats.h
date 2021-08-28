@@ -19,7 +19,7 @@ using sint = int;
 enum class Faction {
 	PLAYER,
 	PROPS,
-	UNDEAD
+	SHADOW
 };
 
 
