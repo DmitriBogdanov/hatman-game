@@ -676,6 +676,11 @@
 	- Added new enemy 'SpritBomber' that attacks player with explosive magic from range
 	- Added 'SpiritBomb' projectile
 
+# 21.08.29 #
+	- Changed parsing logic for tiles and tilesets
+	- Allowed placing entities through 'entity tilesets'
+	- Creaned up deprectated files, structured names for remaining files
+
 ### FIXES ###
 	- Try making fonts const and outside of GUI object
 	

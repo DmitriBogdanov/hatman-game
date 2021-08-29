@@ -13,7 +13,7 @@ using namespace ntt::s;
 projectile::ArcaneProjectileBlue::ArcaneProjectileBlue(const Vector2d &position, const Vector2d &speed, const Damage &damage, double knockback, const Vector2d &AOE) :
 	Projectile(position, damage, knockback, AOE)
 {
-	this->_init_sprite("arcane_projectile_blue");
+	this->_init_sprite("[projectile]{arcane_projectile_blue}");
 
 	constexpr auto HITBOX_SIZE = Vector2d(3., 3.);
 
@@ -34,7 +34,7 @@ void projectile::ArcaneProjectileBlue::onCollision() {
 projectile::SpiritBomb::SpiritBomb(const Vector2d& position, const Vector2d& speed, const Damage& damage, double knockback, const Vector2d& AOE) :
 	Projectile(position, damage, knockback, AOE)
 {
-	this->_init_sprite("projectile_spirit_bomb");
+	this->_init_sprite("[projectile]{spirit_bomb}");
 
 	constexpr auto HITBOX_SIZE = Vector2d(4., 4.);
 
@@ -64,7 +64,7 @@ particle::OnDeathParticle::OnDeathParticle(const Vector2d &position, const Vecto
 	color(color)
 {
 	// Init modules
-	this->_init_sprite(false, "on_death_particle");
+	this->_init_sprite(false, "[particle]{on_death_particle}");
 
 	this->sprite->color_mod = this->color;
 

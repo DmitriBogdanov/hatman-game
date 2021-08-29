@@ -8,6 +8,8 @@ Hatman is a stylized 2D platformer in early development stage.
 * SDL2_image
 
 ## Version History
+* 00.10
+    * Improved map editor and map parsing
 
 * 00.09
     * Added new enemy 'Spirit Bomber'

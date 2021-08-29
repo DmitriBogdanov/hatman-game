@@ -300,7 +300,7 @@ void Level::parseFromJSON(const std::string &filePath) {
 
 		// Create tileset object and set firstgid
 		Tileset tileset = TilesetStorage::ACCESS->getTileset(fileName);
-		tileset.firstGid = tileset_node["firstgid"].get<int>(); // firstgid is map-dependant (that's also why we copy tilesets)
+		tileset.first_gid = tileset_node["firstgid"].get<int>(); // firstgid is map-dependant (that's also why we copy tilesets)
 
 		this->tilesets.push_back(std::move(tileset)); // save tileset
 	}
@@ -350,9 +350,9 @@ void Level::parse_tilelayer(const nlohmann::json &tilelayer_node) {
 			// Determine which tileset tile belongs to (based on gid)
 			const Tileset* correspondingTileset = &this->tilesets.front();
 			for (const auto &tileset : this->tilesets)
-				if (gid >= tileset.firstGid) correspondingTileset = &tileset;
+				if (gid >= tileset.first_gid) correspondingTileset = &tileset;
 
-			const int tileId = gid - correspondingTileset->firstGid;
+			const int tileId = gid - correspondingTileset->first_gid;
 
 			// Construct tile and add it to the level
 			this->add_Tile(*correspondingTileset, tileId, tilePosition, layerPrefix);
@@ -404,29 +404,51 @@ void Level::parse_objectgroup(const nlohmann::json &objectgroup_node) {
 
 // Entity types parsing
 void Level::parse_objectgroup_entity(const nlohmann::json &objectgroup_node) {
-	const std::string entity_type = tags::getSuffix(objectgroup_node["name"].get<std::string>());
+	const nlohmann::json& objects_array_node = objectgroup_node["objects"];
+	for (const auto& object_node : objects_array_node) {
+		const auto gid = object_node["gid"].get<int>();
 
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
-	for (const auto &object_node : objects_array_node) {
+		// Determine which tileset 'entity-tile' belongs to (based on gid)
+		const Tileset* correspondingTileset = &this->tilesets.front();
+		for (const auto& tileset : this->tilesets)
+			if (gid >= tileset.first_gid) correspondingTileset = &tileset;
+
+		// Get spawn data
+		const int id = gid - correspondingTileset->first_gid;
+		const auto &enitySpawnData = correspondingTileset->get_entity_spawn_data(id);
+
 		// Parse position
-		const Vector2d entityPosition(
-			object_node["x"].get<int>() + natural::TILE_SIZE / 2.,
-			object_node["y"].get<int>() + natural::TILE_SIZE / 2.
-		); // add TILE_SIZE / 2 because all entites are parsed from 32x32 'custom tile objects'
+		const auto tilePosition = Vector2d(object_node["x"].get<double>(), object_node["y"].get<double>());
 
-		// Parse custom properties
-		std::string entityName;
-
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
-
-			if (prefix == "name") {
-				entityName = property_node["value"].get<std::string>();
-			}
-		}
-
-		this->add_Entity(entity_type, entityName, entityPosition);
+		this->add_Entity(enitySpawnData.type, enitySpawnData.name, tilePosition + enitySpawnData.position_in_tile);
 	}
+
+	
+
+	/// OLD
+	//const std::string entity_type = tags::getSuffix(objectgroup_node["name"].get<std::string>());
+
+	//const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+	//for (const auto &object_node : objects_array_node) {
+	//	// Parse position
+	//	const Vector2d entityPosition(
+	//		object_node["x"].get<int>(),
+	//		object_node["y"].get<int>()
+	//	); // add TILE_SIZE / 2 because all entites are parsed from 32x32 'custom tile objects'
+
+	//	// Parse custom properties
+	//	std::string entityName;
+
+	//	for (const auto &property_node : object_node["properties"]) {
+	//		const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+
+	//		if (prefix == "name") {
+	//			entityName = property_node["value"].get<std::string>();
+	//		}
+	//	}
+
+	//	this->add_Entity(entity_type, entityName, entityPosition);
+	//}
 }
 
 // Scripts parsing

@@ -110,7 +110,7 @@ m::enemy::Sludge::Sludge(const Vector2d &position) :
 	using namespace Sludge_consts;
 
 	// Init modules
-	this->_init_sprite("sludge", { DEFAULT_ANIMATION_NAME });
+	this->_init_sprite("[enemy]{sludge}", { DEFAULT_ANIMATION_NAME });
 
 	this->_init_solid(
 		HITBOX_SIZE,
@@ -331,7 +331,7 @@ m::enemy::SkeletonHalberd::SkeletonHalberd(const Vector2d &position) :
 	using namespace SkeletonHalberd_consts;
 
 	// Init modules
-	this->_init_sprite("skeleton_halberd", { DEFAULT_ANIMATION_NAME, "move", "attack_windup", "attack_recover", "death" });
+	this->_init_sprite("[enemy]{skeleton_halberd}", { DEFAULT_ANIMATION_NAME, "move", "attack_windup", "attack_recover", "death" });
 
 	this->_init_solid(
 		HITBOX_SIZE,
@@ -578,7 +578,7 @@ m::enemy::Devourer::Devourer(const Vector2d& position) :
 	using namespace Devourer_consts;
 
 	// Init modules
-	this->_init_sprite("devourer", { DEFAULT_ANIMATION_NAME, "move" });
+	this->_init_sprite("[enemy]{devourer}", { DEFAULT_ANIMATION_NAME, "move" });
 
 	this->_init_solid(
 		HITBOX_SIZE,
@@ -775,7 +775,7 @@ m::enemy::SpiritBomber::SpiritBomber(const Vector2d& position) :
 	using namespace SpiritBomber_consts;
 
 	// Init modules
-	this->_init_sprite("enemy_spirit_bomber", { DEFAULT_ANIMATION_NAME, "attack_windup", "attack_recover" });
+	this->_init_sprite("[enemy]{spirit_bomber}", { DEFAULT_ANIMATION_NAME, "attack_windup", "attack_recover" });
 
 	this->_init_solid(
 		HITBOX_SIZE,
@@ -917,7 +917,7 @@ m::item_entity::SpiderSignet::SpiderSignet(const Vector2d &position) :
 {
 	constexpr auto HITBOX_SIZE = Vector2d(14., 11.);
 	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "item_spider_signet");
+	this->_init_sprite(false, "[item]{spider_signet}");
 
 	this->name = "spider_signet";
 }
@@ -928,7 +928,7 @@ m::item_entity::PowerShard::PowerShard(const Vector2d& position) :
 {
 	constexpr auto HITBOX_SIZE = Vector2d(12., 12.);
 	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "item_power_shard");
+	this->_init_sprite(false, "[item]{power_shard}");
 
 	this->name = "power_shard";
 }
@@ -939,7 +939,7 @@ m::item_entity::EldritchBattery::EldritchBattery(const Vector2d& position) :
 {
 	constexpr auto HITBOX_SIZE = Vector2d(9., 13.);
 	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "item_eldritch_battery");
+	this->_init_sprite(false, "[item]{eldritch_battery}");
 
 	this->name = "eldritch_battery";
 }
@@ -950,7 +950,7 @@ m::item_entity::WatchingEye::WatchingEye(const Vector2d& position) :
 {
 	constexpr auto HITBOX_SIZE = Vector2d(14., 14.);
 	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "item_watching_eye");
+	this->_init_sprite(false, "[item]{watching_eye}");
 
 	this->name = "watching_eye";
 }

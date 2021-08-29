@@ -28,8 +28,8 @@ const std::unordered_map<std::string, make_derived_ptr> TILE_MAKERS = {
 };
 
 std::unique_ptr<Tile> tiles::make_tile(const Tileset &tileset, int id, const Vector2 &position) {
-	const std::string interactive_type = tileset.tileHas_Interaction(id)
-		? tileset.tileGet_Interaction(id).interactive_type
+	const std::string interactive_type = tileset.has_tile_interaction(id)
+		? tileset.get_tile_interaction(id).interactive_type
 		: "";
 
 	return TILE_MAKERS.at(interactive_type)(tileset, id, position);

@@ -28,7 +28,7 @@ namespace performance {
 		// physics start to slow down below 1000 / 40 == 25 FPS
 
 	constexpr int TILE_FREEZE_RANGE_X = static_cast<int>(0.5 * natural::WIDTH / natural::TILE_SIZE * natural::ZOOM) + 3;
-	constexpr int TILE_FREEZE_RANGE_Y = static_cast<int>(0.5 * natural::HEIGHT / natural::TILE_SIZE * natural::ZOOM) + 2;
+	constexpr int TILE_FREEZE_RANGE_Y = static_cast<int>(0.5 * natural::HEIGHT / natural::TILE_SIZE * natural::ZOOM) + 3;
 		// tiles past that range (from player cell) are not updated
 	constexpr int TILE_DRAW_RANGE_X = static_cast<int>(0.5 * natural::WIDTH / natural::TILE_SIZE * natural::ZOOM) + 1;
 	constexpr int TILE_DRAW_RANGE_Y = static_cast<int>(0.5 * natural::HEIGHT / natural::TILE_SIZE * natural::ZOOM) + 1;
@@ -52,7 +52,7 @@ namespace performance {
 namespace physics {
 	constexpr double GRAVITY_ACCELERATION = 1200.;
 
-	constexpr double PLATFORM_EPSILON = 5.; // how
+	constexpr double PLATFORM_EPSILON = 7.; // how
 }
 
 

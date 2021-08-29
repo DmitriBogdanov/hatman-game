@@ -6,12 +6,23 @@
 #include <unordered_map> // related type (tileset storage)
 #include <memory> // 'unique_ptr' type
 
+#include "nlohmann_external.hpp" // parsing from JSON
 #include "geometry_utils.h" // geometry types
 #include "sprite.h" // 'Sprite' module
 
 
 
 class Tileset; // forward-declaration
+
+
+
+// # EntitySpawnData #
+struct EntitySpawnData {
+	std::string type;
+	std::string name;
+
+	Vector2d position_in_tile;
+};
 
 
 struct TileHitboxRect {
@@ -106,36 +117,39 @@ public:
 
 	void parseFromJSON(const std::string &filePath);
 
-	// General tile getters
-	srcRect tileGet_SourceRect(int tileId) const;
+	TileHitboxRect parse_as_hitboxrect(const nlohmann::json& object_node);
+	TileInteraction parse_as_interaction(const nlohmann::json& object_node);
+	EntitySpawnData parse_as_entity(const nlohmann::json& object_node);
 
-	// Hitbox getters
-	bool tileHas_Hitbox(int tileId) const;
-	TileHitbox tileGet_Hitbox(int tileId) const; // returns tile hitbox on the map
-	// Animation getters
-	bool tileHas_Animation(int tileId) const;
-	Animation tileGet_Animation(int tileId) const;
-	// Actionbox getters
-	bool tileHas_Interaction(int tileId) const;
-	TileInteraction tileGet_Interaction(int tileId) const; // should only be used when hit/actionbox is present
+	// Getting data from tileset
+	srcRect get_tile_source_rect(int tileId) const;
+
+	bool has_tile_hitbox(int tileId) const;
+	bool has_tile_animation(int tileId) const;
+	bool has_tile_interaction(int tileId) const;
+	bool has_entity_spawn_data(int tileId) const;
+
+	TileHitbox get_tile_hitbox(int tileId) const; // returns tile hitbox on the map
+	Animation get_tile_animation(int tileId) const;
+	TileInteraction get_tile_interaction(int tileId) const; // should only be used when hit/actionbox is present
+	const EntitySpawnData& get_entity_spawn_data(int tileId) const;
 
 	// Tileset getters
-	std::string getFileName() const;
-	SDL_Texture* getTilesheetImage() const;
+	std::string tileset_get_filename() const;
+	SDL_Texture* tileset_get_texture() const;
 
-
-	int firstGid;
+	int first_gid;
 
 private:
-	std::string fileName;
+	std::string filename;
 
-	SDL_Texture* tilesetImage;
+	SDL_Texture* texture;
 	Vector2 size;
 
 	std::unordered_map<int, TileHitbox> tileHitboxes;
 	std::unordered_map<int, Animation> tileAnimations;
 	std::unordered_map<int, TileInteraction> tileInteractions;
-	
+	std::unordered_map<int, EntitySpawnData> entity_objects;
 };
 
 
