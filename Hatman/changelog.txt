@@ -680,10 +680,14 @@
 	- Changed parsing logic for tiles and tilesets
 	- Allowed placing entities through 'entity tilesets'
 	- Creaned up deprectated files, structured names for remaining files
+	- Started building first actually playable level for the end product
+
+# 21.08.31 #
+	- Chanded color of inventory icons and text to be distinct from the environment
 
 ### FIXES ###
+	- SkeletonHalberd sometimes gets stuck in the last frame of animation, fix!
 	- Try making fonts const and outside of GUI object
-	
 
 ### FIRST PRIORITY FEATURES ###
 	- Make 'Sound' object with multiple sound channels (GUI, player, effects) and volume control

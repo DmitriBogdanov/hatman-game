@@ -9,8 +9,8 @@
 
 // # Saver #
 namespace Saver_consts {
-	const std::string FIRST_LEVEL = "shadow_test";
-	constexpr auto FIRST_SPAWNPOINT = Vector2d(450., 240.);
+	const std::string FIRST_LEVEL = "desolation";
+	constexpr auto FIRST_SPAWNPOINT = Vector2d(160., 1296.);
 }
 
 

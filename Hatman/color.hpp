@@ -53,7 +53,5 @@ namespace colors {
 	constexpr auto ESC_MENU_FADE_COLOR = SH_BLACK.set_alpha(100);
 
 	constexpr auto  WHITE = RGBColor(255, 255, 255);
-	constexpr auto  BLACK = RGBColor(0, 0, 0);
-
-	const RGBColor IVORY(255, 243, 214);
+	constexpr auto  FULL_BLACK = RGBColor(0, 0, 0);
 }

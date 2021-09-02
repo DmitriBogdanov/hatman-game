@@ -4,6 +4,7 @@
 #include "game.h" // access to game state
 #include "item_unique.h" // item classes (to assign loot to entities)
 #include "controls.h" // access to control keys
+#include "globalconsts.hpp" // tile size
 
 
 
@@ -21,6 +22,8 @@ bool m_type::Creature::update(Milliseconds elapsedTime) {
 	if (!Entity::update(elapsedTime)) return false;
 	
 	this->sprite->flip = (this->orientation == Orientation::RIGHT) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+
+	this->_kill_if_out_of_bounds();
 
 	if (this->health->dead() && creature_is_alive) {
 		this->deathTransition();
@@ -72,6 +75,13 @@ void m_type::Creature::_init_health(Faction faction, uint maxHp, sint regen, sin
 
 void m_type::Creature::deathTransition() {
 	this->creature_is_alive = false;
+}
+
+void m_type::Creature::_kill_if_out_of_bounds() {
+	const auto hitbox = this->solid->getHitbox();
+	const double levelHeight = Game::READ->level->getSizeY() * natural::TILE_SIZE;
+
+	if (hitbox.getBottom() > levelHeight) this->health->instakill();
 }
 
 

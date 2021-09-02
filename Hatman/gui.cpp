@@ -650,7 +650,7 @@ void GUI_Inventory::draw() const {
 	);
 
 	// Draw text
-	this->font->color_set(colors::SH_BLACK);
+	this->font->color_set(colors::FULL_BLACK);
 
 	this->font->draw_line(TEXT_CORNER, "Inventory");
 

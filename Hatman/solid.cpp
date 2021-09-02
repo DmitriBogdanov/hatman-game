@@ -314,10 +314,10 @@ void SolidRectangle::apply_TileCollisions() {
 void SolidRectangle::apply_LevelBorderCollisions() {
 	const dRect entityHitbox = this->getHitbox();
 	const double levelWidth = Game::READ->level->getSize().x * natural::TILE_SIZE; // Assumes rendering size is equal to physica;
-	const double levelHeight = Game::READ->level->getSize().y * natural::TILE_SIZE;
+	//const double levelHeight = Game::READ->level->getSize().y * natural::TILE_SIZE;
 
 	/// TEMP, REMOVE LATER
-	if (entityHitbox.getBottom() > levelHeight) {
+	/*if (entityHitbox.getBottom() > levelHeight) {
 		parent_position.y = levelHeight - entityHitbox.getSizeY() / 2.;
 		this->speed.y = 0.;
 		this->is_grounded = true;
@@ -325,7 +325,7 @@ void SolidRectangle::apply_LevelBorderCollisions() {
 	else if (entityHitbox.getTop() < 0) {
 		parent_position.y = entityHitbox.getSizeY() / 2.;
 		this->speed.y = 0.;
-	}
+	}*/
 	/// ^ TEMP
 
 	if (entityHitbox.getRight() > levelWidth) {

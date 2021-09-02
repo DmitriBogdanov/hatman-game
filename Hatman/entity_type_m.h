@@ -60,6 +60,8 @@ namespace ntt::m_type {
 		// State can only be operated through state_tryChange() and state_lock()
 		int state;
 		Timer state_lock_timer;	
+
+		void _kill_if_out_of_bounds();
 	};
 
 
