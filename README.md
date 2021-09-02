@@ -2,6 +2,14 @@
 
 Hatman is a stylized 2D platformer in early development stage.
 
+![Screenshot](images/screen_main_menu.png)
+![Screenshot](images/screen_jp.png)
+![Screenshot](images/screen_spirit_bomber.png)
+![Screenshot](images/screen_save_orb.png)
+![Screenshot](images/screen_attack_1.png)
+![Screenshot](images/screen_attack_2.png)
+![Screenshot](images/screen_devourer.png)
+
 ## Dependencies
 
 * SDL2
