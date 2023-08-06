@@ -104,7 +104,7 @@ Animation _parse_animation(const std::string &path) {
 	nlohmann::json JSON = nlohmann::json::parse(ifStream);
 
 	// Parse texture
-	SDL_Texture* texture = Graphics::ACCESS->getTexture(path + ".png");
+	sf::Texture &texture = Graphics::ACCESS->getTexture(path + ".png");
 
 	// Parse frames
 	std::vector<AnimationFrame> frames;

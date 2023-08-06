@@ -49,7 +49,7 @@
 #define AUDIO_MAX_SOUNDS 4
 
 /* The rate at which the volume fades when musics transition. The higher number indicates music fading faster */
-#define AUDIO_MUSIC_FADE_VALUE 2
+#define AUDIO_MUSIC_FADE_VALUE 1000
 
 /* Flags OR'd together, which specify how SDL should behave when a device cannot offer a specific feature
  * If flag is set, SDL will change the format in the actual audio file structure (as opposed to gDevice->want)
@@ -124,6 +124,7 @@ void playSound(const char * filename, int volume)
 
 void playMusic(const char * filename, int volume)
 {
+    // Play looped audio
     playAudio(filename, NULL, 1, volume);
 }
 
@@ -288,6 +289,7 @@ static inline void playAudio(const char * filename, Audio * audio, uint8_t loop,
         return;
     }
 
+    // If sound (fx)
     /* If sound, check if under max number of sounds allowed, else don't play */
     if(loop == 0)
     {
@@ -301,6 +303,7 @@ static inline void playAudio(const char * filename, Audio * audio, uint8_t loop,
         }
     }
 
+    // If music (mx)
     /* Load from filename or from Memory */
     if(filename != NULL)
     {
@@ -320,6 +323,7 @@ static inline void playAudio(const char * filename, Audio * audio, uint8_t loop,
         memcpy(newAudio, audio, sizeof(Audio));
 
         newAudio->volume = volume;
+        
         newAudio->loop = loop;
         newAudio->free = 0;
     }
@@ -413,7 +417,7 @@ static inline void audioCallback(void * userdata, uint8_t * stream, int len)
                     audio->length = 0;
                 }
             }
-
+            
             if(music && audio->loop == 1 && audio->fade == 0)
             {
                 tempLength = 0;

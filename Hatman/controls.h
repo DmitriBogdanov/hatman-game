@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL_events.h> // 'SDL_Scancode' type
+#include <SFML/Graphics.hpp> /// Perhaps unnecessary
 
 
 
@@ -12,22 +13,28 @@ public:
 	static Controls* ACCESS;
 
 	// GUI controls
-	Uint8 LMB;
-	SDL_Scancode ESC;
-	SDL_Scancode F3;
+	sf::Mouse::Button LMB;
+	sf::Keyboard::Key ESC;
+	sf::Keyboard::Key F3;
 
 	// Game controls
-	SDL_Scancode LEFT;
-	SDL_Scancode RIGHT;
-	SDL_Scancode UP;
-	SDL_Scancode DOWN;
+	sf::Keyboard::Key LEFT;
+	sf::Keyboard::Key RIGHT;
+	sf::Keyboard::Key UP;
+	sf::Keyboard::Key DOWN;
 
-	Uint8 CHAIN;
-	SDL_Scancode SHIFT;
-	SDL_Scancode SKILL;
+	sf::Mouse::Button CHAIN;
+	sf::Keyboard::Key SHIFT;
+	sf::Keyboard::Key SKILL;
 
-	SDL_Scancode JUMP;
-	SDL_Scancode USE;
+	sf::Keyboard::Key ZOOMOUT;
 
-	SDL_Scancode INVENTORY;
+	sf::Keyboard::Key JUMP;
+	sf::Keyboard::Key USE;
+
+	sf::Keyboard::Key INVENTORY;
 };
+
+
+std::string toString(sf::Mouse::Button button);
+std::string toString(sf::Keyboard::Key key);

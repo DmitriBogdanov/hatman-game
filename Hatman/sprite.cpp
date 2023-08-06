@@ -6,23 +6,23 @@
 
 
 // # Animation #
-Animation::Animation(SDL_Texture* texture, const std::vector<AnimationFrame> &frames) :
-	texture(texture),
+Animation::Animation(sf::Texture &texture, const std::vector<AnimationFrame> &frames) :
+	texture(&texture),
 	frames(frames)
 {}
 
-Animation::Animation(SDL_Texture* texture, std::vector<AnimationFrame> &&frames) :
-	texture(texture),
+Animation::Animation(sf::Texture &texture, std::vector<AnimationFrame> &&frames) :
+	texture(&texture),
 	frames(std::move(frames))
 {}
 
-Animation::Animation(SDL_Texture* texture, std::initializer_list<AnimationFrame> frames) :
-	texture(texture),
+Animation::Animation(sf::Texture &texture, std::initializer_list<AnimationFrame> frames) :
+	texture(&texture),
 	frames(frames)
 {}
 
-Animation::Animation(SDL_Texture* texture, const srcRect &frame) :
-	texture(texture),
+Animation::Animation(sf::Texture &texture, const srcRect &frame) :
+	texture(&texture),
 	frames({ AnimationFrame{frame, 0} })
 {}
 
@@ -38,7 +38,6 @@ size_t Animation::lastIndex() const {
 
 // # Sprite #
 Sprite::Sprite(const Vector2d &parentPosition, bool centered, bool overlay) :
-	current_texture(nullptr),
 	parent_position(parentPosition),
 	centered(centered),
 	overlay(overlay)
@@ -46,26 +45,46 @@ Sprite::Sprite(const Vector2d &parentPosition, bool centered, bool overlay) :
 
 void Sprite::update(Milliseconds elapsedTime) {} // does nothing
 
-void Sprite::draw() const {
-	if (!this->current_texture) {
-		return; /// TESTING, REMOVE LATER
-	}
-
+void Sprite::draw() {
 	dstRect destRect = make_dstRect(
 		this->parent_position.x, this->parent_position.y,
-		this->current_source_rect.w, this->current_source_rect.h,
+		this->current_sprite.getTextureRect().width, this->current_sprite.getTextureRect().height,
 		this->centered
 	);
 
-	SDL_SetTextureColorMod(this->current_texture, this->color_mod.r, this->color_mod.g, this->color_mod.b);
-	SDL_SetTextureAlphaMod(this->current_texture, this->color_mod.alpha);
+	this->current_sprite.setColor(sf::Color(
+		this->color_mod.r, this->color_mod.g, this->color_mod.b, this->color_mod.alpha
+	));
 
-	// Draw to correct backbuffer
+
+	// Draw to correct coords
+	this->current_sprite.setPosition(
+		static_cast<float>(destRect.x),
+		static_cast<float>(destRect.y)
+	);
+
+	/// Rotation can be implemented
+
+	// IMPLEMENT FLIP
+	switch (this->flip) {
+	case SDL_FLIP_HORIZONTAL:
+		this->current_sprite.setOrigin(static_cast<float>(destRect.w), 0.f);
+		this->current_sprite.setScale(-1.f, 1.f);
+		break;
+	case SDL_FLIP_NONE:
+		this->current_sprite.setOrigin(0.f, 0.f);
+		this->current_sprite.setScale(1.f, 1.f);
+		break;
+		/// Vertical can be implemented in a similar fashion
+	default:
+		break;
+	}
+
 	if (this->overlay) {
-		Graphics::ACCESS->gui->textureToGUIEx(this->current_texture, &this->current_source_rect, &destRect, this->angle, this->flip);
+		Graphics::ACCESS->gui->draw_sprite(this->current_sprite);
 	}
 	else {
-		Graphics::ACCESS->camera->textureToCameraEx(this->current_texture, &this->current_source_rect, &destRect, this->angle, this->flip);
+		Graphics::ACCESS->camera->draw_sprite(this->current_sprite);
 	}
 }
 
@@ -84,30 +103,27 @@ StaticSprite::StaticSprite(
 	const Vector2d &parentPosition,
 	bool centered,
 	bool overlay,
-	SDL_Texture *texture
+	sf::Texture &texture
 ) :
 	Sprite(parentPosition, centered, overlay)
 {
-	// Deduce texture size
-	int textureWidth;
-	int textureHeight;
-	SDL_QueryTexture(texture, NULL, NULL, &textureWidth, &textureHeight);
-
-	this->current_texture = texture;
-	this->current_source_rect = { 0, 0, textureWidth, textureHeight };
+	this->current_sprite.setTexture(texture);
 }
 
 StaticSprite::StaticSprite(
 	const Vector2d &parentPosition,
 	bool centered,
 	bool overlay,
-	SDL_Texture *texture,
+	sf::Texture &texture,
 	srcRect sourceRect // source rect on the current_texture
 ) :
 	Sprite(parentPosition, centered, overlay)
 {
-	this->current_texture = texture;
-	this->current_source_rect = sourceRect;
+	this->current_sprite.setTexture(texture);
+	this->current_sprite.setTextureRect(sf::IntRect(
+		sourceRect.x, sourceRect.y,
+		sourceRect.w, sourceRect.h
+	));
 }
 
 void StaticSprite::update(Milliseconds elapsedTime) {}
@@ -122,9 +138,11 @@ AnimatedSprite::AnimatedSprite(
 	Animation &&animation
 ) : 
 	Sprite(parentPosition, centered, overlay),
-	animation(std::move(animation))
+	animation(std::move(animation)),
+	frame_index(0),
+	time_elapsed(0)
 {
-	this->current_texture = this->animation.texture;
+	this->current_sprite.setTexture(*this->animation.texture);
 }
 
 void AnimatedSprite::update(Milliseconds elapsedTime) {
@@ -145,7 +163,12 @@ void AnimatedSprite::update(Milliseconds elapsedTime) {
 		}
 	}
 
-	this->current_source_rect = this->animation.frames.at(this->frame_index).rect;
+	const auto &rect = this->animation.frames.at(this->frame_index).rect;
+
+	this->current_sprite.setTextureRect(sf::IntRect(
+		rect.x, rect.y,
+		rect.w, rect.h
+	));
 }
 
 
@@ -180,8 +203,14 @@ void ControllableSprite::animation_play(const std::string &name, bool loop) {
 	this->frame_index = 0;
 	this->timescale = 1.;
 
-	this->current_texture = this->animation_current->texture;
-	this->current_source_rect = this->animation_current->frames.front().rect;
+	this->current_sprite.setTexture(*this->animation_current->texture);
+
+	const auto &rect = this->animation_current->frames.front().rect;
+
+	this->current_sprite.setTextureRect(sf::IntRect(
+		rect.x, rect.y,
+		rect.w, rect.h
+	));
 }
 
 //void ControllableSprite::animation_queue(const std::string& name, bool loop) {
@@ -246,5 +275,10 @@ void ControllableSprite::update(Milliseconds elapsedTime) {
 		}
 	}
 
-	this->current_source_rect =this->animation_current->frames.at(this->frame_index).rect;
+	const auto &rect = this->animation_current->frames.at(this->frame_index).rect;
+
+	this->current_sprite.setTextureRect(sf::IntRect(
+		rect.x, rect.y,
+		rect.w, rect.h
+	));
 }

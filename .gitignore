@@ -1,0 +1,17 @@
+.vs
+config
+Debug
+Release
+Hatman.sln
+backups
+content
+libraries
+My Advisor Results - Hatman
+libs
+temp
+Hatman.vcxproj.user
+Hatman.vcxproj
+Hatman.vcxproj.filters
+changelog.txt
+manual.txt
+CONFIG.json

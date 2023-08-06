@@ -32,6 +32,7 @@ public:
 	bool finished() const;
 	Milliseconds elapsed() const;
 	Milliseconds duration() const;
+	bool was_set() const; // true if timer was never started, equivalent to checking for negative duration
 
 	double elapsedPercentage() const; // == .elapsed() / .duration()
 

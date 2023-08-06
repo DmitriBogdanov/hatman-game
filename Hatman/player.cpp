@@ -1,5 +1,6 @@
 #include "player.h"
 
+#include "filepaths.hpp" // path to textures
 #include "graphics.h" // access to texture loading
 #include "game.h" // access to inputs
 #include "controls.h" // access to control keys
@@ -23,17 +24,36 @@ namespace Player_consts {
 	constexpr double MOVEMENT_ACCELERATION = 600.;
 	constexpr double MOVEMENT_FORCE = MASS * MOVEMENT_ACCELERATION;
 
-	constexpr double JUMP_SPEED = ct_speed_corresponding_to_jump_height(physics::GRAVITY_ACCELERATION, 34.);
+	constexpr double JUMP_SPEED = ct_speed_corresponding_to_jump_height(physics::GRAVITY_ACCELERATION, 36.);
 	constexpr double JUMP_IMPULSE = MASS * JUMP_SPEED;
 
 	constexpr uint BASE_HP = 1000;
-	constexpr sint BASE_REGEN = 10;
+	constexpr sint BASE_REGEN = 25;
 	constexpr sint BASE_PHYS_RES = 0;
 	constexpr sint BASE_MAGIC_RES = 0;
-	constexpr sint BASE_DOT_RES = 0;
+	constexpr sint BASE_CHAOS_RES = 0;
 
+	constexpr Milliseconds OUT_OF_COMBAT_REGEN_TIMER = sec_to_ms(10.);
+	constexpr double OUT_OF_COMBAT_REGEN_MULTI = 8.;
+	
 	constexpr double STAND_TO_MOVE_ANIMATION_SPEEDUP = 3.;
 	constexpr double STAND_TO_ATTACK_ANIMATION_SPEEDUP = 3.;
+	
+	// Charges
+	constexpr uint BASE_CHARGES = 3;
+	constexpr uint MAX_CHARGES_CAP = 5;
+
+	constexpr uint SKILL_CHARGE_COST = 2;
+	constexpr uint JUMP_CHARGE_COST = 1;
+
+	constexpr Milliseconds CHARGE_CD = sec_to_ms(2);
+
+	// Death
+	constexpr int PARTICLE_COUNT = 16;
+	constexpr double PARTICLE_MAX_SPEED_X = 200.;
+	constexpr double PARTICLE_MAX_SPEED_Y = 250.;
+	constexpr Milliseconds PARTICLE_DURATION_MIN = sec_to_ms(1.);
+	constexpr Milliseconds PARTICLE_DURATION_MAX = sec_to_ms(6.);
 }
 
 namespace camera {
@@ -82,12 +102,31 @@ namespace fire {
 	constexpr double ULT_KNOCKBACK_Y = 200. * 100.;
 }
 
+namespace artifacts {
+	// Regen
+	constexpr double ELDRITCH_BATTERY_REGEN_BOOST = 0.10;
+
+	// Damage
+	constexpr double POWER_SHARD_DMG_BOOST = 0.1;
+
+	// Utility
+	constexpr double SPIDER_SIGNET_JUMP_BOOST = 0.08;
+
+	// Resistances
+	constexpr double BONE_MASK_PHYS_DMG_REDUCTION = 0.2;
+	constexpr double MAGIC_NEGATOR_MAGIC_DMG_REDUCTION = 0.2;
+	constexpr double TWIN_SOULS_CHAOS_DMG_REDUCTION = 0.2;
+}
+
 
 
 Player::Player(const Vector2d &position) :
 	Creature(position),
-	attunement(Attunement::FIRE),
-	chain_progress(-1)
+	chain_progress(-1),
+	charges_current(Player_consts::BASE_CHARGES),
+	charges_max(Player_consts::BASE_CHARGES),
+	charges_time_elapsed(0),
+	death_transition_performed(false)
 {
 	// Init sprite
 	this->_init_sprite("player", {
@@ -98,6 +137,12 @@ Player::Player(const Vector2d &position) :
 		"fire_chain_2",
 		"fire_ult_0",
 		"fire_ult_1"
+		});
+
+	// Init effect sprite
+	this->_init_effect_sprite("player_effects", {
+		DEFAULT_ANIMATION_NAME,
+		"charged_jump"
 		});
 
 	// Init solid
@@ -115,7 +160,7 @@ Player::Player(const Vector2d &position) :
 		Player_consts::BASE_REGEN,
 		Player_consts::BASE_PHYS_RES,
 		Player_consts::BASE_MAGIC_RES,
-		Player_consts::BASE_DOT_RES
+		Player_consts::BASE_CHAOS_RES
 	);
 
 	// Init members
@@ -128,7 +173,13 @@ TypeId Player::type_id() const { return TypeId::PLAYER; }
 bool Player::update(Milliseconds elapsedTime) {
 	if(!Creature::update(elapsedTime)) return false;
 
+	this->effect_sprite->update(elapsedTime);
+
+	this->_recalculate_stats();
+
 	this->update_cameraTrapPos(elapsedTime);
+
+	this->update_charges(elapsedTime);
 	
 	// Update correct state case
 	const auto currentState = static_cast<State>(this->state_get());
@@ -162,15 +213,55 @@ bool Player::update(Milliseconds elapsedTime) {
 		this->solid->is_dropping_down = false;
 	}
 
-	// GUI
-	if (input.key_pressed(Controls::READ->INVENTORY)) {
-		Graphics::ACCESS->gui->Inventory_toggle();
+	// Zoom-out
+	/// Uncomment for debugging purposes
+	if (input.key_held(sf::Keyboard::Key::R)) {
+		Graphics::ACCESS->camera->set_zoom(2 * natural::ZOOM);
+	}
+	else {
+		Graphics::ACCESS->camera->set_zoom(natural::ZOOM);
+	}
+
+	if (input.key_held(sf::Keyboard::Key::V)) {
+		Game::ACCESS->timescale = 0.1;
+	}
+	else {
+		Game::ACCESS->timescale = 1.0;
 	}
 
 	return true;
 }
 
+void Player::update_charges(Milliseconds elapsedTime) {
+	// Watchung eye adds + 1 max charge (up to MAX_CHARGES_CAP = 5)
+	const auto newMaxCharges = std::min(
+		Player_consts::BASE_CHARGES + this->inventory.count("watching_eye"),
+		Player_consts::MAX_CHARGES_CAP
+	);
+
+	// This ensures that charges get refilled when new Eye is picked up
+	if (newMaxCharges != this->charges_max) {
+		this->charges_max = newMaxCharges;
+		this->charges_current = newMaxCharges;
+	}
+
+	if (this->charges_current < this->charges_max) {
+		this->charges_time_elapsed += elapsedTime;
+
+		if (this->charges_time_elapsed > Player_consts::CHARGE_CD) {
+			this->charges_time_elapsed -= Player_consts::CHARGE_CD;
+
+			++this->charges_current;
+		}
+	}
+	else {
+		this->charges_time_elapsed = 0.;
+	}
+}
+
 void Player::update_case_STAND(Milliseconds elapsedTime) {
+	using namespace Player_consts;
+
 	Input& input = Game::ACCESS->input;
 
 	// Every frame
@@ -192,7 +283,9 @@ void Player::update_case_STAND(Milliseconds elapsedTime) {
 		this->state_change(State::MOVE);
 	}
 
-	if (input.key_held(Controls::READ->SKILL)) {
+	if (input.key_held(Controls::READ->SKILL) && this->charges_current >= SKILL_CHARGE_COST) {
+		this->charges_current -= SKILL_CHARGE_COST;
+
 		this->chain_progress = 0;
 		this->state_change(State::SKILL);
 	}
@@ -203,6 +296,8 @@ void Player::update_case_STAND(Milliseconds elapsedTime) {
 }
 
 void Player::update_case_MOVE(Milliseconds elapsedTime) {
+	using namespace Player_consts;
+
 	auto &input = Game::ACCESS->input;
 
 	// Every frame
@@ -211,7 +306,6 @@ void Player::update_case_MOVE(Milliseconds elapsedTime) {
 		else if (input.key_released(Controls::READ->DOWN)) this->jump_down_end();
 		else if (this->solid->is_grounded) this->jump();
 	}
-	///if (input.key_pressed(Controls::READ->JUMP) && this->solid->is_grounded) this->jump();
 
 	this->solid->applyForceTillMaxSpeed_Horizontal(
 		Player_consts::MOVEMENT_FORCE,
@@ -225,7 +319,9 @@ void Player::update_case_MOVE(Milliseconds elapsedTime) {
 		this->state_change(State::STAND);
 	}
 
-	if (input.key_held(Controls::READ->SKILL)) {
+	if (input.key_held(Controls::READ->SKILL) && this->charges_current >= SKILL_CHARGE_COST) {
+		this->charges_current -= SKILL_CHARGE_COST;
+
 		this->chain_progress = 0;
 		this->state_change(State::SKILL);
 	}
@@ -236,6 +332,8 @@ void Player::update_case_MOVE(Milliseconds elapsedTime) {
 }
 
 void Player::update_case_ATTACK(Milliseconds elapsedTime) {
+	using namespace Player_consts;
+
 	auto &sprite = this->_sprite;
 	auto &input = Game::ACCESS->input;
 
@@ -251,85 +349,85 @@ void Player::update_case_ATTACK(Milliseconds elapsedTime) {
 			Player_consts::MOVEMENT_SPEED / 5.,
 			this->orientation
 		);
-			
 
-	switch (this->attunement) {
-	case Attunement::FIRE:
-		switch (this->chain_progress) {
-		case 0:
-			sprite->animation_play("fire_chain_0");
+	// Steps of attack chain
+	switch (this->chain_progress) {
+	case 0:
+		if (movementInputPresent && orientationOfInput != this->orientation)
+			this->orientation = leftHeld ? Orientation::LEFT : Orientation::RIGHT;
+
+		sprite->animation_play("fire_chain_0");
+		++this->chain_progress;
+		break;
+
+	case 1:
+		if (movementInputPresent && orientationOfInput != this->orientation)
+			this->orientation = leftHeld ? Orientation::LEFT : Orientation::RIGHT;
+
+		if (sprite->animation_finished()) {
+			// Deal AOE damage and knockback
+			const auto attackHitbox = dRect(
+				this->position.x - (this->orientation == Orientation::RIGHT ? fire::CHAIN_RANGE_BACK : fire::CHAIN_RANGE_FRONT),
+				this->position.y - fire::CHAIN_RANGE_UP,
+				fire::CHAIN_RANGE_FRONT + fire::CHAIN_RANGE_BACK,
+				fire::CHAIN_RANGE_UP + fire::CHAIN_RANGE_DOWN
+			); // nasty geometry
+
+			for (auto& entity : Game::ACCESS->level->entities_killable)
+				if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
+					// Calculate dmg with respect to power shards
+					// Power Shard - increases dmg by <x>% (additevely)
+					const unsigned int numberOfPowerShards = this->inventory.count("twin_souls");
+					const double dmgModifier = 1. + numberOfPowerShards * artifacts::POWER_SHARD_DMG_BOOST;
+					const Damage damage = fire::CHAIN_0_DAMAGE * dmgModifier;
+
+					entity->health->applyDamage(damage);
+
+					if (this->health->faction != entity->health->faction) {
+						const auto sign = helpers::sign(entity->position.x - this->position.x);
+						entity->solid->addImpulse_Horizontal(fire::CHAIN_0_KNOCKBACK_X * sign);
+						entity->solid->addImpulse_Up(fire::CHAIN_0_KNOCKBACK_Y);
+					}
+				}
+
+			sprite->animation_play("fire_chain_1");
 			++this->chain_progress;
-			break;
-
-		case 1:
-			if (sprite->animation_finished()) {
-				// Deal AOE damage and knockback
-				const auto attackHitbox = dRect(
-					this->position.x - (this->orientation == Orientation::RIGHT ? fire::CHAIN_RANGE_BACK : fire::CHAIN_RANGE_FRONT),
-					this->position.y - fire::CHAIN_RANGE_UP,
-					fire::CHAIN_RANGE_FRONT + fire::CHAIN_RANGE_BACK,
-					fire::CHAIN_RANGE_UP + fire::CHAIN_RANGE_DOWN
-				); // nasty geometry
-
-				for (auto& entity : Game::ACCESS->level->entities_killable)
-					if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
-						entity->health->applyDamage(fire::CHAIN_0_DAMAGE);
-
-						if (this->health->faction != entity->health->faction) {
-							const auto sign = helpers::sign(entity->position.x - this->position.x);
-							entity->solid->addImpulse_Horizontal(fire::CHAIN_0_KNOCKBACK_X * sign);
-							entity->solid->addImpulse_Up(fire::CHAIN_0_KNOCKBACK_Y);
-						}					
-					}
-
-				sprite->animation_play("fire_chain_1");
-				++this->chain_progress;
-			}
-			break;
-
-		case 2:
-			if (sprite->animation_finished()) {
-				// Deal AOE damage and knockback
-				const auto attackHitbox = dRect(
-					this->position.x - (this->orientation == Orientation::RIGHT ? fire::CHAIN_RANGE_BACK : fire::CHAIN_RANGE_FRONT),
-					this->position.y - fire::CHAIN_RANGE_UP,
-					fire::CHAIN_RANGE_FRONT + fire::CHAIN_RANGE_BACK,
-					fire::CHAIN_RANGE_UP + fire::CHAIN_RANGE_DOWN
-				); // nasty geometry
-
-				for (auto& entity : Game::ACCESS->level->entities_killable)
-					if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
-						entity->health->applyDamage(fire::CHAIN_2_DAMAGE);
-
-						if (this->health->faction != entity->health->faction) {
-							const auto sign = helpers::sign(entity->position.x - this->position.x);
-							entity->solid->addImpulse_Horizontal(fire::CHAIN_2_KNOCKBACK_X * sign);
-							entity->solid->addImpulse_Up(fire::CHAIN_2_KNOCKBACK_Y);
-						}
-					}
-
-				sprite->animation_play("fire_chain_2");
-				this->chain_progress = -1;
-			}
-			break;
-
-		default:
-			break;
 		}
-
-	case Attunement::AIR:
 		break;
 
-	case Attunement::WATER:
+	case 2:
+		if (sprite->animation_finished()) {
+			// Deal AOE damage and knockback
+			const auto attackHitbox = dRect(
+				this->position.x - (this->orientation == Orientation::RIGHT ? fire::CHAIN_RANGE_BACK : fire::CHAIN_RANGE_FRONT),
+				this->position.y - fire::CHAIN_RANGE_UP,
+				fire::CHAIN_RANGE_FRONT + fire::CHAIN_RANGE_BACK,
+				fire::CHAIN_RANGE_UP + fire::CHAIN_RANGE_DOWN
+			); // nasty geometry
+
+			for (auto& entity : Game::ACCESS->level->entities_killable)
+				if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
+					entity->health->applyDamage(fire::CHAIN_2_DAMAGE);
+
+					if (this->health->faction != entity->health->faction) {
+						const auto sign = helpers::sign(entity->position.x - this->position.x);
+						entity->solid->addImpulse_Horizontal(fire::CHAIN_2_KNOCKBACK_X * sign);
+						entity->solid->addImpulse_Up(fire::CHAIN_2_KNOCKBACK_Y);
+					}
+				}
+
+			sprite->animation_play("fire_chain_2");
+			this->chain_progress = -1;
+		}
 		break;
 
-	case Attunement::EARTH:
+	default:
 		break;
 	}
 
 	// Transitions
 	if (this->chain_progress < 0) {
-		if (movementInputPresent && sprite->animation_rushToEnd(2.)) { // hurry up for movement
+		if (movementInputPresent && sprite->animation_rushToEnd(1.5)) { // hurry up for movement
 			this->orientation = orientationOfInput;
 
 			sprite->animation_play("move", true);
@@ -341,7 +439,9 @@ void Player::update_case_ATTACK(Milliseconds elapsedTime) {
 		}
 	}
 
-	if (input.key_held(Controls::READ->SKILL)) { // ult can interrupt attack
+	if (input.key_held(Controls::READ->SKILL) && this->charges_current >= SKILL_CHARGE_COST) { // ult can interrupt attack
+		this->charges_current -= SKILL_CHARGE_COST;
+
 		this->chain_progress = 0;
 		this->state_change(State::SKILL);
 	}
@@ -357,61 +457,54 @@ void Player::update_case_ULT(Milliseconds elapsedTime) {
 	const auto movementInputPresent = (leftHeld != rightHeld);
 	const auto orientationOfInput = leftHeld ? Orientation::LEFT : Orientation::RIGHT; // use only if input present
 
-	switch (this->attunement) {
-	case Attunement::FIRE:
-		switch (this->chain_progress) {
-		case 0:
-			// Teleport forward and change orientation
-			this->horizontal_blink(this->orientation, fire::ULT_TELEPORT_RANGE);
+	// Steps of attack
+	switch (this->chain_progress) {
+	case 0:
+		// Teleport forward and change orientation
+		this->horizontal_blink(this->orientation, fire::ULT_TELEPORT_RANGE);
 
-			this->orientation = invert(this->orientation);
+		this->orientation = invert(this->orientation);
 
-			sprite->animation_play("fire_ult_0");
-			++this->chain_progress;
-			break;
+		sprite->animation_play("fire_ult_0");
+		++this->chain_progress;
+		break;
 
-		case 1:
-			if (sprite->animation_finished()) {
-				// Deal AOE damage and knockback
-				const auto attackHitbox = dRect(
-					this->position.x - (this->orientation == Orientation::RIGHT ? fire::ULT_RANGE_BACK : fire::ULT_RANGE_FRONT),
-					this->position.y - fire::ULT_RANGE_UP,
-					fire::ULT_RANGE_FRONT + fire::ULT_RANGE_BACK,
-					fire::ULT_RANGE_UP + fire::ULT_RANGE_DOWN
-				); // nasty geometry
+	case 1:
+		if (sprite->animation_finished()) {
+			// Deal AOE damage and knockback
+			const auto attackHitbox = dRect(
+				this->position.x - (this->orientation == Orientation::RIGHT ? fire::ULT_RANGE_BACK : fire::ULT_RANGE_FRONT),
+				this->position.y - fire::ULT_RANGE_UP,
+				fire::ULT_RANGE_FRONT + fire::ULT_RANGE_BACK,
+				fire::ULT_RANGE_UP + fire::ULT_RANGE_DOWN
+			); // nasty geometry
 
-				for (auto& entity : Game::ACCESS->level->entities_killable)
-					if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
-						entity->health->applyDamage(fire::ULT_DAMAGE);
+			for (auto& entity : Game::ACCESS->level->entities_killable)
+				if (attackHitbox.overlapsWithRect(entity->solid->getHitbox())) {
+					// Calculate dmg with respect to power shards
+					// Power Shard - increases dmg by <x>% (additevely)
+					const unsigned int numberOfPowerShards = this->inventory.count("twin_souls");
+					const double dmgModifier = 1. + numberOfPowerShards * artifacts::POWER_SHARD_DMG_BOOST;
+					const Damage damage = fire::ULT_DAMAGE * dmgModifier;
 
-						if (this->health->faction != entity->health->faction) {
-							const auto sign = helpers::sign(entity->position.x - this->position.x);
-							entity->solid->addImpulse_Horizontal(fire::ULT_KNOCKBACK_X * sign);
-							entity->solid->addImpulse_Up(fire::ULT_KNOCKBACK_Y);
-						}					
+					entity->health->applyDamage(damage);
+
+					if (this->health->faction != entity->health->faction) {
+						const auto sign = helpers::sign(entity->position.x - this->position.x);
+						entity->solid->addImpulse_Horizontal(fire::ULT_KNOCKBACK_X * sign);
+						entity->solid->addImpulse_Up(fire::ULT_KNOCKBACK_Y);
 					}
+				}
 
-				sprite->animation_play("fire_ult_1");
-				this->chain_progress = -1;
-			}
-			break;
+			sprite->animation_play("fire_ult_1");
+			this->chain_progress = -1;
 		}
-
-		break;
-
-	case Attunement::AIR:
-		break;
-
-	case Attunement::WATER:
-		break;
-
-	case Attunement::EARTH:
 		break;
 	}
 
 	// Transitions
 	if (this->chain_progress < 0) {
-		if (movementInputPresent && sprite->animation_rushToEnd(2.)) { // hurry up for movement
+		if (movementInputPresent && sprite->animation_rushToEnd(1.5)) { // hurry up for movement
 			this->orientation = orientationOfInput;
 
 			sprite->animation_play("move", true);
@@ -425,7 +518,23 @@ void Player::update_case_ULT(Milliseconds elapsedTime) {
 }
 
 void Player::jump() {
-	this->solid->addImpulse_Up(Player_consts::JUMP_IMPULSE);
+	using namespace Player_consts;
+
+	double modifier = 1.;
+
+	const bool powerfullJump = Game::ACCESS->input.key_held(Controls::READ->SHIFT) && this->charges_current >= JUMP_CHARGE_COST;
+
+	if (powerfullJump) {
+		this->charges_current -= JUMP_CHARGE_COST;
+
+		modifier += this->inventory.count("spider_signet") * artifacts::SPIDER_SIGNET_JUMP_BOOST;
+
+		this->effect_sprite->animation_play("charged_jump");
+	}
+
+	const auto jumpImpulse = JUMP_IMPULSE * modifier;
+
+	this->solid->addImpulse_Up(jumpImpulse);
 	this->solid->is_grounded = false;
 }
 
@@ -450,9 +559,9 @@ void Player::horizontal_blink(Orientation direction, double range) {
 
 		// We only need to check 3-tile tall strip in a blink direction for collisions
 		const int leftBound = centerIndex.x;
-		const int rightBound = std::min(helpers::divide32(playerRightGoesTo), Game::READ->level->getSizeX());
+		const int rightBound = std::min(helpers::divide32(playerRightGoesTo), Game::READ->level->getSizeX() - 1);
 		const int upperBound = std::max(centerIndex.y - 1, 0);
-		const int lowerBound = std::min(centerIndex.y + 1, Game::READ->level->getSizeY());
+		const int lowerBound = std::min(centerIndex.y + 1, Game::READ->level->getSizeY() - 1);
 
 		// Area that would be drawn if we 'continuously dragged' player hitbox to a new postion
 		const dRect areaToCheck(
@@ -482,7 +591,7 @@ void Player::horizontal_blink(Orientation direction, double range) {
 		const int leftBound = std::max(helpers::divide32(playerLeftGoesTo), 0);
 		const int rightBound = centerIndex.x;
 		const int upperBound = std::max(centerIndex.y - 1, 0);
-		const int lowerBound = std::min(centerIndex.y + 1, Game::READ->level->getSizeY());
+		const int lowerBound = std::min(centerIndex.y + 1, Game::READ->level->getSizeY() - 1);
 
 		// Area that would be drawn if we 'continuously dragged' player hitbox to a new postion
 		const dRect areaToCheck(
@@ -539,12 +648,29 @@ void Player::update_cameraTrapPos(Milliseconds elapsedTime) {
 }
 
 void Player::draw() const {
+	if (!this->creature_is_alive) return;
+
 	Creature::draw();
 
-	/// DRAW ATTUNEMENT
+	this->effect_sprite->draw();
 }
 
 void Player::deathTransition() {
+	Creature::deathTransition();
+
+	using namespace Player_consts;
+
+	if (this->death_transition_performed) return;
+
+	for (int i = 0; i < PARTICLE_COUNT; ++i) {
+		Game::ACCESS->level->spawn(std::make_unique<s::particle::OnDeathParticle>(
+			this->position,
+			Vector2d(rand_double(-PARTICLE_MAX_SPEED_X, PARTICLE_MAX_SPEED_X), rand_double(-PARTICLE_MAX_SPEED_Y, 0.)),
+			colors::SH_BLACK,
+			rand_double(PARTICLE_DURATION_MIN, PARTICLE_DURATION_MAX)
+			));
+	}
+
 	Game::ACCESS->request_levelReload();
 }
 
@@ -576,4 +702,62 @@ std::string Player::get_state_name() {
 	default:
 		return "undefined";
 	}
+}
+
+void Player::_init_effect_sprite(const std::string &folder, std::initializer_list<std::string> animationNames) {
+	auto controllableSprite = std::make_unique<ControllableSprite>(
+		this->position,
+		true,
+		false
+		);
+
+	bool defaultAnimationNotSet = true;
+
+	for (auto &name : animationNames) {
+		controllableSprite->animation_add(name, _parse_animation(PATH_TEXTURES_ENTITIES + folder + "/" + name));
+
+		if (defaultAnimationNotSet && name == DEFAULT_ANIMATION_NAME) {
+			controllableSprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			defaultAnimationNotSet = false;
+		}
+	}
+
+	this->effect_sprite = std::move(controllableSprite);
+}
+
+void Player::_recalculate_stats() {
+	// Out of combat regen
+	const double natural_regen_multi =
+		(this->health->time_since_last_damage_received > Player_consts::OUT_OF_COMBAT_REGEN_TIMER)
+		? Player_consts::OUT_OF_COMBAT_REGEN_MULTI
+		: 0.;
+
+	// Eldritch Battery - increases regen by <x>%
+	const unsigned int numberOfEldritchBatteries = this->inventory.count("eldritch_battery");
+
+	const double regenMulti = natural_regen_multi + numberOfEldritchBatteries * artifacts::ELDRITCH_BATTERY_REGEN_BOOST;
+	this->health->setMulti(0, regenMulti, 0, 0, 0);
+
+	// Bone Mask - every item reduces incoming physical dmg by <x>%
+	const unsigned int numberOfBoneMasks = this->inventory.count("bone_mask");
+
+	const sint physResFlat = static_cast<sint>(
+		100. * (1. - std::pow(1. - artifacts::BONE_MASK_PHYS_DMG_REDUCTION, numberOfBoneMasks))
+		);
+
+	// Magic Negator - every item reduces incoming magic dmg by <x>%
+	const unsigned int numberOfMagicNegators = this->inventory.count("magic_negator");
+
+	const sint magicResFlat = static_cast<sint>(
+		100. * (1. - std::pow(1. - artifacts::MAGIC_NEGATOR_MAGIC_DMG_REDUCTION, numberOfMagicNegators))
+		);
+
+	// Twin Souls - every item reduces incoming chaos dmg by <x>%
+	const unsigned int numberOfTwinSouls = this->inventory.count("twin_souls");
+
+	const sint chaosResFlat = static_cast<sint>(
+		100. * (1. - std::pow(1. - artifacts::TWIN_SOULS_CHAOS_DMG_REDUCTION, numberOfTwinSouls))
+		);
+
+	this->health->setFlat(0, 0, physResFlat, magicResFlat, chaosResFlat);
 }

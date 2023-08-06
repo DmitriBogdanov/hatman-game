@@ -3,6 +3,8 @@
 /* Contains modules: 'StaticSprite', 'AnimatedSprite', 'ControllableSprite' */
 
 #include <SDL.h> // 'SDL_texture' and related types
+#include <SFML/Graphics.hpp>
+
 #include <string> // related type
 #include <initializer_list> // related type
 #include <unordered_map> // related type
@@ -30,16 +32,16 @@ struct AnimationFrame {
 struct Animation {
 	Animation() = default;
 
-	Animation(SDL_Texture* texture, const std::vector<AnimationFrame> &frames);
-	Animation(SDL_Texture* texture, std::vector<AnimationFrame> &&frames); // move semantics
-	Animation(SDL_Texture* texture, std::initializer_list<AnimationFrame> frames);
-	Animation(SDL_Texture* texture, const srcRect &frame); // creates single-frame animation
+	Animation(sf::Texture &texture, const std::vector<AnimationFrame> &frames);
+	Animation(sf::Texture &texture, std::vector<AnimationFrame> &&frames); // move semantics
+	Animation(sf::Texture &texture, std::initializer_list<AnimationFrame> frames);
+	Animation(sf::Texture &texture, const srcRect &frame); // creates single-frame animation
 
 	bool isSingleFrame() const; // if "Animation" has a single frame returns true
 
 	size_t lastIndex() const;
 
-	SDL_Texture* texture;
+	sf::Texture* texture;
 	std::vector<AnimationFrame> frames; // holds source rectangles and display time of all frames of animation
 };
 
@@ -56,7 +58,7 @@ public:
 	virtual ~Sprite() = default;
 
 	virtual void update(Milliseconds elapsedTime); // does nothing
-	void draw() const; // draws from current_source_rect to dest_rect
+	void draw(); // draws from current_source_rect to dest_rect
 
 	void setRotation(double radians);
 	void setRotationDegrees(double degrees);
@@ -65,8 +67,10 @@ public:
 	SDL_RendererFlip flip = SDL_FLIP_NONE; // change to flip textures
 	RGBColor color_mod;
 protected:
-	SDL_Texture* current_texture; // texture used by 'draw()'
-	srcRect current_source_rect; // source rect used by 'draw()'
+	sf::Sprite current_sprite;
+
+	///sf::Texture* current_texture; // texture used by 'draw()'
+	///srcRect current_source_rect; // source rect used by 'draw()'
 
 	const Vector2d &parent_position; // position of the object module is attached to
 	bool centered; // decides if sprite is centered around parent_position
@@ -87,7 +91,7 @@ public:
 		const Vector2d &parentPosition,
 		bool centered,
 		bool overlay,
-		SDL_Texture *texture
+		sf::Texture &texture
 		// if source rect is not specified it's assumed to be the whole texture
 	);
 
@@ -95,7 +99,7 @@ public:
 		const Vector2d &parentPosition,
 		bool centered,
 		bool overlay,
-		SDL_Texture *texture,
+		sf::Texture &texture,
 		srcRect sourceRect // source rect on the current_texture
 	);
 

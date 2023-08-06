@@ -2,6 +2,7 @@
 
 #include <string> // related type
 #include <SDL.h> // 'SDL_Texture' type
+#include <SFML/Graphics.hpp>
 
 #include "geometry_utils.h" // geometry types
 
@@ -19,20 +20,26 @@ public:
 	bool operator==(const Item &other);
 	bool operator!=(const Item &other);
 
-	void drawAt(const Vector2d &screenPos) const; // takes position of top-left corner
+	void drawAt(const Vector2d &screenPos); // takes position of top-left corner
 
 	virtual void use(); // does nothing by default
 
 	const std::string& getName() const;
+
 	const std::string& getLabel() const;
+	const std::string& get_description_lore() const;
+	const std::string& get_description_effect() const;
 
 protected:
-	SDL_Texture* texture;
+	sf::Sprite sprite;
 
 	std::string name; // technical name
-	std::string label; // displayble name
 
-	Item(const std::string &name, const std::string &label);
+	std::string label; // displayble name
+	std::string description_lore;
+	std::string description_effect;
+
+	Item(const std::string &name, const std::string &label, const std::string &lore, const std::string &effect);
 		// loads texture based on name (used by derived classes)
 };
 

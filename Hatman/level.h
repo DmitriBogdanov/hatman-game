@@ -1,16 +1,18 @@
 #pragma once
 
 #include <unordered_map> // entities sorted by type are stored in a map
-#include <unordered_set> /// TEST
+#include <unordered_set> // used to create access groups for entities
 #include "nlohmann_external.hpp" // parsing from JSON, 'nlohmann::json' type
 
 #include "geometry_utils.h" // geometry types
 #include "tile_base.h" // 'Tile' base class
 #include "entity_type_m.h" // 'Entity' base class, 'Creature' class
-#include "script_base.h" // 'Script' base class
+#include "script.h"
+///#include "script_base.h" // 'Script' base class
 #include "player.h" // 'Player' base class
 #include "collection.hpp" // 'Collection' class
 #include "timer.h" // 'Milliseconds' type
+#include "flags.h"
 
 
 
@@ -28,7 +30,7 @@ public:
 		// also inits player upon construction
 
 	void update(Milliseconds elapsedTime);
-	void draw() const;
+	void draw();
 
 	Collection<Script> scripts;
 
@@ -63,6 +65,8 @@ private:
 	void _insertNewEntity(std::unique_ptr<ntt::Entity> &&entity);
 
 	void _eraseMarkedEntities();
+	std::unordered_map<ntt::Entity*, Flag> _on_death_emits;
+		// flags that are emited when corresponding entity gets erased
 
 	// Tiles
 	std::vector<std::unique_ptr<Tile>> tiles_backlayer;
@@ -88,26 +92,30 @@ private:
 	// Scripts parsing
 	void parse_objectgroup_script_levelChange(const nlohmann::json &objectgroup_node);
 	void parse_objectgroup_script_levelSwitch(const nlohmann::json &objectgroup_node);
-	void parse_objectgroup_script_PlayerInArea(const nlohmann::json &objectgroup_node);
+	void parse_objectgroup_script_portal(const nlohmann::json &objectgroup_node);
+	void parse_objectgroup_script_hint(const nlohmann::json &objectgroup_node);
+	void parse_objectgroup_script_checkpoint(const nlohmann::json &objectgroup_node);
+	/*void parse_objectgroup_script_PlayerInArea(const nlohmann::json &objectgroup_node);
 	void parse_objectgroup_script_AND(const nlohmann::json &objectgroup_node);
 	void parse_objectgroup_script_OR(const nlohmann::json &objectgroup_node);
 	void parse_objectgroup_script_XOR(const nlohmann::json &objectgroup_node);
 	void parse_objectgroup_script_NAND(const nlohmann::json &objectgroup_node);
 	void parse_objectgroup_script_NOR(const nlohmann::json &objectgroup_node);
-	void parse_objectgroup_script_XNOR(const nlohmann::json &objectgroup_node);
+	void parse_objectgroup_script_XNOR(const nlohmann::json &objectgroup_node);*/
 
 
 	void add_Tile(const Tileset &tileset, int id, const Vector2 position, const std::string &layerPrefix);
 		// adds tile to the level with respect to its interactions and etc
 		// backlayer tiles are only drawn, other logic is ignored
 
-	void add_Entity(const std::string &type, const std::string &name, Vector2d position);
+	ntt::Entity* add_Entity(const std::string &type, const std::string &name, Vector2d position);
+		// returns ptr to created entity
 		// no need for 'add_Item()' as items can't exist outside of inventories
 		// no need for 'add_Script()' as scripts can't be standardized under the same constructor parameters
 
 	std::vector<Tileset> tilesets; // all tilesets of a current level, tilesets are ordered by firstgid
 
-	SDL_Texture* background;
+	sf::Sprite background_sprite;
 
 	Vector2 map_size;
 

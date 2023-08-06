@@ -30,8 +30,7 @@ void Timer::start(Milliseconds duration) {
 }
 
 void Timer::stop() {
-	this->timer_duration = -1.;
-	this->time_elapsed = 0.;
+	this->time_elapsed = this->timer_duration;
 	this->is_finished = true;
 }
 
@@ -45,7 +44,9 @@ Milliseconds Timer::elapsed() const {
 Milliseconds Timer::duration() const {
 	return this->timer_duration;
 }
-
+bool Timer::was_set() const {
+	return this->timer_duration > 0;
+}
 double Timer::elapsedPercentage() const {
 	return this->timer_duration ? this->time_elapsed / this->timer_duration : 1.;
 }

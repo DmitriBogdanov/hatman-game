@@ -76,11 +76,13 @@ Tile* SolidRectangle::getFirstCollision_Tile() const {
 	const dRect entityRect = this->getHitbox();
 
 	const Vector2 centerIndex = helpers::divide32(this->parent_position);
+	const Vector2 adjustedHalfSize = Vector2(1, 1) + helpers::divide32(entityRect.getSize() * 0.5);
+		// half-size of solid measured in tiles (rounded up), used to adjust collision checks for large solids
 
-	const int leftBound = std::max(centerIndex.x - performance::COLLISION_CHECK_DEPH, 0);
-	const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeX());
-	const int upperBound = std::max(centerIndex.y - performance::COLLISION_CHECK_DEPH, 0);
-	const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY());
+	const int leftBound = std::max(centerIndex.x - adjustedHalfSize.x, 0);
+	const int rightBound = std::min(centerIndex.x + adjustedHalfSize.x, Game::READ->level->getSizeX() - 1);
+	const int upperBound = std::max(centerIndex.y - adjustedHalfSize.y, 0);
+	const int lowerBound = std::min(centerIndex.y + adjustedHalfSize.y, Game::READ->level->getSizeY() - 1);
 
 	for (int X = leftBound; X <= rightBound; ++X)
 		for (int Y = upperBound; Y <= lowerBound; ++Y) {
@@ -170,14 +172,16 @@ void SolidRectangle::applyFrictionCompensation() {
 }
 
 void SolidRectangle::applyForceTillMaxSpeed_Left(double force, double maxSpeed) {
-	this->applyFrictionCompensation();
+	if (this->speed.x < 0) this->applyFrictionCompensation();
+		// no need to compensate friction if we accelerate in the opposite direction
 
 	if (this->speed.x > -maxSpeed) this->applyForce_Left(force);
 	else this->speed.x = -maxSpeed;
 }
 
 void SolidRectangle::applyForceTillMaxSpeed_Right(double force, double maxSpeed) {
-	this->applyFrictionCompensation();
+	if (this->speed.x > 0) this->applyFrictionCompensation();
+		// no need to compensate friction if we accelerate in the opposite direction
 
 	if (this->speed.x < maxSpeed) this->applyForce_Right(force);
 	else this->speed.x = maxSpeed;
@@ -198,6 +202,16 @@ void SolidRectangle::applyForceTillMaxSpeed_Horizontal(double force, double maxS
 	}
 }
 
+void SolidRectangle::applyForceTillMaxSpeed_Up(double force, double maxSpeed) {
+	if (this->speed.y > -maxSpeed) this->applyForce_Up(force);
+	else this->speed.y = -maxSpeed;
+}
+
+void SolidRectangle::applyForceTillMaxSpeed_Down(double force, double maxSpeed) {
+	if (this->speed.y < maxSpeed) this->applyForce_Down(force);
+	else this->speed.y = maxSpeed;
+}
+
 void SolidRectangle::apply_GravityForce() {
 	this->applyForce_Down(this->mass * physics::GRAVITY_ACCELERATION);
 }
@@ -209,17 +223,22 @@ void SolidRectangle::apply_FrictionForce() {
 }
 
 void SolidRectangle::apply_TileCollisions() {
-	const Vector2 centerIndex = helpers::divide32(this->parent_position);
+	this->is_grounded_at_left = false;
+	this->is_grounded_at_right = false;
 
 	dRect entityRect = this->getHitbox();
 	entityRect.moveByX(this->movement.x);
 
-	// Collisions happens at RIGHT => iterate over 6 tiles at right
+	const Vector2 centerIndex = helpers::divide32(this->parent_position);
+	const Vector2 adjustedHalfSize = Vector2(1, 1) + helpers::divide32(entityRect.getSize() * 0.5);
+		// half-size of solid measured in tiles (rounded up), used to adjust collision checks for large solids
+
+	// Collisions happens at RIGHT => iterate over 6 (or more for big solids) tiles at right
 	if (this->movement.x > 0.) { 
 		const int leftBound = std::max(centerIndex.x, 0); // no need to check left column
-		const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeX());
-		const int upperBound = std::max(centerIndex.y - performance::COLLISION_CHECK_DEPH, 0);
-		const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY());
+		const int rightBound = std::min(centerIndex.x + adjustedHalfSize.x, Game::READ->level->getSizeX() - 1);
+		const int upperBound = std::max(centerIndex.y - adjustedHalfSize.y, 0);
+		const int lowerBound = std::min(centerIndex.y + adjustedHalfSize.y, Game::READ->level->getSizeY() - 1);
 
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
@@ -234,12 +253,12 @@ void SolidRectangle::apply_TileCollisions() {
 						}
 			}
 	}
-	// Collisions happens at LEFT => iterate over 6 tiles at left
+	// Collisions happens at LEFT => iterate over 6 (or more for big solids) tiles at left
 	else if (this->movement.x < 0.) {
-		const int leftBound = std::max(centerIndex.x - performance::COLLISION_CHECK_DEPH, 0);
-		const int rightBound = std::min(centerIndex.x, Game::READ->level->getSizeX()); // no need to check right column
-		const int upperBound = std::max(centerIndex.y - performance::COLLISION_CHECK_DEPH, 0);
-		const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY());
+		const int leftBound = std::max(centerIndex.x - adjustedHalfSize.x, 0);
+		const int rightBound = std::min(centerIndex.x, Game::READ->level->getSizeX() - 1); // no need to check right column
+		const int upperBound = std::max(centerIndex.y - adjustedHalfSize.y, 0);
+		const int lowerBound = std::min(centerIndex.y + adjustedHalfSize.y, Game::READ->level->getSizeY() - 1);
 
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
@@ -257,12 +276,13 @@ void SolidRectangle::apply_TileCollisions() {
 
 	entityRect.moveByY(this->movement.y);
 
-	// Collisions happens at BOTTOM => iterate over 6 tiles at bottom
+	// Collisions happens at BOTTOM => iterate over 6 (or more for big solids) tiles at bottom
 	if (this->movement.y > 0.) {
-		const int leftBound = std::max(centerIndex.x - performance::COLLISION_CHECK_DEPH, 0);
-		const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeX());
+		const int leftBound = std::max(centerIndex.x - adjustedHalfSize.x, 0);
+		const int rightBound = std::min(centerIndex.x + adjustedHalfSize.x, Game::READ->level->getSizeX() - 1);
 		const int upperBound = std::max(centerIndex.y, 0); // no need to check upper row
-		const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY());
+		const int lowerBound = std::min(centerIndex.y + adjustedHalfSize.y, Game::READ->level->getSizeY() - 1);
+		///const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY() - 1);
 
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
@@ -270,7 +290,8 @@ void SolidRectangle::apply_TileCollisions() {
 
 				// Go over tile hitbox rects and check for collisions
 				if (tile && tile->hitbox)
-					for (const auto hitboxRect : tile->hitbox->rectangles)
+					for (const auto hitboxRect : tile->hitbox->rectangles) {
+						// Handle collision with rect
 						if (entityRect.overlapsWithRect(hitboxRect.rect))
 							// regular collision
 							if (!hitboxRect.is_platform) { 
@@ -285,14 +306,26 @@ void SolidRectangle::apply_TileCollisions() {
 								this->speed.y = 0.;
 								this->is_grounded = true;
 							}
+
+						// Deduce whether left/right sides are grounded
+						if (this->is_grounded) {
+							if (hitboxRect.rect.getLeft() < entityRect.getLeft())
+								this->is_grounded_at_left = true;
+
+							if (hitboxRect.rect.getRight() > entityRect.getRight())
+								this->is_grounded_at_right = true;
+								// logic can be simplified to this since we already know that collision happened
+								// and it happened precisely at the bottom
+						}
+					}
 			}
 	}
-	// Collisions happens at TOP => iterate over 6 tiles at top
+	// Collisions happens at TOP => iterate over 6 (or more for big solids) tiles at top
 	else if (this->movement.y < 0.) {
-		const int leftBound = std::max(centerIndex.x - performance::COLLISION_CHECK_DEPH, 0);
-		const int rightBound = std::min(centerIndex.x + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeX());
-		const int upperBound = std::max(centerIndex.y - performance::COLLISION_CHECK_DEPH, 0);
-		const int lowerBound = std::min(centerIndex.y, Game::READ->level->getSizeY()); // no need to check lower row
+		const int leftBound = std::max(centerIndex.x - adjustedHalfSize.x, 0);
+		const int rightBound = std::min(centerIndex.x + adjustedHalfSize.x, Game::READ->level->getSizeX() - 1);
+		const int upperBound = std::max(centerIndex.y - adjustedHalfSize.y, 0);
+		const int lowerBound = std::min(centerIndex.y, Game::READ->level->getSizeY() - 1); // no need to check lower row
 
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {

@@ -3,9 +3,10 @@
 /* Contains module: 'Health' */
 
 #include <SDL.h> // 'SDL_Texture*' type for 'HealthbarDisplay'
+#include <SFML/Graphics.hpp>
+
 #include "geometry_utils.h" // 'Vector2d' and 'srcRect' types for 'HealthbarDisplay'
 #include "timer.h" // 'Milliseconds' type for updating
-
 
 
 using uint = unsigned int; // typedefs for convenient future refactioring
@@ -29,10 +30,10 @@ enum class Faction {
 struct Damage {
 	Damage() = default;
 
-	constexpr Damage(Faction faction, double phys = 0, double magic = 0, double dot = 0, double pure = 0) :
+	constexpr Damage(Faction faction, double phys = 0, double magic = 0, double chaos = 0, double pure = 0) :
 		phys(phys),
 		magic(magic),
-		dot(dot),
+		chaos(chaos),
 		pure(pure),
 		faction(faction)
 	{}
@@ -40,18 +41,18 @@ struct Damage {
 	constexpr Damage& operator+=(const Damage& other) {
 		this->phys += other.phys;
 		this->magic += other.magic;
-		this->dot += other.dot;
+		this->chaos += other.chaos;
 		this->pure += other.pure;
 
 		return *this;
 	}
 
-	constexpr Damage operator+(const Damage& other) {
+	constexpr Damage operator+(const Damage& other) const {
 		return Damage(
 			this->faction,
 			this->phys + other.phys,
 			this->magic + other.magic,
-			this->dot + other.dot,
+			this->chaos + other.chaos,
 			this->pure + other.pure
 		);
 	}
@@ -59,18 +60,18 @@ struct Damage {
 	constexpr Damage& operator*=(double modifier) {
 		this->phys *= modifier;
 		this->magic *= modifier;
-		this->dot *= modifier;
+		this->chaos *= modifier;
 		this->pure *= modifier;
 
 		return *this;
 	}
 
-	constexpr Damage operator*(double modifier) {
+	constexpr Damage operator*(double modifier) const {
 		return Damage(
 			this->faction,
 			this->phys * modifier,
 			this->magic * modifier,
-			this->dot * modifier,
+			this->chaos * modifier,
 			this->pure * modifier
 		);
 	}
@@ -78,7 +79,7 @@ struct Damage {
 	constexpr Damage& modify(double modifierPhys, double modifierMagic, double modifierDot, double modifierPure) {
 		this->phys *= modifierPhys;
 		this->magic *= modifierMagic;
-		this->dot *= modifierDot;
+		this->chaos *= modifierDot;
 		this->pure *= modifierPure;
 
 		return *this;
@@ -86,7 +87,7 @@ struct Damage {
 
 	double phys;
 	double magic;
-	double dot;
+	double chaos;
 	double pure;
 
 	Faction faction;
@@ -102,15 +103,15 @@ class Health {
 public:
 	Health() = delete;
 
-	Health(Faction faction, uint maxHp, sint regen = 0, sint physRes = 0, sint magicRes = 0, sint dotRes = 0); // sets base stats
+	Health(Faction faction, uint maxHp, sint regen = 0, sint physRes = 0, sint magicRes = 0, sint chaosRes = 0); // sets base stats
 
 	void update(Milliseconds elapsedTime);
 
-	void setFlat(uint maxHp, sint regen, sint physRes, sint magicRes, sint dotRes);
-	void addFlat(uint maxHp, sint regen, sint physRes, sint magicRes, sint dotRes);
+	void setFlat(uint maxHp, sint regen, sint physRes, sint magicRes, sint chaosRes);
+	void addFlat(uint maxHp, sint regen, sint physRes, sint magicRes, sint chaosRes);
 
-	void setMulti(double maxHp, double regen, double physRes, double magicRes, double dotRes);
-	void addMulti(double maxHp, double regen, double physRes, double magicRes, double dotRes);
+	void setMulti(double maxHp, double regen, double physRes, double magicRes, double chaosRes);
+	void addMulti(double maxHp, double regen, double physRes, double magicRes, double chaosRes);
 
 	void applyDamage(const Damage &damage);
 	void applyHeal(double heal);
@@ -124,55 +125,88 @@ public:
 	double hp; // current hp
 
 	Faction faction; // health receives no damage from the same faction
+
+	// 'Memory'
+	Milliseconds time_since_last_damage_received;
+
 private:
 	// Base values
 	uint base_maxHp;
 	sint base_regen;
 	sint base_physRes;
 	sint base_magicRes;
-	sint base_dotRes;
+	sint base_chaosRes;
 
 	// Flat mods
 	uint flat_maxHp = 0;
 	sint flat_regen = 0;
 	sint flat_physRes = 0;
 	sint flat_magicRes = 0;
-	sint flat_dotRes = 0;
+	sint flat_chaosRes = 0;
 
 	// Multiplicative mods
 	double multi_maxHp = 0;
 	double multi_regen = 0;
 	double multi_physRes = 0;
 	double multi_magicRes = 0;
-	double multi_dotRes = 0;
+	double multi_chaosRes = 0;
 
 	// Total values
 	uint total_maxHp;
 	sint total_regen;
 	sint total_physRes;
 	sint total_magicRes;
-	sint total_dotRes;
+	sint total_chaosRes;
 
 	void recalc(); // recalculates total values
 };
 
 
 
+// # HealthbarDisplay_Base #
+// Pure virtual base class for healhbar displays
+class HealthbarDisplay_Base {
+public:
+	HealthbarDisplay_Base() = default;
+
+	virtual void draw() = 0;
+};
+
 // # HealthbarDisplay #
 // - Connects to some position and a 'Health' object, displays current health
 // - No need to update, healthbar merely displays state of other objects
-class HealthbarDisplay {
+class HealthbarDisplay : public HealthbarDisplay_Base {
 public:
 	HealthbarDisplay() = delete;
 	HealthbarDisplay(const Vector2d &parentPosition, const Health &parentHealth, const Vector2d &bottomCenterpointAlignment);
 		// note that for convenience constructor takes alignment of the bottom centerpoint and THE calculates actual corner alignment
 
-	void draw() const;
+	void draw() override;
 private:
 	const Vector2d &parent_position;
 	const Health &parent_health;
 
 	Vector2d corner_alignment; // alignment relative to the .parent_position
 
-	SDL_Texture* texture;
+	sf::Sprite sprite;
+};
+
+
+
+// # BossHealthbarDisplay #
+// - Connects to 'Health' object, displays current health
+// - Renders as an overlay at the bottom of the screen
+// - No need to update, healthbar merely displays state of other objects
+class BossHealthbarDisplay : public HealthbarDisplay_Base {
+public:
+	BossHealthbarDisplay() = delete;
+	BossHealthbarDisplay(const Health &parentHealth, const std::string &bossTitle);
+
+	void draw() override;
+
+private:
+	const Health &parent_health;
+	std::string boss_title;
+
+	sf::Sprite sprite;
 };

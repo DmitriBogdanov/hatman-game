@@ -12,10 +12,9 @@ namespace items {
 		// creates item of a correct class based on name and returns ownership
 
 
-
-	// # SpiderSignet #
-	struct SpiderSignet : public Item {
-		SpiderSignet();
+	// # EldritchBattery #
+	struct EldritchBattery : public Item {
+		EldritchBattery();
 	};
 
 	// # PowerShard #
@@ -23,25 +22,28 @@ namespace items {
 		PowerShard();
 	};
 
-	// # EldritchBattery #
-	struct EldritchBattery : public Item {
-		EldritchBattery();
+	// # SpiderSignet #
+	struct SpiderSignet : public Item {
+		SpiderSignet();
+	};
+
+	// # BoneMask #
+	struct BoneMask : public Item {
+		BoneMask();
+	};
+
+	// # MagicNegator #
+	struct MagicNegator : public Item {
+		MagicNegator();
+	};
+
+	// # TwinSouls #
+	struct TwinSouls : public Item {
+		TwinSouls();
 	};
 
 	// # WatchingEye #
 	struct WatchingEye : public Item {
 		WatchingEye();
-	};
-
-	// #BrassRelic #
-	struct BrassRelic : public Item {
-		BrassRelic();
-	};
-
-
-
-	// # Paper #
-	struct Paper : public Item {
-		Paper();
 	};
 }

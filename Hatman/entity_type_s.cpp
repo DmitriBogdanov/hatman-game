@@ -11,6 +11,8 @@ using namespace ntt;
 namespace Projectile_consts {
 	constexpr double DEFAULT_MASS = 30.;
 	constexpr double DEFAULT_FRICTION = 0.5;
+
+	constexpr Milliseconds MAX_LIFETIME = sec_to_ms(4.);
 }
 
 s_type::Projectile::Projectile(const Vector2d &position, const Damage &damage, double knockback, const Vector2d &AOE) :
@@ -18,17 +20,23 @@ s_type::Projectile::Projectile(const Vector2d &position, const Damage &damage, d
 	damage(damage),
 	knockback(knockback),
 	AOE(AOE)
-{}
+{
+	this->lifetime.start(Projectile_consts::MAX_LIFETIME);
+}
 
 TypeId s_type::Projectile::type_id() const { return TypeId::PROJECTILE; }
 
 bool s_type::Projectile::update(Milliseconds elapsedTile) {
+	if (!this->delay.finished()) return false;
+
 	if (!Entity::update(elapsedTile)) return false;
 
 	this->sprite->flip = (this->solid->speed.x >= 0.) ? SDL_FLIP_NONE : SDL_FLIP_VERTICAL;
 	this->sprite->setRotation(this->solid->speed.angleToX());
 
 	if (this->solid->enabled && (this->checkEntityCollision() || this->checkTerrainCollision())) this->onCollision();
+
+	if (this->lifetime.finished()) this->mark_for_erase();
 
 	return true;
 }

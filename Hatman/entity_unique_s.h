@@ -30,14 +30,29 @@ namespace ntt::s {
 		};
 
 		// # SpiritBomb #
-		// - Arching projectile with big AOE
-		// - Used by Spirit bombers
+		// - Moderately fast projectile with AOE explosion
+		// - Stopped by terrain
+		// - Used by "SpiritBomber"
 		class SpiritBomb : public s_type::Projectile {
 		public:
 			SpiritBomb() = delete;
 
 			SpiritBomb(const Vector2d& position, const Vector2d& speed, const Damage& damage, double knockback, const Vector2d& AOE);
 		
+		private:
+			void onCollision() override;
+		};
+
+		// # Fireball #
+		// - Slowly moving projectile that deals damage on contact
+		// - Passes through terrain
+		// - Used by "CulstitMage" and bosses
+		class Fireball : public s_type::Projectile {
+		public:
+			Fireball() = delete;
+
+			Fireball(const Vector2d& position, const Vector2d& speed, const Damage& damage, double knockback, const Vector2d& AOE);
+
 		private:
 			void onCollision() override;
 		};

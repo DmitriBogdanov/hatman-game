@@ -1,5 +1,7 @@
 #include "camera.h"
 
+#include <iostream>
+
 #include "graphics.h" // access to rendering
 #include "globalconsts.hpp" // natural consts
 
@@ -7,103 +9,71 @@
 
 // # Camera #
 Camera::Camera(const Vector2d &position) :
-	position(position),
-	zoom(1),
-	angle(0)
+	position(position)
 {
-	this->standard_FOV = natural::DIMENSIONS;
-	this->scaled_standard_FOV = Vector2(Graphics::READ->width(), Graphics::READ->height());
-
-	this->backbuffer_size = (scaled_standard_FOV + Vector2(this->MARGIN, this->MARGIN)) * 2;
-
-	this->backbuffer = SDL_CreateTexture(
-		Graphics::ACCESS->getRenderer(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
-		this->backbuffer_size.x, this->backbuffer_size.y
-	);
-
-	SDL_SetTextureBlendMode(this->backbuffer, SDL_BLENDMODE_BLEND); // necessary for proper blending of of transparent parts
+	std::cout << "Creating camera graphics...\n";
+	
+	this->set_zoom(natural::ZOOM);
 }
-Camera::~Camera() {
-	SDL_DestroyTexture(this->backbuffer);
-}
+
 
 // FOV
-Vector2d Camera::getFOV_Corner() const {
-	return this->position - this->getFOV_Size() / 2.;
+Vector2d Camera::get_FOV_corner() const {
+	return this->position - this->get_FOV_size() / 2.;
 }
 
-Vector2d Camera::getFOV_Size() const {
-	return this->standard_FOV * this->zoom;
+Vector2d Camera::get_FOV_size() const {
+	return this->FOV;
 }
 
-dRect Camera::getFOV_Rect() const {
-	return dRect(this->position, this->getFOV_Size(), true);
+dRect Camera::get_FOV_rect() const {
+	return dRect(this->position, this->get_FOV_size(), true);
 }
 
 // Position conversions
 Vector2d Camera::get_ScreenPos_from_LevelPos(const Vector2d &levelPos) const {
-	return levelPos - this->getFOV_Corner();
+	return levelPos - this->get_FOV_corner();
 }
 
 Vector2d Camera::get_LevelPos_from_ScreenPos(const Vector2d &screenPos) const {
-	return screenPos + this->getFOV_Corner();
+	return screenPos + this->get_FOV_corner();
 }
 
-void Camera::textureToCamera(SDL_Texture* texture, const srcRect* sourceRect, const dstRect* destRect) {
-	SDL_SetRenderTarget(Graphics::ACCESS->getRenderer(), this->backbuffer); // target backbuffer for rendering
-
-	const double scalingFactor = Graphics::READ->scaling_factor();
-	const Vector2d scaledPosition = this->position * scalingFactor;
-
-	const Vector2 cameraCornerPos =
-		(scaledPosition.toVector2() - this->backbuffer_size / 2 + Vector2(this->MARGIN, this->MARGIN));
-	// position of top-left corner of the camera with standard zoom
-
-	SDL_Rect backbufferDestRect = {
-		static_cast<int>(this->MARGIN + destRect->x * scalingFactor - cameraCornerPos.x),
-		static_cast<int>(this->MARGIN + destRect->y * scalingFactor - cameraCornerPos.y),
-		static_cast<int>(destRect->w * scalingFactor),
-		static_cast<int>(destRect->h * scalingFactor)
-	};
-
-	SDL_RenderCopy(Graphics::ACCESS->getRenderer(), texture, sourceRect, &backbufferDestRect);
-}
-void Camera::textureToCameraEx(SDL_Texture* texture, const srcRect* sourceRect, const dstRect* destRect, double angle, SDL_RendererFlip flip) {
-	SDL_SetRenderTarget(Graphics::ACCESS->getRenderer(), this->backbuffer); // target backbuffer for rendering
-
-	const double scalingFactor = Graphics::READ->scaling_factor();
-	const Vector2d scaledPosition = this->position * scalingFactor;
-
-	const Vector2 cameraCornerPos =
-		scaledPosition.toVector2() - this->backbuffer_size / 2 + Vector2(this->MARGIN, this->MARGIN);
-	// position of top-left corner of the camera with standard zoom
-
-	SDL_Rect backbufferDestRect = {
-		static_cast<int>(this->MARGIN + destRect->x * scalingFactor - cameraCornerPos.x),
-		static_cast<int>(this->MARGIN + destRect->y * scalingFactor - cameraCornerPos.y),
-		static_cast<int>(destRect->w * scalingFactor),
-		static_cast<int>(destRect->h * scalingFactor)
-	};
-
-	SDL_RenderCopyEx(Graphics::ACCESS->getRenderer(), texture, sourceRect, &backbufferDestRect, angle, NULL, flip);
+void Camera::set_zoom(double zoom) {
+	this->FOV = (natural::DIMENSIONS * zoom).toVector2();
 }
 
-void Camera::cameraToRenderer() {
-	SDL_SetRenderTarget(Graphics::ACCESS->getRenderer(), NULL); // give target back to the renderer
+void Camera::draw_sprite(sf::Sprite &sprite) {
+	// Candle sprite position
+	const sf::Vector2f minusCameraCornerPos(
+		static_cast<float>(this->FOV.x / 2. - this->position.x),
+		static_cast<float>(this->FOV.y / 2. - this->position.y)
+	); // position of top-left corner of the camera
 
-	const Vector2 sourceRectCenter = this->backbuffer_size / 2;
-	const Vector2 sourceRectDimensions = this->scaled_standard_FOV * zoom + Vector2(this->MARGIN, this->MARGIN) * 2 * zoom;
+	sprite.move(minusCameraCornerPos);
 
-	SDL_Rect sourceRect = dRect(sourceRectCenter, sourceRectDimensions, true).to_SDL_Rect();
-	SDL_Rect destRect = {
-		-this->MARGIN, -this->MARGIN,
-		Graphics::READ->width() + 2 * this->MARGIN, Graphics::READ->height() + 2 * this->MARGIN
-	}; // account for different backbuffer including marign 
+	// Set up camera view
+	const auto FOV_size = Graphics::READ->camera->get_FOV_size();
 
-	Graphics::ACCESS->copyTextureToRendererEx(this->backbuffer, &sourceRect, &destRect, this->angle);
-}
-void Camera::cameraClear() {
-	SDL_SetRenderTarget(Graphics::ACCESS->getRenderer(), this->backbuffer); // target backbuffer for rendering
+	sf::View camera_view;
+	camera_view.setCenter(
+		static_cast<float>(FOV_size.x / 2.),
+		static_cast<float>(FOV_size.y / 2.)
+	);
+	camera_view.setSize(
+		static_cast<float>(FOV_size.x),
+		static_cast<float>(FOV_size.y)
+	);
 
-	SDL_RenderClear(Graphics::ACCESS->getRenderer());
+	// !!! Fix for the rounding issue that causes vertical black lines !!!
+	// !!! to sometimes appear on certain camera coords                !!!
+	const float scaling_factor = static_cast<float>(Graphics::READ->scaling_factor());
+
+	sf::Vector2f oldPosition = sprite.getPosition();
+	sprite.setPosition(std::floor(oldPosition.x + .5f / scaling_factor), std::floor(oldPosition.y + .5f / scaling_factor));
+
+	Graphics::ACCESS->window.setView(camera_view);
+
+	// Draw
+	Graphics::ACCESS->window_draw_sprite(sprite);
 }

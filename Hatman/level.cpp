@@ -7,10 +7,8 @@
 #include "tags.h" // tag utility
 #include "tile_unique.h" // creation of unique tiles
 #include "entity_unique_m.h" // creation of unique entities
-#include "script_type.h" // creation of scripts
 #include "globalconsts.hpp" // performnce-related consts
-
-
+#include "game.h" // to play music
 
 
 // # Level #
@@ -39,9 +37,9 @@ void Level::update(Milliseconds elapsedTime) {
 	const Vector2 centerIndex = helpers::divide32(cameraPos);
 
 	const int leftBound = std::max(centerIndex.x - performance::TILE_FREEZE_RANGE_X, 0);
-	const int rightBound = std::min(centerIndex.x + performance::TILE_FREEZE_RANGE_X, this->map_size.x);
+	const int rightBound = std::min(centerIndex.x + performance::TILE_FREEZE_RANGE_X, this->map_size.x - 1);
 	const int upperBound = std::max(centerIndex.y - performance::TILE_FREEZE_RANGE_Y, 0);
-	const int lowerBound = std::min(centerIndex.y + performance::TILE_FREEZE_RANGE_Y, this->map_size.y);
+	const int lowerBound = std::min(centerIndex.y + performance::TILE_FREEZE_RANGE_Y, this->map_size.y - 1);
 
 	// Update tiles
 	for (int X = leftBound; X <= rightBound; ++X)
@@ -66,18 +64,18 @@ void Level::update(Milliseconds elapsedTime) {
 	for (auto &script : this->scripts) { script.update(elapsedTime); }
 }
 
-void Level::draw() const {
+void Level::draw() {
 	// Draw backround
-	Graphics::ACCESS->copyTextureToRenderer(this->background, NULL, NULL); // background bypasses camera !!!
+	Graphics::ACCESS->gui->draw_sprite(this->background_sprite);
 
 	const auto cameraPos = this->player->cameraTrap_getPosition();
 
 	const Vector2 centerIndex = helpers::divide32(cameraPos);
 
 	const int leftBound = std::max(centerIndex.x - performance::TILE_DRAW_RANGE_X, 0);
-	const int rightBound = std::min(centerIndex.x + performance::TILE_DRAW_RANGE_X, this->map_size.x);
+	const int rightBound = std::min(centerIndex.x + performance::TILE_DRAW_RANGE_X, this->map_size.x - 1);
 	const int upperBound = std::max(centerIndex.y - performance::TILE_DRAW_RANGE_Y, 0);
-	const int lowerBound = std::min(centerIndex.y + performance::TILE_DRAW_RANGE_Y, this->map_size.y);
+	const int lowerBound = std::min(centerIndex.y + performance::TILE_DRAW_RANGE_Y, this->map_size.y - 1);
 
 	// Draw [backlayer]->[layer]->[midlayer]
 	for (int X = leftBound; X <= rightBound; ++X)
@@ -86,11 +84,9 @@ void Level::draw() const {
 
 			const auto backtile = this->tiles_backlayer[tileIndex].get();
 			const auto tile = this->tiles[tileIndex].get();
-			const auto midtile = this->tiles_midlayer[tileIndex].get();
 
-			///if (backtile) backtile->draw();
+			if (backtile) backtile->draw();
 			if (tile) tile->draw();
-			///if (midtile) midtile->draw();
 		}
 
 
@@ -211,6 +207,14 @@ void Level::_eraseMarkedEntities() {
 			// Move to the end
 			*iter = std::move(*(--iterToLast));
 
+			// Emit on-death flag (if present)
+			auto iterToEmitedFlag = this->_on_death_emits.find(ptrToErase);
+
+			if (iterToEmitedFlag != this->_on_death_emits.end()) {
+				Flags::ACCESS->add((*iterToEmitedFlag).second);
+				this->_on_death_emits.erase(iterToEmitedFlag);
+			}
+
 			// Clear dependencies
 			this->entities_solid.erase(ptrToErase);
 			this->entities_killable.erase(ptrToErase);
@@ -268,10 +272,13 @@ void Level::add_Tile(const Tileset &tileset, int id, const Vector2 position, con
 		break;
 	}
 }
-void Level::add_Entity(const std::string &type, const std::string &name, Vector2d position) {
+ntt::Entity* Level::add_Entity(const std::string &type, const std::string &name, Vector2d position) {
 	auto entity = ntt::m::make_entity(type, name, position);
+	const auto ptr = entity.get();
 
 	this->_insertNewEntity(std::move(entity));
+
+	return ptr;
 }
 
 // Parsing
@@ -285,7 +292,12 @@ void Level::parseFromJSON(const std::string &filePath) {
 		const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
 
 		if (prefix == "background") {
-			this->background = Graphics::ACCESS->getTexture_Background(property_node["value"].get<std::string>());
+			this->background_sprite.setTexture(
+				Graphics::ACCESS->getTexture_Background(property_node["value"].get<std::string>())
+			);
+		}
+		if (prefix == "music") {
+			Game::ACCESS->play_music(property_node["value"].get<std::string>());
 		}
 		/// new properties go there
 	}
@@ -377,26 +389,14 @@ void Level::parse_objectgroup(const nlohmann::json &objectgroup_node) {
 		else if (layer_suffix == "level_switch") {
 			this->parse_objectgroup_script_levelSwitch(objectgroup_node);
 		}
-		else if (layer_suffix == "player_in_area") {
-			this->parse_objectgroup_script_PlayerInArea(objectgroup_node);
+		else if (layer_suffix == "portal") {
+			this->parse_objectgroup_script_portal(objectgroup_node);
 		}
-		else if (layer_suffix == "AND") {
-			this->parse_objectgroup_script_AND(objectgroup_node);
+		else if (layer_suffix == "hint") {
+			this->parse_objectgroup_script_hint(objectgroup_node);
 		}
-		else if (layer_suffix == "OR") {
-			this->parse_objectgroup_script_OR(objectgroup_node);
-		}
-		else if (layer_suffix == "XOR") {
-			this->parse_objectgroup_script_XOR(objectgroup_node);
-		}
-		else if (layer_suffix == "NAND") {
-			this->parse_objectgroup_script_NAND(objectgroup_node);
-		}
-		else if (layer_suffix == "NOR") {
-			this->parse_objectgroup_script_NOR(objectgroup_node);
-		}
-		else if (layer_suffix == "XNOR") {
-			this->parse_objectgroup_script_XNOR(objectgroup_node);
+		else if (layer_suffix == "checkpoint") {
+			this->parse_objectgroup_script_checkpoint(objectgroup_node);
 		}
 		// new script types go there
 	}
@@ -404,12 +404,37 @@ void Level::parse_objectgroup(const nlohmann::json &objectgroup_node) {
 
 // Entity types parsing
 void Level::parse_objectgroup_entity(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json& objects_array_node = objectgroup_node["objects"];
+	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
 	for (const auto& object_node : objects_array_node) {
-		const auto gid = object_node["gid"].get<int>();
+		// Get custom properties
+		Flag requires_flag = "";
+		Flag emits_flag = "";
+
+		const auto properties_node_iter = object_node.find("properties");
+
+		if (properties_node_iter != object_node.end()) {
+			const nlohmann::json &properties_array = *properties_node_iter;
+
+			for (const auto &property_node : properties_array) {
+				const std::string name = property_node["name"];
+
+				if (name == "requires_flag") {
+					requires_flag = property_node["value"].get<std::string>();
+				}
+				else if (name == "emits_flag") {
+					emits_flag = property_node["value"].get<std::string>();
+				}
+			}
+		}
+
+		// If 'reqired_flag' is not satisfied, further parsing is unnecessary
+		if (!requires_flag.empty() && !Flags::READ->check(requires_flag)) continue;
 
 		// Determine which tileset 'entity-tile' belongs to (based on gid)
+		const auto gid = object_node["gid"].get<int>();
+		
 		const Tileset* correspondingTileset = &this->tilesets.front();
+
 		for (const auto& tileset : this->tilesets)
 			if (gid >= tileset.first_gid) correspondingTileset = &tileset;
 
@@ -420,35 +445,18 @@ void Level::parse_objectgroup_entity(const nlohmann::json &objectgroup_node) {
 		// Parse position
 		const auto tilePosition = Vector2d(object_node["x"].get<double>(), object_node["y"].get<double>());
 
-		this->add_Entity(enitySpawnData.type, enitySpawnData.name, tilePosition + enitySpawnData.position_in_tile);
+		// Create entity
+		const auto ptr_to_entity = this->add_Entity(
+			enitySpawnData.type,
+			enitySpawnData.name,
+			tilePosition + enitySpawnData.position_in_tile - Vector2d(0, natural::TILE_SIZE)
+				// !!! for some bizarre reason Tiled uses BOTTOM-left corner coordinates for
+				// tile objects so we have to move it up 1 tile to get normal coords
+		);
+
+		// Set flag emited on death (if present)
+		if (!emits_flag.empty()) this->_on_death_emits[ptr_to_entity] = emits_flag;
 	}
-
-	
-
-	/// OLD
-	//const std::string entity_type = tags::getSuffix(objectgroup_node["name"].get<std::string>());
-
-	//const nlohmann::json &objects_array_node = objectgroup_node["objects"];
-	//for (const auto &object_node : objects_array_node) {
-	//	// Parse position
-	//	const Vector2d entityPosition(
-	//		object_node["x"].get<int>(),
-	//		object_node["y"].get<int>()
-	//	); // add TILE_SIZE / 2 because all entites are parsed from 32x32 'custom tile objects'
-
-	//	// Parse custom properties
-	//	std::string entityName;
-
-	//	for (const auto &property_node : object_node["properties"]) {
-	//		const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
-
-	//		if (prefix == "name") {
-	//			entityName = property_node["value"].get<std::string>();
-	//		}
-	//	}
-
-	//	this->add_Entity(entity_type, entityName, entityPosition);
-	//}
 }
 
 // Scripts parsing
@@ -482,6 +490,7 @@ void Level::parse_objectgroup_script_levelChange(const nlohmann::json &objectgro
 		this->scripts.insert(std::make_unique<scripts::LevelChange>(hitbox, goes_to_level, goes_to_pos));
 	}
 }
+
 void Level::parse_objectgroup_script_levelSwitch(const nlohmann::json &objectgroup_node) {
 	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
 	for (const auto &object_node : objects_array_node) {
@@ -493,9 +502,6 @@ void Level::parse_objectgroup_script_levelSwitch(const nlohmann::json &objectgro
 
 		std::string goes_to_level;
 		Vector2 goes_to_pos;
-
-		std::string emit_output = ""; // optional
-		int emit_output_lifetime = 0; // optional
 
 		// Parse custom properties
 		for (const auto &property_node : object_node["properties"]) {
@@ -515,7 +521,8 @@ void Level::parse_objectgroup_script_levelSwitch(const nlohmann::json &objectgro
 		this->scripts.insert(std::make_unique<scripts::LevelSwitch>(hitbox, goes_to_level, goes_to_pos));
 	}
 }
-void Level::parse_objectgroup_script_PlayerInArea(const nlohmann::json &objectgroup_node) {
+
+void Level::parse_objectgroup_script_portal(const nlohmann::json &objectgroup_node) {
 	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
 	for (const auto &object_node : objects_array_node) {
 		// Parse hitbox
@@ -524,210 +531,315 @@ void Level::parse_objectgroup_script_PlayerInArea(const nlohmann::json &objectgr
 			object_node["width"].get<int>(), object_node["height"].get<int>()
 		);
 
-		std::string emit_output = ""; // optional
-		int emit_output_lifetime = 0; // optional
+		std::string goes_to_level;
+		Vector2 goes_to_pos;
 
 		// Parse custom properties
 		for (const auto &property_node : object_node["properties"]) {
 			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
 
-			if (prefix == "emit_output") {
-				emit_output = property_node["value"].get<std::string>();
+			if (prefix == "goes_to_x") {
+				goes_to_pos.x = property_node["value"].get<int>();
 			}
-			else if (prefix == "emit_output_lifetime") {
-				emit_output_lifetime = property_node["value"].get<int>();
+			else if (prefix == "goes_to_y") {
+				goes_to_pos.y = property_node["value"].get<int>();
 			}
 		}
 
-		auto script = std::make_unique<scripts::PlayerInArea>(hitbox);
-		script->setOutput(emit_output, emit_output_lifetime);
-
-		this->scripts.insert(std::move(script));
+		this->scripts.insert(std::make_unique<scripts::Portal>(hitbox, goes_to_pos));
 	}
 }
-void Level::parse_objectgroup_script_AND(const nlohmann::json &objectgroup_node) {
+
+void Level::parse_objectgroup_script_hint(const nlohmann::json &objectgroup_node) {
 	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
 	for (const auto &object_node : objects_array_node) {
+		// Parse hitbox
+		const dRect hitbox = dRect(
+			object_node["x"].get<int>(), object_node["y"].get<int>(),
+			object_node["width"].get<int>(), object_node["height"].get<int>()
+		);
 
-		std::string emit_output = ""; // optional
-		int emit_output_lifetime = 0; // optional
+		Vector2d field_center;
+		Vector2d field_size;
 
-		std::unordered_set<std::string> emit_inputs;
-
+		std::string text;
+		
 		// Parse custom properties
 		for (const auto &property_node : object_node["properties"]) {
 			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
 
-			if (prefix == "emit_output") {
-				emit_output = property_node["value"].get<std::string>();
+			if (prefix == "text") {
+				text = property_node["value"].get<std::string>();
 			}
-			else if (prefix == "emit_output_lifetime") {
-				emit_output_lifetime = property_node["value"].get<int>();
+			else if (prefix == "text_x") {
+				field_center.x = property_node["value"].get<int>();
 			}
-			else if (prefix == "emit_input") {
-				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
-				emit_inputs.insert(property_node["value"].get<std::string>());
+			else if (prefix == "text_y") {
+				field_center.y = property_node["value"].get<int>();
+			}
+			else if (prefix == "text_width") {
+				field_size.x = property_node["value"].get<int>();
+			}
+			else if (prefix == "text_height") {
+				field_size.y = property_node["value"].get<int>();
 			}
 		}
 
-		auto script = std::make_unique<scripts::AND>(emit_inputs);
-		script->setOutput(emit_output, emit_output_lifetime);
+		const auto text_field = dRect(field_center, field_size, true);
 
-		this->scripts.insert(std::move(script));
+		this->scripts.insert(std::make_unique<scripts::Hint>(hitbox, text_field, text));
 	}
 }
-void Level::parse_objectgroup_script_OR(const nlohmann::json &objectgroup_node) {
+
+void Level::parse_objectgroup_script_checkpoint(const nlohmann::json &objectgroup_node) {
 	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
 	for (const auto &object_node : objects_array_node) {
+		// Parse hitbox
+		const dRect hitbox = dRect(
+			object_node["x"].get<int>(), object_node["y"].get<int>(),
+			object_node["width"].get<int>(), object_node["height"].get<int>()
+		);
 
-		std::string emit_output = ""; // optional
-		int emit_output_lifetime = 0; // optional
+		// Get custom properties
+		Flag requires_flag = "";
+		Flag emits_flag = "";
 
-		std::unordered_set<std::string> emit_inputs;
+		const auto properties_node_iter = object_node.find("properties");
 
-		// Parse custom properties
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+		if (properties_node_iter != object_node.end()) {
+			const nlohmann::json &properties_array = *properties_node_iter;
 
-			if (prefix == "emit_output") {
-				emit_output = property_node["value"].get<std::string>();
-			}
-			else if (prefix == "emit_output_lifetime") {
-				emit_output_lifetime = property_node["value"].get<int>();
-			}
-			else if (prefix == "emit_input") {
-				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
-				emit_inputs.insert(property_node["value"].get<std::string>());
-			}
-		}
+			for (const auto &property_node : properties_array) {
+				const std::string name = property_node["name"];
 
-		auto script = std::make_unique<scripts::OR>(emit_inputs);
-		script->setOutput(emit_output, emit_output_lifetime);
-
-		this->scripts.insert(std::move(script));
-	}
-}
-void Level::parse_objectgroup_script_XOR(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
-	for (const auto &object_node : objects_array_node) {
-
-		std::string emit_output = ""; // optional
-		int emit_output_lifetime = 0; // optional
-
-		std::unordered_set<std::string> emit_inputs;
-
-		// Parse custom properties
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
-
-			if (prefix == "emit_output") {
-				emit_output = property_node["value"].get<std::string>();
-			}
-			else if (prefix == "emit_output_lifetime") {
-				emit_output_lifetime = property_node["value"].get<int>();
-			}
-			else if (prefix == "emit_input") {
-				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
-				emit_inputs.insert(property_node["value"].get<std::string>());
+				if (name == "requires_flag") {
+					requires_flag = property_node["value"].get<std::string>();
+				}
+				else if (name == "emits_flag") {
+					emits_flag = property_node["value"].get<std::string>();
+				}
 			}
 		}
 
-		auto script = std::make_unique<scripts::XOR>(emit_inputs);
-		script->setOutput(emit_output, emit_output_lifetime);
+		// If 'reqired_flag' is not satisfied, further parsing is unnecessary
+		if (!requires_flag.empty() && !Flags::READ->check(requires_flag)) continue;
 
-		this->scripts.insert(std::move(script));
+		this->scripts.insert(std::make_unique<scripts::Checkpoint>(hitbox, emits_flag));
 	}
 }
-void Level::parse_objectgroup_script_NAND(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
-	for (const auto &object_node : objects_array_node) {
-
-		std::string emit_output = ""; // optional
-		int emit_output_lifetime = 0; // optional
-
-		std::unordered_set<std::string> emit_inputs;
-
-		// Parse custom properties
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
-
-			if (prefix == "emit_output") {
-				emit_output = property_node["value"].get<std::string>();
-			}
-			else if (prefix == "emit_output_lifetime") {
-				emit_output_lifetime = property_node["value"].get<int>();
-			}
-			else if (prefix == "emit_input") {
-				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
-				emit_inputs.insert(property_node["value"].get<std::string>());
-			}
-		}
-
-		auto script = std::make_unique<scripts::NAND>(emit_inputs);
-		script->setOutput(emit_output, emit_output_lifetime);
-
-		this->scripts.insert(std::move(script));
-	}
-}
-void Level::parse_objectgroup_script_NOR(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
-	for (const auto &object_node : objects_array_node) {
-
-		std::string emit_output = ""; // optional
-		int emit_output_lifetime = 0; // optional
-
-		std::unordered_set<std::string> emit_inputs;
-
-		// Parse custom properties
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
-
-			if (prefix == "emit_output") {
-				emit_output = property_node["value"].get<std::string>();
-			}
-			else if (prefix == "emit_output_lifetime") {
-				emit_output_lifetime = property_node["value"].get<int>();
-			}
-			else if (prefix == "emit_input") {
-				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
-				emit_inputs.insert(property_node["value"].get<std::string>());
-			}
-		}
-
-		auto script = std::make_unique<scripts::NOR>(emit_inputs);
-		script->setOutput(emit_output, emit_output_lifetime);
-
-		this->scripts.insert(std::move(script));
-	}
-}
-void Level::parse_objectgroup_script_XNOR(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
-	for (const auto &object_node : objects_array_node) {
-
-		std::string emit_output = ""; // optional
-		int emit_output_lifetime = 0; // optional
-
-		std::unordered_set<std::string> emit_inputs;
-
-		// Parse custom properties
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
-
-			if (prefix == "emit_output") {
-				emit_output = property_node["value"].get<std::string>();
-			}
-			else if (prefix == "emit_output_lifetime") {
-				emit_output_lifetime = property_node["value"].get<int>();
-			}
-			else if (prefix == "emit_input") {
-				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
-				emit_inputs.insert(property_node["value"].get<std::string>());
-			}
-		}
-
-		auto script = std::make_unique<scripts::XNOR>(emit_inputs);
-		script->setOutput(emit_output, emit_output_lifetime);
-
-		this->scripts.insert(std::move(script));
-	}
-}
+//void Level::parse_objectgroup_script_PlayerInArea(const nlohmann::json &objectgroup_node) {
+//	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+//	for (const auto &object_node : objects_array_node) {
+//		// Parse hitbox
+//		const dRect hitbox = dRect(
+//			object_node["x"].get<int>(), object_node["y"].get<int>(),
+//			object_node["width"].get<int>(), object_node["height"].get<int>()
+//		);
+//
+//		std::string emit_output = ""; // optional
+//		int emit_output_lifetime = 0; // optional
+//
+//		// Parse custom properties
+//		for (const auto &property_node : object_node["properties"]) {
+//			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+//
+//			if (prefix == "emit_output") {
+//				emit_output = property_node["value"].get<std::string>();
+//			}
+//			else if (prefix == "emit_output_lifetime") {
+//				emit_output_lifetime = property_node["value"].get<int>();
+//			}
+//		}
+//
+//		auto script = std::make_unique<scripts::PlayerInArea>(hitbox);
+//		script->setOutput(emit_output, emit_output_lifetime);
+//
+//		this->scripts.insert(std::move(script));
+//	}
+//}
+//void Level::parse_objectgroup_script_AND(const nlohmann::json &objectgroup_node) {
+//	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+//	for (const auto &object_node : objects_array_node) {
+//
+//		std::string emit_output = ""; // optional
+//		int emit_output_lifetime = 0; // optional
+//
+//		std::unordered_set<std::string> emit_inputs;
+//
+//		// Parse custom properties
+//		for (const auto &property_node : object_node["properties"]) {
+//			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+//
+//			if (prefix == "emit_output") {
+//				emit_output = property_node["value"].get<std::string>();
+//			}
+//			else if (prefix == "emit_output_lifetime") {
+//				emit_output_lifetime = property_node["value"].get<int>();
+//			}
+//			else if (prefix == "emit_input") {
+//				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
+//				emit_inputs.insert(property_node["value"].get<std::string>());
+//			}
+//		}
+//
+//		auto script = std::make_unique<scripts::AND>(emit_inputs);
+//		script->setOutput(emit_output, emit_output_lifetime);
+//
+//		this->scripts.insert(std::move(script));
+//	}
+//}
+//void Level::parse_objectgroup_script_OR(const nlohmann::json &objectgroup_node) {
+//	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+//	for (const auto &object_node : objects_array_node) {
+//
+//		std::string emit_output = ""; // optional
+//		int emit_output_lifetime = 0; // optional
+//
+//		std::unordered_set<std::string> emit_inputs;
+//
+//		// Parse custom properties
+//		for (const auto &property_node : object_node["properties"]) {
+//			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+//
+//			if (prefix == "emit_output") {
+//				emit_output = property_node["value"].get<std::string>();
+//			}
+//			else if (prefix == "emit_output_lifetime") {
+//				emit_output_lifetime = property_node["value"].get<int>();
+//			}
+//			else if (prefix == "emit_input") {
+//				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
+//				emit_inputs.insert(property_node["value"].get<std::string>());
+//			}
+//		}
+//
+//		auto script = std::make_unique<scripts::OR>(emit_inputs);
+//		script->setOutput(emit_output, emit_output_lifetime);
+//
+//		this->scripts.insert(std::move(script));
+//	}
+//}
+//void Level::parse_objectgroup_script_XOR(const nlohmann::json &objectgroup_node) {
+//	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+//	for (const auto &object_node : objects_array_node) {
+//
+//		std::string emit_output = ""; // optional
+//		int emit_output_lifetime = 0; // optional
+//
+//		std::unordered_set<std::string> emit_inputs;
+//
+//		// Parse custom properties
+//		for (const auto &property_node : object_node["properties"]) {
+//			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+//
+//			if (prefix == "emit_output") {
+//				emit_output = property_node["value"].get<std::string>();
+//			}
+//			else if (prefix == "emit_output_lifetime") {
+//				emit_output_lifetime = property_node["value"].get<int>();
+//			}
+//			else if (prefix == "emit_input") {
+//				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
+//				emit_inputs.insert(property_node["value"].get<std::string>());
+//			}
+//		}
+//
+//		auto script = std::make_unique<scripts::XOR>(emit_inputs);
+//		script->setOutput(emit_output, emit_output_lifetime);
+//
+//		this->scripts.insert(std::move(script));
+//	}
+//}
+//void Level::parse_objectgroup_script_NAND(const nlohmann::json &objectgroup_node) {
+//	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+//	for (const auto &object_node : objects_array_node) {
+//
+//		std::string emit_output = ""; // optional
+//		int emit_output_lifetime = 0; // optional
+//
+//		std::unordered_set<std::string> emit_inputs;
+//
+//		// Parse custom properties
+//		for (const auto &property_node : object_node["properties"]) {
+//			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+//
+//			if (prefix == "emit_output") {
+//				emit_output = property_node["value"].get<std::string>();
+//			}
+//			else if (prefix == "emit_output_lifetime") {
+//				emit_output_lifetime = property_node["value"].get<int>();
+//			}
+//			else if (prefix == "emit_input") {
+//				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
+//				emit_inputs.insert(property_node["value"].get<std::string>());
+//			}
+//		}
+//
+//		auto script = std::make_unique<scripts::NAND>(emit_inputs);
+//		script->setOutput(emit_output, emit_output_lifetime);
+//
+//		this->scripts.insert(std::move(script));
+//	}
+//}
+//void Level::parse_objectgroup_script_NOR(const nlohmann::json &objectgroup_node) {
+//	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+//	for (const auto &object_node : objects_array_node) {
+//
+//		std::string emit_output = ""; // optional
+//		int emit_output_lifetime = 0; // optional
+//
+//		std::unordered_set<std::string> emit_inputs;
+//
+//		// Parse custom properties
+//		for (const auto &property_node : object_node["properties"]) {
+//			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+//
+//			if (prefix == "emit_output") {
+//				emit_output = property_node["value"].get<std::string>();
+//			}
+//			else if (prefix == "emit_output_lifetime") {
+//				emit_output_lifetime = property_node["value"].get<int>();
+//			}
+//			else if (prefix == "emit_input") {
+//				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
+//				emit_inputs.insert(property_node["value"].get<std::string>());
+//			}
+//		}
+//
+//		auto script = std::make_unique<scripts::NOR>(emit_inputs);
+//		script->setOutput(emit_output, emit_output_lifetime);
+//
+//		this->scripts.insert(std::move(script));
+//	}
+//}
+//void Level::parse_objectgroup_script_XNOR(const nlohmann::json &objectgroup_node) {
+//	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+//	for (const auto &object_node : objects_array_node) {
+//
+//		std::string emit_output = ""; // optional
+//		int emit_output_lifetime = 0; // optional
+//
+//		std::unordered_set<std::string> emit_inputs;
+//
+//		// Parse custom properties
+//		for (const auto &property_node : object_node["properties"]) {
+//			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+//
+//			if (prefix == "emit_output") {
+//				emit_output = property_node["value"].get<std::string>();
+//			}
+//			else if (prefix == "emit_output_lifetime") {
+//				emit_output_lifetime = property_node["value"].get<int>();
+//			}
+//			else if (prefix == "emit_input") {
+//				// we don't care about suffix in this case, we only care about having duplicates-by-prefix
+//				emit_inputs.insert(property_node["value"].get<std::string>());
+//			}
+//		}
+//
+//		auto script = std::make_unique<scripts::XNOR>(emit_inputs);
+//		script->setOutput(emit_output, emit_output_lifetime);
+//
+//		this->scripts.insert(std::move(script));
+//	}
+//}

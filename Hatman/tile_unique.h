@@ -25,6 +25,8 @@ namespace tiles {
 
 		SaveOrb(const Tileset &tileset, int id, const Vector2 &position);
 
+		~SaveOrb(); // don't forget to erase text pop-up if level unloads
+
 		bool checkActivation() const override;
 		bool checkTrigger() const override; // checks if player is in range, and holds a 'USE' button
 		void activate() override;
@@ -32,11 +34,31 @@ namespace tiles {
 		void trigger() override;
 
 	private:
-		Collection<Text>::handle popup_handle; // handle to popup creadted upon tile activation
+		Collection<Text>::handle popup_handle; // handle to popup created upon tile activation
 	};
 
 
 
-	// # TNT #
-	// - Explodes upon destruction
+	// # Portal #
+	// - Displays portal hint when player is near
+	// - (actual portal mechanic is done through a script)
+	class Portal : public Tile {
+	public:
+		Portal() = delete;
+		Portal(const Tile &other);
+		Portal(Tile &&other);
+
+		Portal(const Tileset &tileset, int id, const Vector2 &position);
+
+		~Portal(); // don't forget to erase text pop-up if level unloads
+
+		bool checkActivation() const override;
+		bool checkTrigger() const override; // checks if player is in range, and holds a 'USE' button
+		void activate() override;
+		void deactivate() override;
+		void trigger() override;
+
+	private:
+		Collection<Text>::handle popup_handle; // handle to popup created upon tile activation
+	};
 }

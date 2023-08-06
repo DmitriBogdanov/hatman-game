@@ -8,6 +8,7 @@
 
 #include <iostream> // Text to console (TEMP)
 #include <time.h> // used to generate seed for random
+#include <fstream>
 
 #include "graphics.h" // Has a storage (initialized before start)
 #include "tile_base.h" // Has a storage (initialized before start)
@@ -26,52 +27,46 @@ int main(int argc, char* argv[]) {
 
 	srand(static_cast<int>(time(nullptr)));
 
-	std::cout << "Start game in fullscreen mode? (Y/N)" << std::endl;
-	std::string userInput;
-	LaunchInfo launchInfo;
+	std::cout << "- DEBUG log -" << std::endl;	
+	
+	ExitCode exit_code = ExitCode::NONE;
 
-	// Variables related to debug commands
-	std::string _savename = "save";
+	while (exit_code != ExitCode::EXIT) {	
+		// Parse launch params from 'CONFIG.json'
+		int resolution_x;
+		int resolution_y;
+		std::string screen_mode;
+		int music;
+		int sound;
+		bool fps_counter;
+		std::string save_filepath;
 
-	while (true) {
-		std::cin >> userInput;
-		if (userInput == "Y" || userInput == "y" || userInput == "Yes" || userInput == "yes") {
-			// No goddamn idea why, but borderless setting stretches the image
-			//launchInfo.setInfo_Window(1920, 1080, 0);
-			launchInfo.setInfo_Window(1920, 1080, SDL_WINDOW_FULLSCREEN_DESKTOP);
-			//launchInfo.setInfo_Window(1920, 1080, SDL_WINDOW_BORDERLESS);
-			break;
-		}
-		else if (userInput == "N" || userInput == "n" || userInput == "No" || userInput == "no") {
-			launchInfo.setInfo_Window(2 * 640, 2 * 360, 0);
-			break;
-		}
-		else if (userInput == "/debug") {
-			std::cout << "#   DEBUG MODE   #" << std::endl;
-			while (true) {
-				std::cin >> userInput;
-				if (userInput == "/end") { break; }
-				else if (userInput == "/setsave") {
-					std::cin >> _savename;
-					std::cout << "$ Savefile selected" << std::endl;
-				}
+		const bool config_found = config_parse(resolution_x, resolution_y, screen_mode, music, sound, fps_counter, save_filepath);
+
+		// If no config exists, create the default one
+		if (!config_found) {
+			config_create_default();
+			if (!config_parse(resolution_x, resolution_y, screen_mode, music, sound, fps_counter, save_filepath)) {
+				std::cout << "Error: Could not read default config.";
+				return -1;
 			}
 		}
-		else {
-			std::cout << "Incorrect input, please try again" << std::endl;
-		}
-	}
-
-	{
+		 
 		// These objects are storages that can be accessed in any file with a corresponding header included
-		Graphics graphics(launchInfo); // From now on this object can be accessed through 'Graphics::ACCESS'
+		Graphics graphics(resolution_x, resolution_y, convert_string_to_window_flags(screen_mode)); // From now on this object can be accessed through 'Graphics::ACCESS'
 		TilesetStorage tilesets; // From now on this object can be accessed through 'TilesetStorage::ACCESS'
 		EmitStorage emits; // From now on this object can be accessed through 'EmitStorage::ACCESS'
-		Saver saver("temp/" + _savename + ".json"); // From now on this object can be accessed through 'Saver::ACCESS'
+		Flags flags; // From now on this object can be accessed through 'Flags::ACCESS'
+		Saver saver(save_filepath); // From now on this object can be accessed through 'Saver::ACCESS'
 		TimerController timerController;
 		Controls controls;
 
-		Game game;
+		Game game(music, sound, fps_counter);
+
+		// Start the main loop
+		exit_code = game.game_loop();
+
+		std::cout << "Exit code: " << static_cast<int>(exit_code) << "\n";
 	}
 
 	///_CrtDumpMemoryLeaks(); /// MEMORY LEAK DETECTION

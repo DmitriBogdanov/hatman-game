@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SDL.h> // 'SDL_Texture' type
+#include <SFML/Graphics.hpp>
+
 #include <memory> // 'unique_ptr' type
 #include <unordered_map> // related type
 #include <set> // related type
@@ -19,12 +21,15 @@
 class Font {
 public:
 	Font() = delete;
-	Font(SDL_Texture* texture, const Vector2 &size, const Vector2d &gap);
+	Font(sf::Texture* texture, const Vector2 &size, const Vector2d &gap);
 
-	Vector2d draw_symbol(const Vector2d &position, char symbol, bool overlay = true) const;
+	Vector2d draw_symbol(const Vector2d &position, char symbol, bool overlay = true);
 		// returns position of character end (top-right corner)
-	Vector2d draw_line(const Vector2d &position, const std::string &line, bool overlay = true) const;
+	Vector2d draw_line(const Vector2d &position, const std::string &line, bool overlay = true);
 		// returns position of line end (top-right corner)
+
+	void draw_line_centered(const Vector2d &position, const std::string &line, bool overlay = true);
+		// QoL proxy for centered 'draw_line'
 
 	// Color
 	void color_set(const RGBColor &color);
@@ -35,6 +40,8 @@ public:
 		// COLOR.b = COLOR.b * (MODIFIER.b / 255);
 		// COLOR.alpha = COLOR.alpha * (MODIFIER.alpha / 255);
 		// For that reason (255, 255, 255, 255) white is a 'neutral' color
+	void scale_set(double scale);
+	void scale_reset();
 	
 	// Getters
 	Vector2 get_font_size() const;
@@ -42,7 +49,7 @@ public:
 	Vector2d get_font_monospace() const; // monospace == font_size + font_gap
 
 private:
-	SDL_Texture* font_texture;
+	sf::Sprite sprite;
 
 	Vector2 font_size; // size of 1 symbol on source texture
 	Vector2d font_gap;
@@ -59,6 +66,13 @@ public:
 	Text() = delete;
 	Text(const std::string &text, const dRect &bounds, Font* font);
 
+	///Text(const Text &other) = delete;
+	///Text& operator=(const Text &other) = delete;
+		/// For some reason explicitly deleting constructor causes issues in "xmemory()" despite
+		/// copy never being used in any context. Track the cause of the issue later on.
+		// iterators need to be handled in a non-trivial way during copy
+		// this can be implemented but better be avoided altogether
+
 	void update(Milliseconds elapsedTime);
 	void draw() const;
 
@@ -74,8 +88,9 @@ public:
 	void set_overlay(bool value); // here purely for interface convenience
 	void set_centered(bool value); // here purely for interface convenience
 	void set_delay(Milliseconds delay);
+	void set_scale(double scale);
 
-	RGBColor color = RGBColor(); // defaults as white (aka no color modifier)
+	RGBColor color; // defaults as white (aka no color modifier)
 
 	bool overlay = true; // if false, text is rendered to camera
 
@@ -85,6 +100,8 @@ private:
 	std::set<std::string::const_iterator> line_breaks; // unordered_set can't properly hash iterators
 
 	dRect bounds; // rectangle that contains text
+
+	double scale;
 
 	Font* font;
 
@@ -114,22 +131,20 @@ private:
 // - Counts FPS and displays it
 class GUI_FPSCounter {
 public:
-	GUI_FPSCounter();
+	GUI_FPSCounter() = delete;
+
+	GUI_FPSCounter(Font* font);
 
 	void update(Milliseconds elapsedTime);
 	void draw() const;
 
 private:
-	Vector2d position = Vector2d(2., 352.); // position is de-facto a constant
-
-	Collection<Text>::handle text_handle;
+	Font* font;
 
 	Milliseconds time_elapsed; // DOES NOT ACCOUNT FOR TIMESCALE ( unique property)
 
 	int frames_elapsed;
 	int currentFPS;
-
-	Milliseconds UPDATE_RATE = 1000.; // time between FPS counter updates in ms
 };
 
 
@@ -168,24 +183,41 @@ private:
 
 
 
-// # GUI_EscMenu #
+// # GUI_EscMenu # 
 class GUI_EscMenu {
+public:
+	enum class Tab {
+		MAIN,
+		CONTROLS
+	};
+
 public:
 	GUI_EscMenu() = delete;
 
 	GUI_EscMenu(Font* font);
 
-	void update(Milliseconds elapsedTime);
-	void draw() const;
+	void update(Milliseconds elapsedTime); // selects different update() base on current tab
+	void update_tab_main(Milliseconds elapsedTime);
+	void update_tab_controls(Milliseconds elapsedTime);
+
+	void draw() const; // selects different draw() base on current tab
+	void draw_tab_main() const;
+	void draw_tab_controls() const;
 
 private:
 	Font* font;
 
+	Tab current_tab;
+
+	// Main tab
 	std::unique_ptr<GUI_Button> button_resume;
 	std::unique_ptr<GUI_Button> button_controls;
 	std::unique_ptr<GUI_Button> button_start_from_checkpoint;
 	std::unique_ptr<GUI_Button> button_return_to_main_menu;
 	std::unique_ptr<GUI_Button> button_exit_to_desktop;
+
+	// Controls tab
+	std::unique_ptr<GUI_Button> button_back;
 };
 
 
@@ -193,22 +225,94 @@ private:
 // # GUI_MainMenu #
 class GUI_MainMenu {
 public:
+	enum class Tab {
+		MAIN,
+		SETTINGS
+	};
+
+public:
 	GUI_MainMenu() = delete;
 
 	GUI_MainMenu(Font* font);
 
-	void update(Milliseconds elapsedTime);
-	void draw() const;
+	void update(Milliseconds elapsedTime);  // selects different update() base on current tab
+	void update_tab_main(Milliseconds elapsedTime);
+	void update_tab_settings(Milliseconds elapsedTime);
+
+	void draw(); // selects different draw() base on current tab
+	void draw_tab_main();
+	void draw_tab_settings();
 
 private:
 	Font* font;
 
+	Tab current_tab;
+
+	// Main tab
 	std::unique_ptr<GUI_Button> button_continue;
 	std::unique_ptr<GUI_Button> button_new_game;
 	std::unique_ptr<GUI_Button> button_settings;
 	std::unique_ptr<GUI_Button> button_exit;
 
-	SDL_Texture* texture; // 640x360 background for main menu
+	// Settings tab
+	bool config_was_changed;
+
+	// Resolution
+	std::unique_ptr<GUI_Button> resolution_decrease;
+	std::unique_ptr<GUI_Button> resolution_increase;
+	std::vector<int> resolution_options_x;
+	std::vector<int> resolution_options_y;
+		// Can't be stored as an outside const due to needing to add custom resolutions to the list when present
+	int resolution_current_option;
+
+	// Screen mode
+	std::unique_ptr<GUI_Button> screenmode_decrease;
+	std::unique_ptr<GUI_Button> screenmode_increase;
+	int screenmode_current_option;
+
+	// Music
+	std::unique_ptr<GUI_Button> music_decrease;
+	std::unique_ptr<GUI_Button> music_increase;
+	int music_current_option;
+
+	// Sound
+	std::unique_ptr<GUI_Button> sound_decrease;
+	std::unique_ptr<GUI_Button> sound_increase;
+	int sound_current_option;
+
+	// FPS counter
+	std::unique_ptr<GUI_Button> fps_decrease;
+	std::unique_ptr<GUI_Button> fps_increase;
+	int fps_current_option;
+
+	std::string parsed_save_filepath; // save filepath is propagated the same as was parsed
+
+	// Apply and cancel
+	std::unique_ptr<GUI_Button> button_cancel;
+	std::unique_ptr<GUI_Button> button_apply;
+
+	// Background
+	sf::Sprite sprite; // 128x72 background for main menu
+};
+
+
+
+// # GUI_EndingScreen #
+class GUI_EndingScreen {
+public:
+	GUI_EndingScreen() = delete;
+
+	GUI_EndingScreen(Font* font);
+
+	void update(Milliseconds elapsedTime);  // selects different update() base on current tab
+
+	void draw(); // selects different draw() base on current tab
+
+private:
+	Font* font;
+	
+	std::unique_ptr<GUI_Button> button_continue_playthrough;
+	std::unique_ptr<GUI_Button> button_finish_playthrough;
 };
 
 
@@ -221,7 +325,9 @@ public:
 	GUI_Inventory(Font* font);
 
 	void update(Milliseconds elapsedTime); // empty
-	void draw() const;
+	void draw();
+
+	void draw_old() const;
 
 private:
 	Font* font;
@@ -235,30 +341,26 @@ public:
 	GUI_PlayerHealthbar();
 
 	void update(Milliseconds elapsedTime);
-	void draw() const;
+	void draw();
 
 private:
-	SDL_Texture* texture;
+	sf::Sprite sprite;
 
 	double percentage;
 };
 
 
-// # GUI_CDbar #
-class GUI_CDbar {
-public:
-	GUI_CDbar();
 
-	void update(Milliseconds elapsedTime);
-	void draw() const;
+// GUI_PlayerCharges {
+class GUI_PlayerCharges {
+public:
+	GUI_PlayerCharges();
+
+	void update(Milliseconds elapsedTime); // empty
+	void draw();
 
 private:
-	Vector2d position = Vector2d(25., 340.); // position is de-facto a constant
-
-	SDL_Texture* texture_border;
-	SDL_Texture* texture_fill;
-
-	double percentage = 1.;
+	sf::Sprite sprite;
 };
 
 
@@ -269,12 +371,12 @@ public:
 	GUI_PlayerPortrait();
 
 	void update(Milliseconds elapsedTime); // empty
-	void draw() const;
+	void draw();
 
 private:
 	Vector2d size; // equal to the texture size
 
-	SDL_Texture* texture;
+	sf::Sprite sprite;
 };
 
 
@@ -290,10 +392,10 @@ public:
 	virtual ~GUI_Fade() = default;
 
 	virtual void update(Milliseconds elapsedTime); // does nothing
-	void draw() const;
+	void draw();
 
 protected:
-	SDL_Texture* texture;
+	sf::Sprite sprite;
 
 	RGBColor color;
 };
@@ -319,6 +421,30 @@ private:
 	RGBColor color_end;
 };
 
+// # LevelName #
+// - Level name that appears on the screen after entering a new level
+// - Fades away after a few seconds
+class GUI_LevelName {
+public:
+	GUI_LevelName() = delete;
+
+	GUI_LevelName(Font *font);
+
+	~GUI_LevelName();
+
+	void update(Milliseconds elapsedTime);
+	void draw();
+
+private:
+	Font* font;
+
+	bool in_progress; // false <=> text is erased => skip all logic
+
+	Collection<Text>::handle text_handle;
+
+	Milliseconds time_elapsed;
+};
+
 
 
 // # Gui #
@@ -328,7 +454,7 @@ class Gui {
 public:
 	Gui();
 
-	~Gui(); // frees 'backbuffer' texture
+	~Gui() = default;
 
 	void update(Milliseconds elapsedTime);
 	void draw() const;
@@ -342,13 +468,6 @@ public:
 	Collection<Text>::handle make_line(const std::string &line, const Vector2d &position); // makes single-line text
 	Collection<Text>::handle make_line_centered(const std::string &line, const Vector2d &position);
 
-	// For displaying fading messages in the corner
-	void make_corner_message(const std::string& message); /// Implement
-
-
-	/// Entity healthbars
-	///void drawHealthbar(const Vector2d &bottomMiddlePosition, double percentage);
-
 	// FPSCounter
 	void FPSCounter_on();
 	void FPSCounter_off();
@@ -356,6 +475,10 @@ public:
 	// Main menu
 	void MainMenu_on();
 	void MainMenu_off();
+
+	// Ending screen
+	void EndingScreen_on();
+	void EndingScreen_off();
 
 	// Esc menu
 	void EscMenu_on();
@@ -371,9 +494,9 @@ public:
 	void PlayerHealthbar_on();
 	void PlayerHealthbar_off();
 
-	// CDbar
-	void CDbar_on();
-	void CDbar_off();
+	// Player charges
+	void PlayerCharges_on();
+	void PlayerCharges_off();
 
 	// Player portrait
 	void Portrait_on();
@@ -387,26 +510,25 @@ public:
 	void Fade_on(const RGBColor &colorStart, const RGBColor &colorEnd, Milliseconds duration, bool overrideGUI = true); // makes a smooth fade effect
 	void Fade_off();
 
+	// Level name
+	void LevelName_on();
+	void LevelName_off();
 
 	// General
-	void textureToGUI(SDL_Texture* texture, const srcRect* sourceRect, const dstRect* destRect);
-	void textureToGUIEx(SDL_Texture* texture, const srcRect* sourceRect, const dstRect* destRect, double angle, SDL_RendererFlip flip);
-		// same as above but allows rotation and flips
-
-	void GUIToRenderer();
-	void GUIClear();
+	void draw_sprite(sf::Sprite &sprite);
 
 private:
-	SDL_Texture* backbuffer; // requires destruction!
-
 	// GUI elements that do NOT need to remember internal state while changing visibility
 	std::unique_ptr<GUI_FPSCounter> FPS_counter;
 	std::unique_ptr<GUI_MainMenu> main_menu;
+	std::unique_ptr<GUI_EndingScreen> ending_screen;
 	std::unique_ptr<GUI_EscMenu> esc_menu;
 	std::unique_ptr<GUI_Inventory> inventory_menu;
 	std::unique_ptr<GUI_PlayerHealthbar> player_healthbar;
-	std::unique_ptr<GUI_CDbar> cdbar;
+	std::unique_ptr<GUI_PlayerCharges> player_charges;
 	std::unique_ptr<GUI_PlayerPortrait> player_portrait;
 	std::unique_ptr<GUI_Fade> fade;
+	std::unique_ptr<GUI_LevelName> level_name;
+
 	bool fade_override_gui; // if false other GUI elements have higher rendering priority than fade
 };

@@ -49,6 +49,21 @@ void projectile::SpiritBomb::onCollision() {
 	Game::ACCESS->play_sound("fire_impact.wav");
 }
 
+// # Fireball #
+projectile::Fireball::Fireball(const Vector2d& position, const Vector2d& speed, const Damage& damage, double knockback, const Vector2d& AOE) :
+	Projectile(position, damage, knockback, AOE)
+{
+	this->_init_sprite("[projectile]{fireball}");
+
+	constexpr auto HITBOX_SIZE = Vector2d(12., 12.);
+
+	this->_init_solid(HITBOX_SIZE, speed, false, false);
+}
+
+void projectile::Fireball::onCollision() {
+	Projectile::onCollision();
+}
+
 
 
 /* ### particle:: ### */

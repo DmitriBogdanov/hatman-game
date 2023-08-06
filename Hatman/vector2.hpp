@@ -7,6 +7,7 @@ Classes/methods for 2D vector manipulation
 #include <cmath> // 'sqrt()', 'sin()', 'cos()', 'acos()', etc
 #include <cstddef> // 'std::size_t' type for hash function
 #include <functional> // contains 'std::hash()'
+#include <string> // conversion to string
 
 #include "ct_math.hpp" // constexpr math functions
 
@@ -112,8 +113,12 @@ public:
 		return this->x * this->x + this->y * this->y;
 	}
 
-	double length() const { // slower than length2()
+	inline double length() const { // slower than length2()
 		return std::sqrt(this->x * this->x + this->y * this->y);
+	}
+
+	inline std::string toString() const {
+		return std::string("{" + std::to_string(this->x) + ", " + std::to_string(this->y) + "}");
 	}
 };
 
@@ -241,8 +246,8 @@ public:
 	double length2() const { // square of length
 		return this->x * this->x + this->y * this->y;
 	}
-	/// LOOK FOR OPTIMIZATIONS
-	double length() const { // slower than length2()
+
+	inline double length() const { // slower than length2()
 		return std::sqrt(this->x * this->x + this->y * this->y);
 	}
 
@@ -255,6 +260,10 @@ public:
 			static_cast<int>(this->x),
 			static_cast<int>(this->y)
 		);
+	}
+
+	inline std::string toString() const {
+		return std::string("{" + std::to_string(this->x) + ", " + std::to_string(this->y) +"}");
 	}
 };
 

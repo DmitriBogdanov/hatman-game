@@ -26,6 +26,8 @@ public:
 	// returns whether transfer was successfull
 
 	Stack* getStack(const Item &item); // returns nullptr if item is not found
+	
+	unsigned int count(const std::string &name); // returns nmeber of items with given name
 
 	std::vector<Stack> stacks;
 };

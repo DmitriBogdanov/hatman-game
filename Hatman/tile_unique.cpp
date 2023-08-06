@@ -23,7 +23,8 @@ std::unique_ptr<UniqueTile> make_derived(const Tileset &tileset, int id, const V
 // !!! NAMES !!!
 const std::unordered_map<std::string, make_derived_ptr> TILE_MAKERS = {
 	{"", make_derived<Tile>},
-	{"save_orb", make_derived<tiles::SaveOrb>}
+	{"save_orb", make_derived<tiles::SaveOrb>},
+	{"portal", make_derived<tiles::Portal>}
 	/// new tiles go there
 };
 
@@ -53,9 +54,13 @@ tiles::SaveOrb::SaveOrb(Tile &&other) : Tile(other) {}
 
 tiles::SaveOrb::SaveOrb(const Tileset &tileset, int id, const Vector2 &position) : Tile(tileset, id, position) {}
 
+tiles::SaveOrb::~SaveOrb() {
+	this->popup_handle.erase();
+}
+
 bool tiles::SaveOrb::checkActivation() const {
 	// Check if player is in range
-	return this->interaction->actionbox.containsPoint(Game::ACCESS->level->player->position);
+	return this->interaction->actionbox.containsPoint(Game::READ->level->player->position);
 }
 bool tiles::SaveOrb::checkTrigger() const {
 	// Check if player pressed USE button
@@ -76,6 +81,8 @@ void tiles::SaveOrb::deactivate() {
 void tiles::SaveOrb::trigger() {
 	using namespace SaveOrb_consts;
 
+	Game::ACCESS->play_sound("gui_click.wav");
+
 	Saver::ACCESS->record_state();
 	Saver::ACCESS->write();
 
@@ -84,4 +91,48 @@ void tiles::SaveOrb::trigger() {
 	this->popup_handle.erase();
 	this->popup_handle = Graphics::ACCESS->gui->make_line_centered(TRIGGERED_TEXT, text_position);
 	this->popup_handle.get().set_properties(colors::SH_YELLOW, false, false, TEXT_DELAY);
+}
+
+
+
+// # Portal #
+namespace Portal_consts {
+	constexpr Milliseconds TEXT_DELAY = 20.;
+	constexpr auto TEXT_ALIGNMENT = Vector2d(0., -10.);
+
+	const std::string ACTIVATED_TEXT = "Use portal?";
+}
+
+tiles::Portal::Portal(const Tile &other) : Tile(other) {}
+tiles::Portal::Portal(Tile &&other) : Tile(other) {}
+
+tiles::Portal::Portal(const Tileset &tileset, int id, const Vector2 &position) : Tile(tileset, id, position) {}
+
+tiles::Portal::~Portal() {
+	this->popup_handle.erase();
+}
+
+bool tiles::Portal::checkActivation() const {
+	// Check if player is in range
+	return this->interaction->actionbox.containsPoint(Game::READ->level->player->position);
+}
+bool tiles::Portal::checkTrigger() const {
+	// Check if player pressed USE button
+	return Game::ACCESS->input.key_pressed(Controls::READ->USE);
+}
+
+void tiles::Portal::activate() {
+	using namespace Portal_consts;
+
+	const auto text_position = this->interaction->actionbox.getTopMiddlepoint() + TEXT_ALIGNMENT;
+
+	this->popup_handle = Graphics::ACCESS->gui->make_line_centered(ACTIVATED_TEXT, text_position);
+	this->popup_handle.get().set_properties(colors::SH_YELLOW, false, false, TEXT_DELAY);
+}
+void tiles::Portal::deactivate() {
+	this->popup_handle.erase();
+}
+void tiles::Portal::trigger() {
+	/// LOOK FOR FX
+	///Game::ACCESS->play_sound("gui_click.wav");
 }

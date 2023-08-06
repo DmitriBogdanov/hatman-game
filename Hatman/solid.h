@@ -58,7 +58,9 @@ public:
 	// State
 	bool enabled; // stops physics when false
 
-	bool is_grounded;
+	bool is_grounded; 
+	bool is_grounded_at_left; // being grounded at left/right matters for creatures with AI
+	bool is_grounded_at_right;
 
 	bool is_dropping_down; // fall through platforms when true
 
@@ -91,6 +93,8 @@ public:
 	void applyForceTillMaxSpeed_Left(double force, double maxSpeed); // compensates friction and applies force untill max speed is rached
 	void applyForceTillMaxSpeed_Right(double force, double maxSpeed);
 	void applyForceTillMaxSpeed_Horizontal(double force, double maxSpeed, Orientation orientation);
+	void applyForceTillMaxSpeed_Up(double force, double maxSpeed);
+	void applyForceTillMaxSpeed_Down(double force, double maxSpeed);
 	
 private:
 	Vector2d total_force;

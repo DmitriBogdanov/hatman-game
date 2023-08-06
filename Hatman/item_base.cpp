@@ -6,16 +6,25 @@
 
 
 // # Item #
-Item::Item(const std::string &name, const std::string &label) :
+Item::Item(const std::string &name, const std::string &label, const std::string &lore, const std::string &effect) :
 	name(name),
-	label(label)
+	label(label),
+	description_lore(lore),
+	description_effect(effect)
 {
-	this->texture = Graphics::ACCESS->getTexture_Item(this->name + ".png");
+	this->sprite.setTexture(Graphics::ACCESS->getTexture_Item(this->name + ".png"));
+	this->sprite.setScale(2, 2);
 }
 
-void Item::drawAt(const Vector2d &screenPos) const {
-	dstRect destRect = { screenPos.x, screenPos.y, natural::ITEM_SIZE, natural::ITEM_SIZE };
-	Graphics::ACCESS->gui->textureToGUI(this->texture, NULL, &destRect);
+void Item::drawAt(const Vector2d &screenPos) {
+	this->sprite.setPosition(
+		static_cast<float>(screenPos.x),
+		static_cast<float>(screenPos.y)
+	);
+
+	// no need to scale
+
+	Graphics::ACCESS->gui->draw_sprite(sprite);
 }
 
 bool Item::operator==(const Item &other) {
@@ -29,6 +38,8 @@ void Item::use() {} // does nothing by default
 
 const std::string& Item::getName() const { return this->name; }
 const std::string& Item::getLabel() const { return this->label; }
+const std::string& Item::get_description_lore() const { return this->description_lore; }
+const std::string& Item::get_description_effect() const { return this->description_effect; }
 
 
 

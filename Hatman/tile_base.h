@@ -2,6 +2,8 @@
 
 /* Contains classes that deal with tilesets and individual tiles */
 
+#include <SFML/Graphics.hpp>
+
 #include <string> // related type
 #include <unordered_map> // related type (tileset storage)
 #include <memory> // 'unique_ptr' type
@@ -101,7 +103,7 @@ public:
 protected:
 	bool toggle_active;
 
-	SDL_Texture* tilesheet;
+	sf::Sprite tilesheet_sprite;
 };
 
 
@@ -136,14 +138,14 @@ public:
 
 	// Tileset getters
 	std::string tileset_get_filename() const;
-	SDL_Texture* tileset_get_texture() const;
+	sf::Texture* tileset_get_texture() const;
 
 	int first_gid;
 
 private:
 	std::string filename;
 
-	SDL_Texture* texture;
+	sf::Texture* texture;
 	Vector2 size;
 
 	std::unordered_map<int, TileHitbox> tileHitboxes;

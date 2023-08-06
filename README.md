@@ -1,59 +1,21 @@
 # Hatman
 
-Hatman is a stylized 2D platformer in early development stage.
+A classic 2D metroidvania with trichromatic artstyle.  You, a player, is a wandering spirit exploring a dark limbo-like realm. Fight your way through the enemies, discover secrets scattered generously through every map, gather power and defeat the ultimate Big Baddie! The game is extremely lightweight and should have around a few hundred FPS on most machines.
 
-![Screenshot](images/screen_main_menu.png)
-![Screenshot](images/screen_jp.png)
-![Screenshot](images/screen_spirit_bomber.png)
-![Screenshot](images/screen_save_orb.png)
-![Screenshot](images/screen_attack_1.png)
-![Screenshot](images/screen_attack_2.png)
-![Screenshot](images/screen_devourer.png)
+## Executable, game assets, screenshots
+
+Archived executable, game assets, screenshots and etc can be found at corresponding [itch.io page][https://hatmangame.itch.io/hatman-adventure].
 
 ## Dependencies
 
-* SDL2
-* SDL2_image
+* SFML (graphics, input handling)
+* SDL2 (audio)
+* jakebesworth/Simple-SDL2-Audio (audio)
+* nlohmann_json (json parsing)
 
 ## Version History
-* 00.10
-    * Improved map editor and map parsing
 
-* 00.09
-    * Added new enemy 'Spirit Bomber'
-    * Added new type of projectiles
-
-* 00.08
-    * Reworked inventory GUI
-    * Changed save orb to fit new style and provide feedback upon interaction
-
-* 00.07
-    * Changed player healtbar and portrait visuals to fit new style
-    * Added 4 new items
-    * Implemented tools for faster testing
-
-* 00.06
-    * Added new enemy 'Devourer'
-    * Fixed a bumber of bugs in enemy behaviour
-
-* 00.05
-    * Smooth transitions between menus
-    * Improved saving system
-
-* 00.04
-    * Improved GUI
-    * New artwork
-    * Implemented main menu
-
-* 00.03
-    * Compile-time optimizations and refactoring
-
-* 00.02
-    * Implemented logic for GUI buttons
-    * Implemented pause menu
-
-* 00.01
-    * Initial Release
+Check changelog.txt for detailed development history.
 
 ## License
 

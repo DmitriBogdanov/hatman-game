@@ -34,6 +34,10 @@ namespace ntt::m_type {
 		Orientation orientation = Orientation::RIGHT; // flips sprite automatically
 
 	protected:
+		// Utilities
+		bool _has_ground_in_front() const;
+
+		// State
 		int state_get() const;
 		bool state_isLocked() const;
 		bool state_isUnlocked() const;
@@ -49,7 +53,7 @@ namespace ntt::m_type {
 		// Module inits
 		void _init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames);
 		void _init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction);
-		void _init_health(Faction faction, uint maxHp, sint regen, sint physRes = 0, sint magicRes = 0, sint dotRes = 0);
+		void _init_health(Faction faction, uint maxHp, sint regen, sint physRes = 0, sint magicRes = 0, sint chaosRes = 0);
 
 		virtual void deathTransition(); // called when hp reaches 0
 
@@ -111,10 +115,11 @@ namespace ntt::m_type {
 		}
 
 		void _optinit_healthbar_display(const Vector2d &parentPosition, const Health &parentHealth, const Vector2d &bottomCenterpointAlignment);
+		void _optinit_boss_healthbar_display(const Health &parentHealth, const std::string &bossTitle);
 	
 		void _optinit_death_delay(Milliseconds delay);
 	private:
-		std::unique_ptr<HealthbarDisplay> healthbar_display; // it's assumed that 'Health' module is always present
+		std::unique_ptr<HealthbarDisplay_Base> healthbar_display; // it's assumed that 'Health' module is always present
 
 		int default_aggroed_state;
 		int default_deaggroed_state;
@@ -163,7 +168,7 @@ namespace ntt::m_type {
 
 	// # Destructible #
 	// - Entity with lifebar that triggers some effect upon death
-	class Destructible : public Entity { /// NEEDS REWORK
+	class Destructible : public Entity {
 	public:
 		Destructible() = delete;
 
@@ -184,14 +189,14 @@ namespace ntt::m_type {
 		virtual void effect(); // any effect that is triggered upon entity death
 
 		// Module inits
-		void _init_solid(const Vector2d &hitboxSize);
-			// inits solid with standard flags
-		void _init_health(Faction faction, uint maxHp, sint regen = 0, sint physRes = 0, sint magicRes = 0, sint dotRes = 0);
+		void _init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames);
+		void _init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction);
+		void _init_health(Faction faction, uint maxHp, sint regen, sint physRes = 0, sint magicRes = 0, sint chaosRes = 0);
 
 		// Member inits
 		void _init_delay(Milliseconds erasionDelay);
 
-	private:
+	protected:
 		ControllableSprite* _sprite; // casted version of 'sprite', used to access methods in 'ControllableSprite'
 	};
 }

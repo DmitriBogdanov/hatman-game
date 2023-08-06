@@ -32,6 +32,15 @@ bool m_type::Creature::update(Milliseconds elapsedTime) {
 	return true;
 }
 
+// Utilities
+bool m_type::Creature::_has_ground_in_front() const {
+	return
+		this->orientation == Orientation::LEFT
+		? this->solid->is_grounded_at_left
+		: this->solid->is_grounded_at_right;
+}
+
+// State
 int m_type::Creature::state_get() const {
 	return this->state;
 }
@@ -69,8 +78,8 @@ void m_type::Creature::_init_solid(const Vector2d &hitboxSize, SolidFlags flags,
 		);
 }
 
-void m_type::Creature::_init_health(Faction faction, uint maxHp, sint regen, sint physRes, sint magicRes, sint dotRes) {
-	this->health = std::make_unique<Health>(faction, maxHp, regen, physRes, magicRes, dotRes);
+void m_type::Creature::_init_health(Faction faction, uint maxHp, sint regen, sint physRes, sint magicRes, sint chaosRes) {
+	this->health = std::make_unique<Health>(faction, maxHp, regen, physRes, magicRes, chaosRes);
 }
 
 void m_type::Creature::deathTransition() {
@@ -160,6 +169,10 @@ void m_type::Enemy::_optinit_healthbar_display(const Vector2d &parentPosition, c
 	this->healthbar_display = std::make_unique<HealthbarDisplay>(parentPosition, parentHealth, bottomCenterpointAlignment);
 }
 
+void m_type::Enemy::_optinit_boss_healthbar_display(const Health &parentHealth, const std::string &bossTitle) {
+	this->healthbar_display = std::make_unique<BossHealthbarDisplay>(parentHealth, bossTitle);
+}
+
 void m_type::Enemy::_optinit_death_delay(Milliseconds delay) {
 	this->death_delay = delay;
 }
@@ -216,7 +229,9 @@ void m_type::ItemEntity::activate() {
 }
 
 void m_type::ItemEntity::trigger() {
-	auto item = items::make_item(this->name);
+	Game::ACCESS->play_sound("item_pick_up.wav", 1.2);
+
+	const auto item = items::make_item(this->name);
 	Game::ACCESS->level->player->inventory.addItem(*item);
 
 	this->mark_for_erase();
@@ -268,8 +283,6 @@ bool m_type::Destructible::update(Milliseconds elapsedTime) {
 			this->effect();
 			this->effect_triggered = true;
 
-			this->_sprite->animation_play("death", true);
-
 			this->timer.start(this->erasion_delay);
 		}
 
@@ -286,17 +299,24 @@ bool m_type::Destructible::update(Milliseconds elapsedTime) {
 void m_type::Destructible::effect() {} // nothing by default
 
 // Module inits
-void m_type::Destructible::_init_solid(const Vector2d &hitboxSize) {
+void m_type::Destructible::_init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames) {
+	this->_parse_controllable_sprite(folder, animationNames);
+
+	this->_sprite = static_cast<ControllableSprite*>(this->sprite.get());
+}
+
+void m_type::Destructible::_init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction) {
 	this->solid = std::make_unique<SolidRectangle>(
 		this->position,
 		hitboxSize,
-		SolidFlags::SOLID | SolidFlags::AFFECTED_BY_GRAVITY,
-		Destructible_consts::DEFAULT_MASS,
-		Destructible_consts::DEFAULT_FRICTION
+		flags,
+		mass,
+		friction
 		);
 }
-void m_type::Destructible::_init_health(Faction faction, uint maxHp, sint regen, sint physRes, sint magicRes, sint dotRes) {
-	this->health = std::make_unique<Health>(faction, maxHp, regen, physRes, magicRes, dotRes);
+
+void m_type::Destructible::_init_health(Faction faction, uint maxHp, sint regen, sint physRes, sint magicRes, sint chaosRes) {
+	this->health = std::make_unique<Health>(faction, maxHp, regen, physRes, magicRes, chaosRes);
 }
 
 // Member inits

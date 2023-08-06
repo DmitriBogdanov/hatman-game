@@ -10,49 +10,48 @@ void Input::begin_new_frame() { // pressed/released keys matter only for current
 	this->keys_released.clear();
 	this->buttons_pressed.clear();
 	this->buttons_released.clear();
-	
-	// Get mouse position relative to the window and scale it to the natural 640x360 scale
-	int x, y;
-	SDL_GetMouseState(&x, &y); // returns (0, 0) if mouse is outside the window
-	this->mouse_position.x = x / Graphics::READ->scaling_factor();
-	this->mouse_position.y = y / Graphics::READ->scaling_factor();
 }
 
-void Input::event_KeyDown(const SDL_Event &event) {
-	this->keys_pressed[event.key.keysym.scancode] = true;
-	this->keys_held[event.key.keysym.scancode] = true;
-}
-void Input::event_KeyUp(const SDL_Event &event) {
-	this->keys_released[event.key.keysym.scancode] = true;
-	this->keys_held[event.key.keysym.scancode] = false;
+void Input::event_MouseMove(const sf::Event &event) {
+	this->mouse_position.x = event.mouseMove.x / Graphics::READ->scaling_factor();
+	this->mouse_position.y = event.mouseMove.y / Graphics::READ->scaling_factor();
 }
 
-void Input::event_ButtonDown(const SDL_Event &event) {
-	this->buttons_pressed[event.button.button] = true;
-	this->buttons_held[event.button.button] = true;
+void Input::event_KeyDown(const sf::Event &event) {
+	this->keys_pressed[event.key.code] = true;
+	this->keys_held[event.key.code] = true;
 }
-void Input::event_ButtonUp(const SDL_Event &event) {
-	this->buttons_released[event.button.button] = true;
-	this->buttons_held[event.button.button] = false;
+void Input::event_KeyUp(const sf::Event &event) {
+	this->keys_released[event.key.code] = true;
+	this->keys_held[event.key.code] = false;
 }
 
-bool Input::key_pressed(const SDL_Scancode key) {
+void Input::event_ButtonDown(const sf::Event &event) {
+	this->buttons_pressed[event.mouseButton.button] = true;
+	this->buttons_held[event.mouseButton.button] = true;
+}
+void Input::event_ButtonUp(const sf::Event &event) {
+	this->buttons_released[event.mouseButton.button] = true;
+	this->buttons_held[event.mouseButton.button] = false;
+}
+
+bool Input::key_pressed(sf::Keyboard::Key key) {
 	return this->keys_pressed[key];
 }
-bool Input::key_released(const SDL_Scancode key) {
+bool Input::key_released(sf::Keyboard::Key key) {
 	return this->keys_released[key];
 }
-bool Input::key_held(const SDL_Scancode key) {
+bool Input::key_held(sf::Keyboard::Key key) {
 	return this->keys_held[key];
 }
 
-bool Input::mouse_pressed(Uint8 button) {
+bool Input::mouse_pressed(sf::Mouse::Button button) {
 	return this->buttons_pressed[button];
 }
-bool Input::mouse_released(Uint8 button) {
+bool Input::mouse_released(sf::Mouse::Button button) {
 	return this->buttons_released[button];
 }
-bool Input::mouse_held(Uint8 button) {
+bool Input::mouse_held(sf::Mouse::Button button) {
 	return this->buttons_held[button];
 }
 

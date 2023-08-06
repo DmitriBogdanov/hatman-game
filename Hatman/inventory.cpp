@@ -61,3 +61,11 @@ Stack* Inventory::getStack(const Item &item) {
 
 	return nullptr;
 }
+
+unsigned int Inventory::count(const std::string &name) {
+	for (auto &stack : this->stacks)
+		if (stack.item().getName() == name)
+			return stack.quantity();
+
+	return 0; // no items were found
+}

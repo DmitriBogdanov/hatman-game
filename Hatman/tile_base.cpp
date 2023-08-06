@@ -35,7 +35,7 @@ void TileInteraction::setOutput(const std::string &emit, int lifetime) {
 // # Tile #
 Tile::Tile(const Tile &other) :
 	position(other.position),
-	tilesheet(other.tilesheet)
+	tilesheet_sprite(other.tilesheet_sprite)
 {
 	if (other.hitbox) { this->hitbox = std::make_unique<TileHitbox>(*other.hitbox); }
 	else { this->hitbox = nullptr; }
@@ -80,7 +80,7 @@ Tile::Tile(const Tileset &tileset, int id, const Vector2 position) :
 			this->position,
 			false,
 			false,
-			tileset.tileset_get_texture(),
+			*tileset.tileset_get_texture(),
 			tileset.get_tile_source_rect(id)
 			);
 	}
@@ -136,7 +136,7 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 	std::string imageFileName = JSON["image"].get<std::string>();
 	imageFileName = imageFileName.substr(imageFileName.rfind("/") + 1); // cut before '/'
 	imageFileName = imageFileName.substr(imageFileName.rfind("\\") + 1); // cut before '\'
-	this->texture = Graphics::ACCESS->getTexture_Tileset(imageFileName);
+	this->texture = &Graphics::ACCESS->getTexture_Tileset(imageFileName);
 
 	const int columns = JSON["columns"].get<int>();
 	const int rows = JSON["tilecount"].get<int>() / columns;
@@ -255,7 +255,7 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 				frames.push_back(AnimationFrame{ frameRect, frameDuration });
 			}
 
-			this->tileAnimations[tileId] = Animation(this->texture, frames);
+			this->tileAnimations[tileId] = Animation(*this->texture, frames);
 		}
 	}
 
@@ -352,7 +352,7 @@ const EntitySpawnData& Tileset::get_entity_spawn_data(int tileId) const { return
 // Tileset Getters
 std::string Tileset::tileset_get_filename() const { return this->filename; }
 
-SDL_Texture* Tileset::tileset_get_texture() const { return this->texture; }
+sf::Texture* Tileset::tileset_get_texture() const { return this->texture; }
 
 
 

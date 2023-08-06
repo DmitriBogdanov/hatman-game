@@ -7,10 +7,9 @@
 
 // ntt::player::
 // - Contains player class
-// - Contains forms (forms themselves are not entities but are in a sense extension of the player)
+// - Unlike other creatures doesn't get erased upon death, but rather 'fakes' the effects of it
 namespace ntt::player {
 	// # Player #
-	// - Holds methods specific to player, but not the particular form
 	class Player : public m_type::Creature {
 	public:
 		Player() = delete;
@@ -30,12 +29,7 @@ namespace ntt::player {
 			SKILL
 		};
 
-		enum class Attunement {
-			FIRE,
-			AIR,
-			WATER,
-			EARTH
-		};
+		void update_charges(Milliseconds elapsedTime);
 
 		void update_case_STAND(Milliseconds elapsedTime);
 		void update_case_MOVE(Milliseconds elapsedTime);
@@ -49,7 +43,7 @@ namespace ntt::player {
 
 		void update_cameraTrapPos(Milliseconds elapsedTime);
 
-		void draw() const override; // also draws Player_Form
+		void draw() const override; // also draws effect_sprite
 
 		void deathTransition() override;
 
@@ -60,16 +54,26 @@ namespace ntt::player {
 
 		Inventory inventory;
 
+		uint charges_current;
+		uint charges_max;
+		Milliseconds charges_time_elapsed;
+
 	private:
+		void _init_effect_sprite(const std::string &folder, std::initializer_list<std::string> animationNames);
+
+		void _recalculate_stats(); // every update recalculate stats base on artifacts
+
 		std::unique_ptr<HealthbarDisplay> healthbar_display;
 
 		Vector2d camera_trap_pos;
 		Vector2d camera_pos;
 
-		Attunement attunement;
 		int chain_progress; // index of current attack in chain
 
-		///std::unique_ptr<ControllableSprite> attunement_sprite;
-			// holds parts of the character that change color depending on current attunement
+		std::unique_ptr<ControllableSprite> effect_sprite;
+			// secondary sprite used to render effects (like powerfull jump) without
+			// interfering with main animations
+
+		bool death_transition_performed;
 	};
 }

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SDL.h> // 'SDL_Event' type
+#include <SFML/Graphics.hpp> /// Perhaps system is enough?
+
 #include <unordered_map> // related type
 #include "geometry_utils.h" // Vector2d
 
@@ -15,20 +17,22 @@ public:
 
 	void begin_new_frame();
 
-	void event_KeyDown(const SDL_Event &event); // 'key' in SDL refers to keyboard keys
-	void event_KeyUp(const SDL_Event &event);
+	void event_MouseMove(const sf::Event &event);
+
+	void event_KeyDown(const sf::Event &event); // 'key' in SDL refers to keyboard keys
+	void event_KeyUp(const sf::Event &event);
 	
-	void event_ButtonDown(const SDL_Event &event); // 'button' in SDL refers to mouse buttons
-	void event_ButtonUp(const SDL_Event &event);
-
+	void event_ButtonDown(const sf::Event &event); // 'button' in SDL refers to mouse buttons
+	void event_ButtonUp(const sf::Event &event);
+	
 	// Getters
-	bool key_pressed(SDL_Scancode key);
-	bool key_held(SDL_Scancode key);
-	bool key_released(SDL_Scancode key);
+	bool key_pressed(sf::Keyboard::Key key);
+	bool key_held(sf::Keyboard::Key key);
+	bool key_released(sf::Keyboard::Key key);
 
-	bool mouse_pressed(Uint8 button);
-	bool mouse_held(Uint8 button);
-	bool mouse_released(Uint8 button);
+	bool mouse_pressed(sf::Mouse::Button button);
+	bool mouse_held(sf::Mouse::Button button);
+	bool mouse_released(sf::Mouse::Button button);
 	
 	Vector2d mousePosition() const; // mouse position during the last frame
 	double mouseX() const; 
@@ -38,14 +42,14 @@ private:
 	// Note that [] of nonexistant key initializes pair <key, FALSE> in the map (standard C++14)
 
 	// Keyboard
-	std::unordered_map<SDL_Scancode, bool> keys_pressed;
-	std::unordered_map<SDL_Scancode, bool> keys_released;
-	std::unordered_map<SDL_Scancode, bool> keys_held;
+	std::unordered_map<sf::Keyboard::Key, bool> keys_pressed;
+	std::unordered_map<sf::Keyboard::Key, bool> keys_released;
+	std::unordered_map<sf::Keyboard::Key, bool> keys_held;
 
 	// Mouse
-	std::unordered_map<Uint8, bool> buttons_pressed;
-	std::unordered_map<Uint8, bool> buttons_released;
-	std::unordered_map<Uint8, bool> buttons_held;
+	std::unordered_map<sf::Mouse::Button, bool> buttons_pressed;
+	std::unordered_map<sf::Mouse::Button, bool> buttons_released;
+	std::unordered_map<sf::Mouse::Button, bool> buttons_held;
 
 	Vector2d mouse_position; // mouse position in natural 640x360 scale
 		// (0, 0) if mouse is outside the window

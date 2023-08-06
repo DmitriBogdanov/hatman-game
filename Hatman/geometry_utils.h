@@ -2,7 +2,6 @@
 
 /* Contains classes that deal with geometry */
 
-#include <SDL.h> // 'SDL_Rect' type (.to_SDL_Rect() method)
 #include <initializer_list>
 #include <algorithm> // std::min(), std::max()
 #include <cstdlib> // abs(), rand()
@@ -70,7 +69,10 @@ constexpr Orientation invert(Orientation orientation) {
 
 // # srcRect #
 // - Rect with int dimensions, used as a source rect when handling texture sheets
-using srcRect = SDL_Rect;
+struct srcRect {
+	int x, y;
+	int w, h;
+};
 
 constexpr srcRect make_srcRect(const Vector2 &point, const Vector2 &size, bool initializeAsCentered = false) {
 	if (initializeAsCentered) {
@@ -424,19 +426,6 @@ public:
 	}
 	
 	// Convertions
-	constexpr SDL_Rect to_SDL_Rect() const {
-		return SDL_Rect{
-			static_cast<int>(this->point1.x),
-			static_cast<int>(this->point1.y),
-			static_cast<int>(this->getSizeX()),
-			static_cast<int>(this->getSizeY())
-		};
-	}
-
-	constexpr srcRect to_srcRect() const {
-		return this->to_SDL_Rect();
-	}
-
 	constexpr dstRect to_dstRect() const {
 		return dstRect{
 			this->point1.x,

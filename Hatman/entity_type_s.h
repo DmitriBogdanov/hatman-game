@@ -30,10 +30,14 @@ namespace ntt::s_type {
 
 		bool update(Milliseconds elapsedTime) override;
 
+		Timer delay; // stops projectile logic when this timer is set
+
 	protected:
 		Damage damage;
 		double knockback;
 		Vector2d AOE; // size of of area where damage and knockbacks is applied upon 'explosion'
+
+		Timer lifetime; // prevents prokectiles from persisting indefinetely offscreen
 
 		// Checks
 		bool checkEntityCollision(); // ignores entities of the same faction
