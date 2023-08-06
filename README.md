@@ -4,7 +4,9 @@ A classic 2D metroidvania with trichromatic artstyle.  You, a player, is a wande
 
 ## Executable, game assets, screenshots
 
-Archived executable, game assets, screenshots and etc can be found at corresponding [itch.io page][https://hatmangame.itch.io/hatman-adventure].
+Archived executable, game assets, screenshots and etc can be found at corresponding [itch.io page][itch_io_link].
+
+[itch_io_link]: https://hatmangame.itch.io/hatman-adventure
 
 ## Dependencies
 
