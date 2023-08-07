@@ -17,7 +17,7 @@ Archived executable, game assets, screenshots and etc can be found at correspond
 
 ## Version History
 
-Check changelog.txt for detailed development history.
+See changelog.md for detailed development history.
 
 ## License
 
