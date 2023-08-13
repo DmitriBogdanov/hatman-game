@@ -203,13 +203,10 @@ bool Player::update(Milliseconds elapsedTime) {
 	else if (!input.key_held(Controls::READ->DOWN) && this->dropping_down_sticky_delay.finished()) {
 		this->solid->is_dropping_down = false;
 	}
-	/*else if (input.key_released(Controls::READ->DOWN) && this->dropping_down_sticky_delay.finished()) {
-		this->solid->is_dropping_down = false;
-	}*/
 
 	// Zoom-out
 	/// Uncomment for debugging purposes
-	if (input.key_held(sf::Keyboard::Key::R)) {
+	/*if (input.key_held(sf::Keyboard::Key::R)) {
 		Graphics::ACCESS->camera->set_zoom(2 * natural::ZOOM);
 	}
 	else {
@@ -221,7 +218,7 @@ bool Player::update(Milliseconds elapsedTime) {
 	}
 	else {
 		Game::ACCESS->timescale = 1.0;
-	}
+	}*/
 
 	return true;
 }

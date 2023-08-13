@@ -938,6 +938,7 @@
 	which prevents player from being rubberbanded back when releasing 'S' too quickly
 	- Added computation of total bonuses to inventory, removed 'additive' and 'multiplicative'
 	comments since they are no longer necessary
+	- Reduced hellhound hurtbox to make it realistic to beat without trading hits
 
 ### MUSIC ###
 	Main theme:        A Night's Respite
@@ -957,6 +958,7 @@
 
 
 ### FIRST PRIORITY FEATURES ###
+	- Add custom .exe icon
 	- Detect current screen size and set settings on first launch
 	- Save dublicate save files to 'My Games'
 	- Increase death delay

@@ -938,3 +938,4 @@
 	which prevents player from being rubberbanded back when releasing 'S' too quickly
 	- Added computation of total bonuses to inventory, removed 'additive' and 'multiplicative'
 	comments since they are no longer necessary
+	- Reduced hellhound hurtbox to make it realistic to beat without trading hits
