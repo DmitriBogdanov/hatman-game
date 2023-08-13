@@ -5,6 +5,25 @@
 
 
 
+namespace artifacts {
+
+	// Regen
+	constexpr double ELDRITCH_BATTERY_REGEN_BOOST = 0.10;
+
+	// Damage
+	constexpr double POWER_SHARD_DMG_BOOST = 0.1;
+
+	// Utility
+	constexpr double SPIDER_SIGNET_JUMP_BOOST = 0.08;
+
+	// Resistances
+	constexpr double BONE_MASK_PHYS_DMG_REDUCTION = 0.2;
+	constexpr double MAGIC_NEGATOR_MAGIC_DMG_REDUCTION = 0.2;
+	constexpr double TWIN_SOULS_CHAOS_DMG_REDUCTION = 0.2;
+}
+
+
+
 // ntt::player::
 // - Contains player class
 // - Unlike other creatures doesn't get erased upon death, but rather 'fakes' the effects of it
@@ -75,5 +94,8 @@ namespace ntt::player {
 			// interfering with main animations
 
 		bool death_transition_performed;
+
+		Timer dropping_down_sticky_delay; // delays setting 'solid->is_dropping_down' after player releases 'S'
+			// which prevents characted from teleporting slightly up after releasing 'S' too fast
 	};
 }

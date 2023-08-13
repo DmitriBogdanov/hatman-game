@@ -62,6 +62,12 @@ Vector2d Font::draw_symbol(const Vector2d &position, char symbol, bool overlay) 
 	else if (symbol == ')') {
 		source_pos.set(8, 2);
 	}
+	else if (symbol == '%') {
+		source_pos.set(9, 2);
+	}
+	else if (symbol == '+') {
+		source_pos.set(10, 2);
+	}
 	// Unknown symbol
 	else {
 		source_pos.set(0, 2);
@@ -1491,10 +1497,42 @@ void GUI_Inventory::draw() {
 	for (size_t i = 0; i < stacks.size(); ++i) {
 		// Get displayed data from stack
 		auto &item = stacks[i].item();
+		const auto &quantity = stacks[i].quantity();
 
 		const std::string label = item.getLabel();
-		const std::string found = std::to_string(stacks[i].quantity()) + " artifacts found";
+		const std::string found = std::to_string(quantity) + " artifacts found";
 		const std::string description = "effect: " + item.get_description_effect();
+
+		// Add 'additional description' which contains total stat bonuses for various items
+		std::string additional_description = "";
+		if (item.getName() == "eldritch_battery") additional_description =
+			" (current bonus +" + 
+			std::to_string(static_cast<int>(100 * artifacts::ELDRITCH_BATTERY_REGEN_BOOST * quantity)) + 
+			"%)";
+		else if (item.getName() == "power_shard") additional_description =
+			" (current bonus +" +
+			std::to_string(static_cast<int>(100 * artifacts::POWER_SHARD_DMG_BOOST * quantity)) +
+			"%)";
+		else if (item.getName() == "spider_signet") additional_description =
+			" (current bonus +" +
+			std::to_string(static_cast<int>(100 * artifacts::SPIDER_SIGNET_JUMP_BOOST * quantity)) +
+			"%)";
+		else if (item.getName() == "watching_eye") additional_description =
+			" (current bonus +" +
+			std::to_string(static_cast<int>(quantity)) +
+			")";
+		else if (item.getName() == "bone_mask") additional_description =
+			" (current reduction -" +
+			std::to_string(static_cast<int>(100 * (1. - std::pow(1. - artifacts::BONE_MASK_PHYS_DMG_REDUCTION, quantity)))) +
+			"%)";
+		else if (item.getName() == "magic_negator") additional_description =
+			" (current reduction -" +
+			std::to_string(static_cast<int>(100 * (1. - std::pow(1. - artifacts::MAGIC_NEGATOR_MAGIC_DMG_REDUCTION, quantity)))) +
+			"%)";
+		else if (item.getName() == "twin_souls") additional_description =
+			" (current reduction -" +
+			std::to_string(static_cast<int>(100 * (1. - std::pow(1. - artifacts::TWIN_SOULS_CHAOS_DMG_REDUCTION, quantity)))) +
+			"%)";
 
 		this->font->color_set(TEXT_COLOR);
 
@@ -1505,7 +1543,7 @@ void GUI_Inventory::draw() {
 		// Quantity
 		this->font->draw_line(cursor + OFFSET_FOUND, found);
 		// Description
-		this->font->draw_line(cursor + OFFSET_DESCRIPTION, description);
+		this->font->draw_line(cursor + OFFSET_DESCRIPTION, description + additional_description);
 
 		cursor.y += ICON_SIZE + CELL_GAP;
 	}

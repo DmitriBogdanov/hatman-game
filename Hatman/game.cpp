@@ -188,7 +188,7 @@ ExitCode Game::game_loop() {
 				this->input.event_KeyDown(event);
 				break;
 			case sf::Event::KeyReleased:
-				input.event_KeyUp(event);
+				this->input.event_KeyUp(event);
 				break;
 			case sf::Event::MouseButtonPressed:
 				this->input.event_ButtonDown(event);

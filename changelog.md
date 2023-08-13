@@ -930,3 +930,11 @@
 	- Fixed animated sprite not zero-initializing time_elapsed
 	- Added tracking of time since last damage received to 'Health'
 	- Added increased out-of-combat regen for player (10 sec timer)
+
+# 23.08.13 #
+	- Fixed an issue that caused 'sticky' movement when switching
+	from pressing 'A' to pressing 'D' or otherwise during a single frame
+	- Added delay on resetting 'is_dropping_down' when player releases 'S'
+	which prevents player from being rubberbanded back when releasing 'S' too quickly
+	- Added computation of total bonuses to inventory, removed 'additive' and 'multiplicative'
+	comments since they are no longer necessary

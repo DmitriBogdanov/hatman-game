@@ -27,6 +27,11 @@ namespace Player_consts {
 	constexpr double JUMP_SPEED = ct_speed_corresponding_to_jump_height(physics::GRAVITY_ACCELERATION, 36.);
 	constexpr double JUMP_IMPULSE = MASS * JUMP_SPEED;
 
+	constexpr Milliseconds DROPPING_DOWN_STICKY_DELAY_DURATION = 
+		sec_to_ms(ct_sqrt(2 * physics::PLATFORM_EPSILON / physics::GRAVITY_ACCELERATION) + 1e-4);
+		// required time is chosen based on guaranteeing that player falls down further than platform epsilon
+		// g t^2 / 2 = platform_epsion   =>   t = sqrt(2 * platform_epsion / g)
+
 	constexpr uint BASE_HP = 1000;
 	constexpr sint BASE_REGEN = 25;
 	constexpr sint BASE_PHYS_RES = 0;
@@ -100,22 +105,6 @@ namespace fire {
 
 	constexpr double ULT_KNOCKBACK_X = 100. * 100.;
 	constexpr double ULT_KNOCKBACK_Y = 200. * 100.;
-}
-
-namespace artifacts {
-	// Regen
-	constexpr double ELDRITCH_BATTERY_REGEN_BOOST = 0.10;
-
-	// Damage
-	constexpr double POWER_SHARD_DMG_BOOST = 0.1;
-
-	// Utility
-	constexpr double SPIDER_SIGNET_JUMP_BOOST = 0.08;
-
-	// Resistances
-	constexpr double BONE_MASK_PHYS_DMG_REDUCTION = 0.2;
-	constexpr double MAGIC_NEGATOR_MAGIC_DMG_REDUCTION = 0.2;
-	constexpr double TWIN_SOULS_CHAOS_DMG_REDUCTION = 0.2;
 }
 
 
@@ -208,10 +197,15 @@ bool Player::update(Milliseconds elapsedTime) {
 	if (input.key_held(Controls::READ->DOWN) && input.key_pressed(Controls::READ->JUMP)) {
 		this->solid->is_dropping_down = true;
 		this->solid->is_grounded = false;
+
+		this->dropping_down_sticky_delay.start(Player_consts::DROPPING_DOWN_STICKY_DELAY_DURATION);
 	}
-	else if (input.key_released(Controls::READ->DOWN)) {
+	else if (!input.key_held(Controls::READ->DOWN) && this->dropping_down_sticky_delay.finished()) {
 		this->solid->is_dropping_down = false;
 	}
+	/*else if (input.key_released(Controls::READ->DOWN) && this->dropping_down_sticky_delay.finished()) {
+		this->solid->is_dropping_down = false;
+	}*/
 
 	// Zoom-out
 	/// Uncomment for debugging purposes
@@ -314,10 +308,17 @@ void Player::update_case_MOVE(Milliseconds elapsedTime) {
 	);
 
 	// Transitions
-	if ((input.key_held(Controls::READ->LEFT) == input.key_held(Controls::READ->RIGHT))) {
+	bool leftHeld = input.key_held(Controls::READ->LEFT);
+	bool rightHeld = input.key_held(Controls::READ->RIGHT);
+
+	if (leftHeld == rightHeld) {
 		this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
 		this->state_change(State::STAND);
 	}
+	else {
+		this->orientation = leftHeld ? Orientation::LEFT : Orientation::RIGHT;
+	}
+	
 
 	if (input.key_held(Controls::READ->SKILL) && this->charges_current >= SKILL_CHARGE_COST) {
 		this->charges_current -= SKILL_CHARGE_COST;

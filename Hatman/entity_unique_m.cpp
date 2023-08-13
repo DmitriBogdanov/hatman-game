@@ -2008,7 +2008,8 @@ void m::enemy::CultistMage::deathTransition() {
 // # Hellhound #
 namespace Hellhound_consts {
 	// Physics
-	constexpr auto HITBOX_SIZE = Vector2d(32, 32.);
+	constexpr auto HITBOX_SIZE = Vector2d(40, 32.);
+	constexpr auto HURTBOX_SIZE = Vector2d(22, 20.);
 	constexpr auto SOLID_FLAGS = SolidFlags::SOLID | SolidFlags::AFFECTED_BY_GRAVITY;
 	constexpr double MASS = 190.;
 	constexpr double FRICTION = 0.95;
@@ -2155,7 +2156,8 @@ void m::enemy::Hellhound::update_when_aggroed(Milliseconds elapsedTime) {
 
 	const auto attackTriggerHitboxOverlapArea = attackTriggerHitbox.collideWithRect(this->target->solid->getHitbox()).overlap_area;
 
-	const auto entityHitboxOverlapArea = this->solid->getHitbox().collideWithRect(this->target->solid->getHitbox()).overlap_area;
+	const auto hurtbox_rect = dRect(this->position, HURTBOX_SIZE, true);
+	const auto targetHitboxOverlapWithHurtboxArea = hurtbox_rect.collideWithRect(this->target->solid->getHitbox()).overlap_area;
 
 	switch (currentState) {
 	case State::CHASE:
@@ -2261,7 +2263,7 @@ void m::enemy::Hellhound::update_when_aggroed(Milliseconds elapsedTime) {
 			this->orientation
 		);
 
-		if (this->attack_cd.finished() && entityHitboxOverlapArea > HITBOX_OVERLAP_REQUIRED_TO_ATTACK) {
+		if (this->attack_cd.finished() && targetHitboxOverlapWithHurtboxArea > HITBOX_OVERLAP_REQUIRED_TO_ATTACK) {
 			this->target->health->applyDamage(ATTACK_DAMAGE);
 			this->target->solid->addImpulse_Horizontal(ATTACK_KNOCKBACK_X * sign);
 			this->target->solid->addImpulse_Up(ATTACK_KNOCKBACK_Y);

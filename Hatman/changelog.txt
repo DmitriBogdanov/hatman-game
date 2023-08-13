@@ -931,8 +931,16 @@
 	- Added tracking of time since last damage received to 'Health'
 	- Added increased out-of-combat regen for player (10 sec timer)
 
+# 23.08.13 #
+	- Fixed an issue that caused 'sticky' movement when switching
+	from pressing 'A' to pressing 'D' or otherwise during a single frame
+	- Added delay on resetting 'is_dropping_down' when player releases 'S'
+	which prevents player from being rubberbanded back when releasing 'S' too quickly
+	- Added computation of total bonuses to inventory, removed 'additive' and 'multiplicative'
+	comments since they are no longer necessary
+
 ### MUSIC ###
-	Main theme:
+	Main theme:        A Night's Respite
 
 	Desolation:        A Night's Respite
 	The Great bridge:  Behind Foreign Walls
@@ -949,12 +957,9 @@
 
 
 ### FIRST PRIORITY FEATURES ###
-	- Rename boss maps: Cult Headquarters -> Lair of shadows -> Deeper realm
-	- Add title screen after victory
-
-	- Compile sheets presenting various enemies
-	- Gather good screenshots
-	- Write a description
+	- Detect current screen size and set settings on first launch
+	- Save dublicate save files to 'My Games'
+	- Increase death delay
 
 ### SECOND PRIORITY FEATURES ###
 
@@ -969,9 +974,6 @@
 	- Fonts can be better stored as a vector rather than a map
 
 ### OPTIONAL FEATURES ###
-	? Add "Camicazi" enemy (sprite 50) {runs at player and explodes}
 	? Add "Cat" (sprite 61) why "tells hints" from time to time
-	? Make 'Disable_if' script that disables all tiles inside if flag is present
-	? Make 'visible' parameter correspond to whether objects are created as enabled or disabled
 	? Floaty damage numbers
 

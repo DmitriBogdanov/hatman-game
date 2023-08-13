@@ -40,7 +40,7 @@ items::EldritchBattery::EldritchBattery() :
 		"eldritch_battery",
 		"Eldritch Battery",
 		"The most merciful thing in the world is the inability of human mind to comprehend the contents of that thing.",
-		"Health regeneration is increased by 10 percent (additive)"
+		"Health regeneration is increased by 10%"
 	)
 {}
 
@@ -50,7 +50,7 @@ items::PowerShard::PowerShard() :
 		"power_shard",
 		"Power Shard",
 		"The might of arcane, trapped in an intricate lattice.",
-		"Increases damage of attacks by 10 percent (additive)"
+		"Increases damage of attacks by 10%"
 	)
 {}
 
@@ -60,7 +60,7 @@ items::SpiderSignet::SpiderSignet() :
 		"spider_signet",
 		"Spider Signet",
 		"Twisting and skittering, yet static the when observed.",
-		"Increases charged jump impulse by 8 percent (additive)"
+		"Increases charged jump impulse by 8%"
 	)
 {}
 
@@ -70,7 +70,7 @@ items::BoneMask::BoneMask() :
 		"bone_mask",
 		"Bone Mask",
 		"No mind to think. No will to break. No voice to cry when suffering.",
-		"Reduces incoming physical damage by 20 percent (multiplicative)"
+		"Reduces incoming physical damage by 20%"
 	)
 {}
 
@@ -80,7 +80,7 @@ items::MagicNegator::MagicNegator() :
 		"magic_negator",
 		"Magic Negator",
 		"An unholy contraption beats like a heart.",
-		"Reduces incoming magic damage by 20 percent (multiplicative)"
+		"Reduces incoming magic damage by 20%"
 	)
 {}
 
@@ -90,7 +90,7 @@ items::TwinSouls::TwinSouls() :
 		"twin_souls",
 		"Twin Souls",
 		"Independent, yet inseparable - two halves, chained together in a face of chaos.",
-		"Reduces incoming chaos damage by 20 percent (multiplicative)"
+		"Reduces incoming chaos damage by 20%"
 	)
 {}
 
