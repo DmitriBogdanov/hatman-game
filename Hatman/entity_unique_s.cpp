@@ -9,27 +9,6 @@ using namespace ntt::s;
 
 /* ### projectile:: ### */
 
-// # ArcaneProjectileBlue #
-projectile::ArcaneProjectileBlue::ArcaneProjectileBlue(const Vector2d &position, const Vector2d &speed, const Damage &damage, double knockback, const Vector2d &AOE) :
-	Projectile(position, damage, knockback, AOE)
-{
-	this->_init_sprite("[projectile]{arcane_projectile_blue}");
-
-	constexpr auto HITBOX_SIZE = Vector2d(3., 3.);
-
-	this->_init_solid(HITBOX_SIZE, speed);
-
-	Game::ACCESS->play_sound("fire_cast.wav");
-}
-
-void projectile::ArcaneProjectileBlue::onCollision() {
-	Projectile::onCollision();
-
-	Game::ACCESS->play_sound("fire_impact.wav");
-}
-
-
-
 // # SpiritBomb #
 projectile::SpiritBomb::SpiritBomb(const Vector2d& position, const Vector2d& speed, const Damage& damage, double knockback, const Vector2d& AOE) :
 	Projectile(position, damage, knockback, AOE)
@@ -40,13 +19,12 @@ projectile::SpiritBomb::SpiritBomb(const Vector2d& position, const Vector2d& spe
 
 	this->_init_solid(HITBOX_SIZE, speed);
 
-	Game::ACCESS->play_sound("fire_cast.wav");
+	this->_init_spawn_sound("fire_cast.wav");
+	this->_init_collision_sound("fire_impact.wav");
 }
 
 void projectile::SpiritBomb::onCollision() {
 	Projectile::onCollision();
-
-	Game::ACCESS->play_sound("fire_impact.wav");
 }
 
 // # Fireball #

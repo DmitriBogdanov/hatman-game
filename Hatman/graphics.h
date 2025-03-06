@@ -1,6 +1,5 @@
 #pragma once
 
-#include <SDL.h> // rendering
 #include <SFML/Graphics.hpp>
 
 #include <unordered_map> // related type
@@ -58,11 +57,14 @@ public:
 
 	sf::RenderWindow window;
 private:
+
+	sf::Image icon;
+
 	int rendering_width;
 	int rendering_height;
 	double rendering_scaling_factor; // == <renderingresolution> / <natural resolution>
 
-	std::unordered_map<std::string, sf::Texture> loadedTextures; // all loaded images are saved here as SDL_Surface
+	std::unordered_map<std::string, sf::Texture> loadedTextures; // all loaded images are saved here
 
 	///friend Game;
 };

@@ -1,11 +1,9 @@
 #include "game.h"
 
-#include <SDL.h> // 'SDL_Init()' and SDL event system
 #include <SFML/Audio.hpp>
 #include <SFML/Audio/Music.hpp>
 
-#include "simple_audio.h"
-
+#include <chrono>
 #include <iostream>
 
 #include "graphics.h" // access to rendering updating
@@ -43,9 +41,6 @@ Game::Game(int music_volume_setting, int sound_volume_setting, bool fps_counter_
 	this->READ = this;
 	this->ACCESS = this;
 
-	SDL_Init(SDL_INIT_EVERYTHING);
-	initAudio();
-
 	// Load main menu
 	std::cout << "Entering main menu...\n";
 	this->request_goToMainMenu();
@@ -58,10 +53,7 @@ Game::Game(int music_volume_setting, int sound_volume_setting, bool fps_counter_
 	/// Game loop moved to outside
 }
 
-Game::~Game() {
-	endAudio();
-	SDL_Quit();
-}
+Game::~Game() {}
 
 void Game::play_music(const std::string &name, double volumeMod) {
 	if (this->music_current_track == name) return; // don't repeat music if it's already playing
@@ -69,18 +61,20 @@ void Game::play_music(const std::string &name, double volumeMod) {
 	this->music_current_track = name;
 
 	// SFML version
-	/*if (!music.openFromFile("content/audio/mx/" + name))
+	if (!music.openFromFile("content/audio/mx/" + name))
 		std::cout << "Error: Could no open music file...\n";
-	music.play();*/
+
+	constexpr double SFML_MAX_VOLUME = 100; // SFML uses volume range [0, 100]
+	const double total_volume = SFML_MAX_VOLUME * audio::MUSIC_BASE_VOLUME * Game::READ->music_volume_mod * volumeMod;
+	const float clamped_volume = std::clamp(static_cast<float>(total_volume), 0.f, 100.f);
+	music.setVolume(clamped_volume);
+	music.setLoop(true); // for some reason music doesn't loop by default
+
+	music.play();
 
 	// SDL version
-	const int total_volume = static_cast<int>(SDL_MIX_MAXVOLUME * audio::MUSIC_BASE_VOLUME * this->music_volume_mod * volumeMod);
-	playMusic(("content/audio/mx/" + name).c_str(), total_volume);
-}
-
-void Game::play_sound(const std::string &name, double volumeMod) {
-	const int total_volume = static_cast<int>(SDL_MIX_MAXVOLUME * audio::FX_BASE_VOLUME * this->sound_volume_mod * volumeMod);
-	playSound(("content/audio/fx/" + name).c_str(), total_volume);
+	//const int total_volume = static_cast<int>(SDL_MIX_MAXVOLUME * audio::MUSIC_BASE_VOLUME * this->music_volume_mod * volumeMod);
+	//playMusic(("content/audio/mx/" + name).c_str(), total_volume);
 }
 
 bool Game::is_running() const {
@@ -168,8 +162,8 @@ void Game::request_exitToRestart() {
 }
 
 ExitCode Game::game_loop() {
-	const auto FREQUENCY = static_cast<double>(SDL_GetPerformanceFrequency()); // platform specific frequency, does not change during runtime
-	auto lastUpdateTime = SDL_GetPerformanceCounter();
+	using clock = std::chrono::high_resolution_clock;
+	auto frame_start = clock::now();
 
 	auto &window = Graphics::ACCESS->window;
 
@@ -204,9 +198,10 @@ ExitCode Game::game_loop() {
 		}
 
 		// Measure frame time (in ms) and update 
-		const auto currentTime = SDL_GetPerformanceCounter();
-		Milliseconds elapsedTime = (currentTime - lastUpdateTime) * 1000. / FREQUENCY;
-		lastUpdateTime = currentTime;
+		const auto frame_end = clock::now();
+		const auto elapsed_time_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(frame_end - frame_start);
+		Milliseconds elapsedTime = elapsed_time_ns.count() / 1e6; // ns to ms
+		frame_start = frame_end; // next frame starts from the last end timestamp
 
 		if (elapsedTime > performance::MAX_FRAME_TIME_MS) elapsedTime = performance::MAX_FRAME_TIME_MS;
 			// fix for physics bugging out in low FPS moments
@@ -434,7 +429,7 @@ void Game::_drawHitboxes() {
 	sf::Sprite tileActionboxBorder;
 	tileActionboxBorder.setTexture(Graphics::ACCESS->getTexture("content/textures/actionbox_border_tile.png"));
 
-	const auto cameraPos = this->level->player->cameraTrap_getPosition();
+	const auto& cameraPos = this->level->player->cameraTrap_getPosition();
 
 	const Vector2 centerIndex = helpers::divide32(cameraPos);
 

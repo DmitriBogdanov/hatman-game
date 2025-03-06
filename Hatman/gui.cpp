@@ -364,7 +364,9 @@ GUI_Button::GUI_Button(const dRect& buttonRect, const std::string& displayedText
 	font(font),
 	color(color),
 	color_hovered(colorHovered),
-	color_pressed(colorPressed)	
+	color_pressed(colorPressed),
+	hover_sound("gui_click.wav", 0.8),
+	click_sound("gui_click.wav")
 {}
 
 void GUI_Button::update(Milliseconds elapsedTime) {
@@ -373,13 +375,13 @@ void GUI_Button::update(Milliseconds elapsedTime) {
 	const bool mouseHover = this->button_rect.containsPoint(input.mousePosition());
 
 	if (mouseHover && this->button_hovered_over == false)
-		Game::ACCESS->play_sound("gui_click.wav", 0.8); // if mouse just started hovering over play sound
+		this->hover_sound.play(); // if mouse just started being hovered over start playing the sound
 
 	this->button_hovered_over = mouseHover;
 
 	if (this->button_hovered_over) {
 		if (input.mouse_pressed(Controls::READ->LMB)) {
-			Game::ACCESS->play_sound("gui_click.wav");
+			this->click_sound.play();
 			this->button_is_being_pressed = true;
 		}
 		else if (input.mouse_released(Controls::READ->LMB)) {
@@ -1549,7 +1551,7 @@ void GUI_Inventory::draw() {
 	}
 }
 
-void GUI_Inventory::draw_old() const {
+void GUI_Inventory::draw_old() const { // TEMP: Remove
 	// Formatting consts
 	constexpr int ROWS = 6;
 	constexpr int COLUMNS = 4;

@@ -21,7 +21,7 @@ TypeId m_type::Creature::type_id() const { return TypeId::CREATURE; }
 bool m_type::Creature::update(Milliseconds elapsedTime) {
 	if (!Entity::update(elapsedTime)) return false;
 	
-	this->sprite->flip = (this->orientation == Orientation::RIGHT) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+	this->sprite->flip = (this->orientation == Orientation::RIGHT) ? Flip::NONE : Flip::HORIZONTAL;
 
 	this->_kill_if_out_of_bounds();
 
@@ -186,7 +186,8 @@ namespace ItemEntity_consts {
 }
 
 m_type::ItemEntity::ItemEntity(const Vector2d &position) :
-	Entity(position)
+	Entity(position),
+	pickup_sound("item_pick_up.wav", 1.2)
 {}
 
 TypeId m_type::ItemEntity::type_id() const { return TypeId::ITEM_ENTITY; }
@@ -206,21 +207,11 @@ bool m_type::ItemEntity::update(Milliseconds elapsedTime) {
 
 // Checks
 bool m_type::ItemEntity::checkActivation() const {
-	if (this->solid && this->solid->getHitbox().overlapsWithRect(Game::ACCESS->level->player->solid->getHitbox()))
-		return true;
-
-	return false;
+	return this->solid && this->solid->getHitbox().overlapsWithRect(Game::ACCESS->level->player->solid->getHitbox());
 }
 
 bool m_type::ItemEntity::checkTrigger() const {
-	bool res = false;
-
-	if (Game::ACCESS->input.key_pressed(Controls::READ->USE)) {
-		res = true;
-		/// Check if player has free inventory space
-	}
-
-	return res;
+	return Game::ACCESS->input.key_pressed(Controls::READ->USE);
 }
 
 // Actions
@@ -229,12 +220,15 @@ void m_type::ItemEntity::activate() {
 }
 
 void m_type::ItemEntity::trigger() {
-	Game::ACCESS->play_sound("item_pick_up.wav", 1.2);
+	this->pickup_sound.play();
 
 	const auto item = items::make_item(this->name);
 	Game::ACCESS->level->player->inventory.addItem(*item);
 
-	this->mark_for_erase();
+	this->mark_for_erase(this->pickup_sound.get_remaining_duration());
+	this->enabled = false;
+	// if we don't wait a little the entity will insta-destroy the sound with itself making it effectively silent,
+	// since there is no animation/logic played the entity itself can be disabled from updating
 }
 
 // Module inits

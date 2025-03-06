@@ -6,11 +6,16 @@
 
 #define SDL_MAIN_HANDLED
 
+#ifdef _DEBUG
+#define SHOW_DEBUG_CONSOLE
+#endif
+
 #include <iostream> // Text to console (TEMP)
 #include <time.h> // used to generate seed for random
 #include <fstream>
 
 #include "graphics.h" // Has a storage (initialized before start)
+#include "audio.h" // Has a storage (initialized before start)
 #include "tile_base.h" // Has a storage (initialized before start)
 #include "emit.h" // Has a storage (initialized before start)
 #include "saver.h" // Has a storage (initialized before start)
@@ -19,15 +24,20 @@
 
 #include "launch_info.h" // 'LaunchInfo' class (creation of such object)
 #include "game.h" // 'Game' class
+#include "hide_console.h"
 
 
 
 int main(int argc, char* argv[]) {
-	SDL_SetMainReady();
-
 	srand(static_cast<int>(time(nullptr)));
 
-	std::cout << "- DEBUG log -" << std::endl;	
+	#ifdef SHOW_DEBUG_CONSOLE
+	show_console();
+	#else
+	hide_console();
+	#endif
+
+	std::cout << "- Execution log -" << std::endl;	
 	
 	ExitCode exit_code = ExitCode::NONE;
 
@@ -54,6 +64,7 @@ int main(int argc, char* argv[]) {
 		 
 		// These objects are storages that can be accessed in any file with a corresponding header included
 		Graphics graphics(resolution_x, resolution_y, convert_string_to_window_flags(screen_mode)); // From now on this object can be accessed through 'Graphics::ACCESS'
+		Audio audio;
 		TilesetStorage tilesets; // From now on this object can be accessed through 'TilesetStorage::ACCESS'
 		EmitStorage emits; // From now on this object can be accessed through 'EmitStorage::ACCESS'
 		Flags flags; // From now on this object can be accessed through 'Flags::ACCESS'

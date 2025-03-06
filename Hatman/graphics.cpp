@@ -1,6 +1,5 @@
 #include "graphics.h"
 
-#include <SDL_image.h> // loading of texture from image files
 #include <SFML/Graphics.hpp>
 
 #include <iostream>
@@ -41,7 +40,13 @@ Graphics::Graphics(int width, int height, sf::Uint32 style) :
 	}
 
 	// Create window
-	this->window.create(sf::VideoMode(width, height), "Hatman", style);
+	this->window.create(sf::VideoMode(width, height), "Hatman Adventure", style);
+
+	// Set icon
+	this->icon.loadFromFile("icon.png");
+	this->window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
+	this->window.setFramerateLimit(200);
 
 	this->camera = std::make_unique<Camera>();
 	this->gui = std::make_unique<Gui>();

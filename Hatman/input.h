@@ -1,6 +1,5 @@
 #pragma once
 
-#include <SDL.h> // 'SDL_Event' type
 #include <SFML/Graphics.hpp> /// Perhaps system is enough?
 
 #include <unordered_map> // related type

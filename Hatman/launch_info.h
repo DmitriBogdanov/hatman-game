@@ -1,9 +1,10 @@
 #pragma once
 
-#include <SDL.h> // 'Uint32' type
+#include <cstdint>
 
 
 
+using Uint32 = std::uint32_t;
 // # LaunchInfo #
 // - Contaons all info determined on a startup
 struct LaunchInfo {

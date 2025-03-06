@@ -22,7 +22,7 @@ class Game {
 public:
 	Game(int music_volume_setting, int sound_volume_setting, bool fps_counter_setting); // inits SDL
 
-	~Game(); // quits SDL
+	~Game();
 
 	static const Game* READ; // used for aka 'global' access
 	static Game* ACCESS;
@@ -30,7 +30,6 @@ public:
 	ExitCode game_loop(); // called from outside to start the game loop
 
 	void play_music(const std::string &name, double volumeMod = 1.); // additional volume mod to adjust particular sounds
-	void play_sound(const std::string &name, double volumeMod = 1.);
 
 	double music_volume_mod;
 	double sound_volume_mod;

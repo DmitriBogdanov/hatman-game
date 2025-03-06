@@ -1,6 +1,5 @@
 #pragma once
 
-#include <SDL.h> // 'SDL_Texture' type
 #include <SFML/Graphics.hpp>
 
 #include <memory> // 'unique_ptr' type
@@ -12,6 +11,7 @@
 #include "collection.hpp" // 'Collection' class
 #include "player.h" // 'Forms' enum
 #include "color.hpp" // 'RGBColor' type
+#include "sound.h" // 'Sound' type for GUI interactions
 
 
 
@@ -71,7 +71,7 @@ public:
 		/// For some reason explicitly deleting constructor causes issues in "xmemory()" despite
 		/// copy never being used in any context. Track the cause of the issue later on.
 		// iterators need to be handled in a non-trivial way during copy
-		// this can be implemented but better be avoided altogether
+		// this can be implemented but better be avoided copy altogether
 
 	void update(Milliseconds elapsedTime);
 	void draw() const;
@@ -175,6 +175,9 @@ private:
 	Vector2d text_pos; // we assume button stays static on the screen and precalculate text position
 	std::string displayed_text;
 	Font* font;
+
+	Sound hover_sound;
+	Sound click_sound;
 
 	RGBColor color;
 	RGBColor color_hovered;

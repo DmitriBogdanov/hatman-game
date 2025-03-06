@@ -8,7 +8,8 @@ Suffix _m stands for 'makable' entities that:
 */
 
 #include "entity_base.h" // 'Entity' base class
-#include "inventory.h" // 'Inventory' module (player forms)
+#include "inventory.h" // 'Inventory' module
+#include "sound.h" // 'Sound' module
 
 
 
@@ -146,6 +147,7 @@ namespace ntt::m_type {
 
 	protected:
 		std::string name;
+		Sound pickup_sound;
 
 		// Checks
 		virtual bool checkActivation() const;  // checks if item should be activated

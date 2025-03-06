@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string> // related type
-#include <SDL.h> // 'SDL_Texture' type
 #include <SFML/Graphics.hpp>
 
 #include "geometry_utils.h" // geometry types

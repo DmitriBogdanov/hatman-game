@@ -16,19 +16,6 @@ Suffix _s stands for 'spawnable' entities that:
 // - Contains all unique 's' entities
 namespace ntt::s {
 	namespace projectile {
-		// # ArcaneProjectileBlue #
-		// - Fast projectile flying in a straight line
-		// - Explodes upon impact
-		class ArcaneProjectileBlue : public s_type::Projectile {
-		public:
-			ArcaneProjectileBlue() = delete;
-
-			ArcaneProjectileBlue(const Vector2d &position, const Vector2d &speed, const Damage &damage, double knockback, const Vector2d &AOE);
-		
-		private:
-			void onCollision() override;
-		};
-
 		// # SpiritBomb #
 		// - Moderately fast projectile with AOE explosion
 		// - Stopped by terrain

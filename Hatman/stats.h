@@ -2,7 +2,6 @@
 
 /* Contains module: 'Health' */
 
-#include <SDL.h> // 'SDL_Texture*' type for 'HealthbarDisplay'
 #include <SFML/Graphics.hpp>
 
 #include "geometry_utils.h" // 'Vector2d' and 'srcRect' types for 'HealthbarDisplay'

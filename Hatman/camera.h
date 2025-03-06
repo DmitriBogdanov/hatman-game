@@ -1,6 +1,5 @@
 #pragma once
 
-#include <SDL.h> // 'SDL_Texture' type
 #include <SFML/Graphics.hpp>
 
 #include "geometry_utils.h" // geometry types
@@ -31,17 +30,7 @@ public:
 
 	Vector2d position;
 
-	//void textureToCamera(SDL_Texture* texture, const srcRect* sourceRect, const dstRect* destRect);
-	//	// copies sourceRect from given texture to destinationRect on renderer
-	//void textureToCameraEx(SDL_Texture* texture, const srcRect* sourceRect, const dstRect* destRect, double angle, SDL_RendererFlip flip);
-	//	// same as above but allows rotation and flips
-
-	//void cameraToRenderer();
-	//void cameraClear();
-
 	void set_zoom(double zoom);
-	
-	///double angle;
 
 private:
 	Vector2 FOV;

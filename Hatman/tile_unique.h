@@ -20,8 +20,6 @@ namespace tiles {
 	class SaveOrb : public Tile {
 	public:
 		SaveOrb() = delete;
-		SaveOrb(const Tile &other);
-		SaveOrb(Tile &&other);
 
 		SaveOrb(const Tileset &tileset, int id, const Vector2 &position);
 
@@ -35,6 +33,7 @@ namespace tiles {
 
 	private:
 		Collection<Text>::handle popup_handle; // handle to popup created upon tile activation
+		Sound activation_sound;
 	};
 
 

@@ -2,7 +2,6 @@
 
 /* Contains modules: 'StaticSprite', 'AnimatedSprite', 'ControllableSprite' */
 
-#include <SDL.h> // 'SDL_texture' and related types
 #include <SFML/Graphics.hpp>
 
 #include <string> // related type
@@ -45,6 +44,12 @@ struct Animation {
 	std::vector<AnimationFrame> frames; // holds source rectangles and display time of all frames of animation
 };
 
+enum class Flip {
+	NONE,
+	HORIZONTAL,
+	VERTICAL
+};
+
 
 
 // # Sprite #
@@ -64,7 +69,7 @@ public:
 	void setRotationDegrees(double degrees);
 	
 	Vector2d alignment;
-	SDL_RendererFlip flip = SDL_FLIP_NONE; // change to flip textures
+	Flip flip = Flip::NONE; // change to flip textures
 	RGBColor color_mod;
 protected:
 	sf::Sprite current_sprite;

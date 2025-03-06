@@ -940,6 +940,12 @@
 	comments since they are no longer necessary
 	- Reduced hellhound hurtbox to make it realistic to beat without trading hits
 
+# 23.08.20 #
+	- Console now automatically hides in 'Release' mode
+	- Added .exe icon
+	- Added window icon through SFML
+	- Changed widnow title from 'Hatman' to 'Hatman Adventure'
+
 ### MUSIC ###
 	Main theme:        A Night's Respite
 
@@ -958,7 +964,7 @@
 
 
 ### FIRST PRIORITY FEATURES ###
-	- Add custom .exe icon
+	- Add framerate cap to options using window.setFramerateLimit(200);
 	- Detect current screen size and set settings on first launch
 	- Save dublicate save files to 'My Games'
 	- Increase death delay

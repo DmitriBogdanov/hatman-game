@@ -49,10 +49,10 @@ namespace SaveOrb_consts {
 	const std::string TRIGGERED_TEXT = "Progress saved.";
 }
 
-tiles::SaveOrb::SaveOrb(const Tile &other) : Tile(other) {}
-tiles::SaveOrb::SaveOrb(Tile &&other) : Tile(other) {}
-
-tiles::SaveOrb::SaveOrb(const Tileset &tileset, int id, const Vector2 &position) : Tile(tileset, id, position) {}
+tiles::SaveOrb::SaveOrb(const Tileset &tileset, int id, const Vector2 &position) :
+	Tile(tileset, id, position),
+	activation_sound("gui_click.wav")
+{}
 
 tiles::SaveOrb::~SaveOrb() {
 	this->popup_handle.erase();
@@ -81,7 +81,7 @@ void tiles::SaveOrb::deactivate() {
 void tiles::SaveOrb::trigger() {
 	using namespace SaveOrb_consts;
 
-	Game::ACCESS->play_sound("gui_click.wav");
+	this->activation_sound.play();
 
 	Saver::ACCESS->record_state();
 	Saver::ACCESS->write();

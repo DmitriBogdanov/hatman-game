@@ -7,7 +7,10 @@ Suffix _s stands for 'spawnable' entities that:
 - Are only spawned during the gameplay
 */
 
+#include <optional>
+
 #include "entity_base.h"
+#include "sound.h" // 'Sound' module
 
 
 
@@ -37,7 +40,7 @@ namespace ntt::s_type {
 		double knockback;
 		Vector2d AOE; // size of of area where damage and knockbacks is applied upon 'explosion'
 
-		Timer lifetime; // prevents prokectiles from persisting indefinetely offscreen
+		Timer lifetime; // prevents projectiles from persisting indefinetely offscreen
 
 		// Checks
 		bool checkEntityCollision(); // ignores entities of the same faction
@@ -50,12 +53,19 @@ namespace ntt::s_type {
 		void _init_sprite(const std::string &folder); // inits with 'default' and 'explosion' animasions
 		void _init_solid(const Vector2d &hitboxSize, const Vector2d &speed, bool affectedByGravity = false, bool collidesWithTerrain = true);
 
+		void _init_spawn_sound(const std::string &name, double volumeMod = 1.); // also plays the sound
+		void _init_collision_sound(const std::string &name, double volumeMod = 1.);
+
 	private:
 		bool collides_with_terrain;
 
 		ControllableSprite* _sprite; // casted version of 'sprite', used to access methods in 'ControllableSprite'
-	};
+		
+		Timer explosion_timer;
 
+		std::optional<Sound> spawn_sound;  // optional sounds
+		std::optional<Sound> collision_sound;
+	};
 
 
 	// # Particle #

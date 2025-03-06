@@ -19,7 +19,9 @@ s_type::Projectile::Projectile(const Vector2d &position, const Damage &damage, d
 	Entity(position),
 	damage(damage),
 	knockback(knockback),
-	AOE(AOE)
+	AOE(AOE),
+	collides_with_terrain(false),
+	_sprite(nullptr)
 {
 	this->lifetime.start(Projectile_consts::MAX_LIFETIME);
 }
@@ -31,12 +33,16 @@ bool s_type::Projectile::update(Milliseconds elapsedTile) {
 
 	if (!Entity::update(elapsedTile)) return false;
 
-	this->sprite->flip = (this->solid->speed.x >= 0.) ? SDL_FLIP_NONE : SDL_FLIP_VERTICAL;
+	this->sprite->flip = (this->solid->speed.x >= 0.) ? Flip::NONE : Flip::HORIZONTAL;
 	this->sprite->setRotation(this->solid->speed.angleToX());
 
 	if (this->solid->enabled && (this->checkEntityCollision() || this->checkTerrainCollision())) this->onCollision();
 
 	if (this->lifetime.finished()) this->mark_for_erase();
+
+	// This line makes it so sprite gets hidden once its "explosion" animation is
+	// finished despite the lifetime possibly still going on due to unfinished sounds
+	if (this->explosion_timer.was_set() && this->explosion_timer.finished()) this->enabled = false;
 
 	return true;
 }
@@ -70,7 +76,18 @@ void s_type::Projectile::onCollision() {
 		}
 
 	this->_sprite->animation_play("explosion");
-	this->mark_for_erase(this->_sprite->animation_duration("explosion"));
+	if (this->collision_sound) this->collision_sound->play();
+
+	const Milliseconds animation_duration = this->_sprite->animation_duration("explosion");
+	const Milliseconds spawn_fx_duration =
+		(this->spawn_sound) ? this->spawn_sound->get_remaining_duration() : 0;
+	const Milliseconds collision_fx_duration =
+		(this->collision_sound) ? this->collision_sound->get_remaining_duration() : 0;
+	const Milliseconds remaining_lifetime = std::max({ animation_duration, spawn_fx_duration, collision_fx_duration });
+
+	this->explosion_timer.start(animation_duration);
+
+	this->mark_for_erase(remaining_lifetime);
 }
 
 // Module inits
@@ -96,6 +113,14 @@ void s_type::Projectile::_init_solid(const Vector2d &hitboxSize, const Vector2d 
 	this->collides_with_terrain = collidesWithTerrain;
 }
 
+void s_type::Projectile::_init_spawn_sound(const std::string &name, double volumeMod) {
+	this->spawn_sound.emplace(name, volumeMod);
+	this->spawn_sound->play(); // we assume '_init' functions are called upon projectile creation
+}
+
+void s_type::Projectile::_init_collision_sound(const std::string &name, double volumeMod) {
+	this->collision_sound.emplace(name, volumeMod);
+}
 
 
 // # Particle #

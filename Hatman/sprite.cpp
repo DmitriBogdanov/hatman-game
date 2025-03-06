@@ -67,11 +67,11 @@ void Sprite::draw() {
 
 	// IMPLEMENT FLIP
 	switch (this->flip) {
-	case SDL_FLIP_HORIZONTAL:
+	case Flip::HORIZONTAL:
 		this->current_sprite.setOrigin(static_cast<float>(destRect.w), 0.f);
 		this->current_sprite.setScale(-1.f, 1.f);
 		break;
-	case SDL_FLIP_NONE:
+	case Flip::NONE:
 		this->current_sprite.setOrigin(0.f, 0.f);
 		this->current_sprite.setScale(1.f, 1.f);
 		break;

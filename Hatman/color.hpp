@@ -1,8 +1,10 @@
 #pragma once
 
-#include <SDL.h>
+#include <cstdint>
 
 
+
+using Uint8 = std::uint8_t;
 
 // # Color #
 // - Represents an RGB color with transparency

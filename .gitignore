@@ -15,3 +15,8 @@ Hatman.vcxproj.filters
 changelog.txt
 manual.txt
 CONFIG.json
+Hatman.aps
+Hatman.rc
+resource.h
+resource1.h
+
