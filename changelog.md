@@ -939,3 +939,8 @@
 	- Added computation of total bonuses to inventory, removed 'additive' and 'multiplicative'
 	comments since they are no longer necessary
 	- Reduced hellhound hurtbox to make it realistic to beat without trading hits
+    
+# 25.04.02 #
+    - Ran everything through cppcheck and pedantic compiler flags
+    - Fixed 2 memory safety issues that weren't apparent on Windowns
+    - Made a Linux build

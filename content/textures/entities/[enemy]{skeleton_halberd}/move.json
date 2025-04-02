@@ -1,0 +1,128 @@
+{ "frames": [
+   {
+    "filename": "move 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 1.ase",
+    "frame": { "x": 28, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 2.ase",
+    "frame": { "x": 56, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 3.ase",
+    "frame": { "x": 84, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 4.ase",
+    "frame": { "x": 112, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 5.ase",
+    "frame": { "x": 140, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 6.ase",
+    "frame": { "x": 168, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 7.ase",
+    "frame": { "x": 196, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 8.ase",
+    "frame": { "x": 224, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 9.ase",
+    "frame": { "x": 252, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 10.ase",
+    "frame": { "x": 280, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 11.ase",
+    "frame": { "x": 308, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   },
+   {
+    "filename": "move 12.ase",
+    "frame": { "x": 336, "y": 0, "w": 28, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 42 },
+    "sourceSize": { "w": 28, "h": 42 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.28-x64",
+  "image": "move.png",
+  "format": "RGBA8888",
+  "size": { "w": 364, "h": 42 },
+  "scale": "1"
+ }
+}

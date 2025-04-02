@@ -1,0 +1,50 @@
+{ "frames": {
+   "default 0.ase": {
+    "frame": { "x": 0, "y": 0, "w": 16, "h": 46 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 46 },
+    "sourceSize": { "w": 16, "h": 46 },
+    "duration": 100
+   },
+   "default 1.ase": {
+    "frame": { "x": 16, "y": 0, "w": 16, "h": 46 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 46 },
+    "sourceSize": { "w": 16, "h": 46 },
+    "duration": 100
+   },
+   "default 2.ase": {
+    "frame": { "x": 32, "y": 0, "w": 16, "h": 46 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 46 },
+    "sourceSize": { "w": 16, "h": 46 },
+    "duration": 100
+   },
+   "default 3.ase": {
+    "frame": { "x": 48, "y": 0, "w": 16, "h": 46 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 46 },
+    "sourceSize": { "w": 16, "h": 46 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "default.png",
+  "format": "RGBA8888",
+  "size": { "w": 64, "h": 46 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Body", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

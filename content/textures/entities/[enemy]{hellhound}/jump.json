@@ -1,0 +1,65 @@
+{ "frames": [
+   {
+    "filename": "jump 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 65, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 64 },
+    "sourceSize": { "w": 65, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "jump 1.ase",
+    "frame": { "x": 65, "y": 0, "w": 65, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 64 },
+    "sourceSize": { "w": 65, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "jump 2.ase",
+    "frame": { "x": 130, "y": 0, "w": 65, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 64 },
+    "sourceSize": { "w": 65, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "jump 3.ase",
+    "frame": { "x": 195, "y": 0, "w": 65, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 64 },
+    "sourceSize": { "w": 65, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "jump 4.ase",
+    "frame": { "x": 260, "y": 0, "w": 65, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 64 },
+    "sourceSize": { "w": 65, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "jump 5.ase",
+    "frame": { "x": 325, "y": 0, "w": 65, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 64 },
+    "sourceSize": { "w": 65, "h": 64 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "jump.png",
+  "format": "RGBA8888",
+  "size": { "w": 390, "h": 64 },
+  "scale": "1"
+ }
+}

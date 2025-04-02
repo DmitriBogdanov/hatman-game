@@ -1,0 +1,83 @@
+{ "frames": [
+   {
+    "filename": "fire_chain #0 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "sourceSize": { "w": 63, "h": 52 },
+    "duration": 15
+   },
+   {
+    "filename": "fire_chain #0 1.ase",
+    "frame": { "x": 63, "y": 0, "w": 63, "h": 52 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "sourceSize": { "w": 63, "h": 52 },
+    "duration": 15
+   },
+   {
+    "filename": "fire_chain #0 2.ase",
+    "frame": { "x": 126, "y": 0, "w": 63, "h": 52 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "sourceSize": { "w": 63, "h": 52 },
+    "duration": 15
+   },
+   {
+    "filename": "fire_chain #0 3.ase",
+    "frame": { "x": 189, "y": 0, "w": 63, "h": 52 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "sourceSize": { "w": 63, "h": 52 },
+    "duration": 25
+   },
+   {
+    "filename": "fire_chain #0 4.ase",
+    "frame": { "x": 252, "y": 0, "w": 63, "h": 52 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "sourceSize": { "w": 63, "h": 52 },
+    "duration": 25
+   },
+   {
+    "filename": "fire_chain #0 5.ase",
+    "frame": { "x": 315, "y": 0, "w": 63, "h": 52 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "sourceSize": { "w": 63, "h": 52 },
+    "duration": 25
+   },
+   {
+    "filename": "fire_chain #0 6.ase",
+    "frame": { "x": 378, "y": 0, "w": 63, "h": 52 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "sourceSize": { "w": 63, "h": 52 },
+    "duration": 40
+   },
+   {
+    "filename": "fire_chain #0 7.ase",
+    "frame": { "x": 441, "y": 0, "w": 63, "h": 52 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "sourceSize": { "w": 63, "h": 52 },
+    "duration": 80
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "fire_chain_0.png",
+  "format": "RGBA8888",
+  "size": { "w": 504, "h": 52 },
+  "scale": "1"
+ }
+}

@@ -1,22 +1,37 @@
-.vs
-config
-Debug
-Release
-Hatman.sln
-backups
-content
-libraries
-My Advisor Results - Hatman
-libs
-temp
-Hatman.vcxproj.user
-Hatman.vcxproj
-Hatman.vcxproj.filters
-changelog.txt
-manual.txt
-CONFIG.json
-Hatman.aps
-Hatman.rc
-resource.h
-resource1.h
+# Ignore everything
+*
 
+# Whitelist directories
+!*/
+# Whitelist git config
+!.gitignore
+!.gitattributes
+# Whitelist toolchain configuration files
+!.clang-format
+!.clang-tidy
+!.clangd
+# Whilelist allowed extensions
+# > Code
+!*.h
+!*.hpp
+!*.c
+!*.cpp
+# > Scripts
+!*.txt
+!*.sh
+# > Docs
+!*.md
+!*.svg
+!*.jpg
+!*.png
+# > Data
+!*.json
+# > Website
+!*.yml
+
+# Ignore build & temporary directories regarless of their contents
+.cache/
+.cache-cppcheck/
+build/
+temp/
+snippets/

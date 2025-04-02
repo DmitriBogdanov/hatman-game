@@ -19,6 +19,13 @@ Archived executable, game assets, screenshots and etc can be found at correspond
 
 See changelog.md for detailed development history.
 
+## Known bugs
+
+- If player saves the game for the first time and goes back to the main menu, the "continue" button will be missing, it appears after a re-launch
+- `temp` directory isn't created automatically if missing, which means player won't be able to save if he deletes it
+- Music transition is a bit jarring, need to implement gradual transitions
+- Do away with the console in debug mode, log things to a file
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details

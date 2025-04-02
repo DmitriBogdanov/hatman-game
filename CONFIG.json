@@ -1,0 +1,10 @@
+{
+    "_COMMENTS_": "Non-standard resolutions can be selected manually through config. Options for 'screen_mode': 1) WINDOW; 2) BORDERLESS; 3) FULLSCREEN.",
+    "fps_counter": true,
+    "music": 1,
+    "resolution_x": 1280,
+    "resolution_y": 720,
+    "save_filepath": "temp/save.json",
+    "screen_mode": "WINDOW",
+    "sound": 1
+}

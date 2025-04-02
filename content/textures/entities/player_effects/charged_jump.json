@@ -1,0 +1,56 @@
+{ "frames": [
+   {
+    "filename": "charged_jump 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 23, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 42 },
+    "sourceSize": { "w": 23, "h": 42 },
+    "duration": 40
+   },
+   {
+    "filename": "charged_jump 1.ase",
+    "frame": { "x": 23, "y": 0, "w": 23, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 42 },
+    "sourceSize": { "w": 23, "h": 42 },
+    "duration": 40
+   },
+   {
+    "filename": "charged_jump 2.ase",
+    "frame": { "x": 46, "y": 0, "w": 23, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 42 },
+    "sourceSize": { "w": 23, "h": 42 },
+    "duration": 40
+   },
+   {
+    "filename": "charged_jump 3.ase",
+    "frame": { "x": 69, "y": 0, "w": 23, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 42 },
+    "sourceSize": { "w": 23, "h": 42 },
+    "duration": 40
+   },
+   {
+    "filename": "charged_jump 4.ase",
+    "frame": { "x": 92, "y": 0, "w": 23, "h": 42 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 42 },
+    "sourceSize": { "w": 23, "h": 42 },
+    "duration": 40
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.39-x64",
+  "image": "charged_jump.png",
+  "format": "RGBA8888",
+  "size": { "w": 115, "h": 42 },
+  "scale": "1"
+ }
+}

@@ -1,0 +1,101 @@
+{ "frames": [
+   {
+    "filename": "tentacle #Emerging 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 500
+   },
+   {
+    "filename": "tentacle #Emerging 1.ase",
+    "frame": { "x": 25, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 70
+   },
+   {
+    "filename": "tentacle #Emerging 2.ase",
+    "frame": { "x": 50, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 70
+   },
+   {
+    "filename": "tentacle #Emerging 3.ase",
+    "frame": { "x": 75, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 70
+   },
+   {
+    "filename": "tentacle #Emerging 4.ase",
+    "frame": { "x": 100, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 70
+   },
+   {
+    "filename": "tentacle #Emerging 5.ase",
+    "frame": { "x": 125, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 70
+   },
+   {
+    "filename": "tentacle #Emerging 6.ase",
+    "frame": { "x": 150, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 70
+   },
+   {
+    "filename": "tentacle #Emerging 7.ase",
+    "frame": { "x": 175, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 70
+   },
+   {
+    "filename": "tentacle #Emerging 8.ase",
+    "frame": { "x": 200, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 70
+   },
+   {
+    "filename": "tentacle #Emerging 9.ase",
+    "frame": { "x": 225, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 70
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "emerge.png",
+  "format": "RGBA8888",
+  "size": { "w": 250, "h": 90 },
+  "scale": "1"
+ }
+}
