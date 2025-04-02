@@ -29,6 +29,8 @@
 !*.json
 # > Website
 !*.yml
+# Whitelist game assets
+!content/**
 
 # Ignore build & temporary directories regardless of their contents
 .cache/
