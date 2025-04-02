@@ -10,7 +10,8 @@
 !.clang-format
 !.clang-tidy
 !.clangd
-# Whilelist allowed extensions
+!.cppcheck
+# Whitelist allowed extensions
 # > Code
 !*.h
 !*.hpp
@@ -29,7 +30,7 @@
 # > Website
 !*.yml
 
-# Ignore build & temporary directories regarless of their contents
+# Ignore build & temporary directories regardless of their contents
 .cache/
 .cache-cppcheck/
 build/

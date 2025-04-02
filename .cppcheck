@@ -1,0 +1,68 @@
+// __________________________________ CONTENTS ___________________________________
+//
+//    Analysis suppression directives for 'cppcheck' static analysis tool which is
+//    optionally invoked during build.
+// _______________________________________________________________________________
+
+// ========================================================
+// --- Exclude 3rd party libraries from static analysis ---
+// ========================================================
+
+*:./tests/thirdparty/*
+*:./benchmarks/thirdparty/*
+
+// =======================================
+// --- Disable false-positive warnings ---
+// =======================================
+
+// Note 1:
+// All of this was done for cppcheck version 2.7, newer version may need a revision.
+
+// Note 2:
+// Almost all of suppressed warnings only appear with max level of checking, 
+// the default level is reasonably reserved about false positives and won't really use most of this.
+
+syntaxError:*
+uselessAssignmentArg:*
+unassignedVariable:*
+oppositeExpression:*
+
+// - Justification -
+//
+// 'syntaxError'          -> Gives false positives in map-macro expansion, plus there is little reason to
+//                           check syntax validity when it's already done by compiler
+//
+// 'uselessAssignmentArg' -> Gives false positives in methods of a template class, where it can't recognize
+//                           that lambda accepting a typedef'ed reference is in fact taking a reference and
+//                           not a value
+//
+// 'unassignedVariable'   -> Bugged, reports false positives in structure-binding for loops
+//
+// 'oppositeExpression'   -> Reports '-x % x' as stylistic error, this is a perfectly valid statement
+//                           which is often used in bit-twiddling algorithms such as Lemire's int distribution
+
+// ==========================================
+// --- Disable opinionated style warnings ---
+// ==========================================
+
+noExplicitConstructor:*
+shadowFunction:*
+useStlAlgorithm:*
+passedByValue:*
+
+// - Justification -
+//
+// 'noExplicitConstructor' -> Implicit conversions can be painful but come on, prohibiting any non-explicit
+//                            constructors with 1 argument prevent a lot of convenient conversions from happening
+//
+// 'shadowFunction'        -> I believe shadowing variables in some cases is cleaner:
+//                            > Constructor(T data) : data(data) {}         // short, nice API
+//                            > Constructor(T new_data) : data(new_data) {} // either arg or member needs an ugly name
+//                            > Constructor(T data) : m_data(data) {}
+//
+// 'useStlAlgorithm'       -> Way too aggressive, not every loop looks better as an 'std' algorithm, plus including
+//                            the entire huge <algorithm> for every little thing is not good for compile times
+//
+// 'passedByValue'         -> Reports 'std::string_view' as something that should be passed by reference, while in
+//                            reality it is indeed meant to be passed by value. This is a bug. Should be fixed
+//                            in newer version.

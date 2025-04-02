@@ -20,47 +20,50 @@ FetchContent_MakeAvailable(sfml)
 
 # Include
 include_directories(hatman/include)
-include_directories(hatman/firstparty)
+include_directories(hatman/dependencies)
 
 # Source
 add_executable(
-    main 
+    main
+    
+    hatman/source/entity/base.cpp
+    hatman/source/entity/player.cpp
+    hatman/source/entity/type_m.cpp
+    hatman/source/entity/type_s.cpp
+    hatman/source/entity/unique_m.cpp
+    hatman/source/entity/unique_s.cpp
+    
+    hatman/source/graphics/camera.cpp
+    hatman/source/graphics/graphics.cpp
+    hatman/source/graphics/gui.cpp
+    
+    hatman/source/modules/inventory.cpp
+    hatman/source/modules/solid.cpp
+    hatman/source/modules/sound.cpp
+    hatman/source/modules/sprite.cpp
+    hatman/source/modules/stats.cpp
+    
+    hatman/source/objects/item_base.cpp
+    hatman/source/objects/item_unique.cpp
+    hatman/source/objects/script.cpp
+    hatman/source/objects/tile_base.cpp
+    hatman/source/objects/tile_unique.cpp
+    
+    hatman/source/systems/audio.cpp
+    hatman/source/systems/controls.cpp
+    hatman/source/systems/emit.cpp
+    hatman/source/systems/flags.cpp
+    hatman/source/systems/game.cpp
+    hatman/source/systems/input.cpp
+    hatman/source/systems/level.cpp
+    hatman/source/systems/saver.cpp
+    hatman/source/systems/timer.cpp
+    
+    hatman/source/utility/geometry.cpp
+    hatman/source/utility/launch_info.cpp
+    hatman/source/utility/tags.cpp
+    
     hatman/source/main.cpp
-    hatman/source/audio.cpp
-    hatman/source/background.cpp
-    hatman/source/camera.cpp
-    hatman/source/CMakeLists.txt
-    hatman/source/controls.cpp
-    hatman/source/emit.cpp
-    hatman/source/entity_base.cpp
-    hatman/source/entity_type_m.cpp
-    hatman/source/entity_type_s.cpp
-    hatman/source/entity_unique_m.cpp
-    hatman/source/entity_unique_s.cpp
-    hatman/source/flags.cpp
-    hatman/source/game.cpp
-    hatman/source/geometry_utils.cpp
-    hatman/source/graphics.cpp
-    hatman/source/gui.cpp
-    hatman/source/hide_console.cpp
-    hatman/source/input.cpp
-    hatman/source/inventory.cpp
-    hatman/source/item_base.cpp
-    hatman/source/item_unique.cpp
-    hatman/source/launch_info.cpp
-    hatman/source/level.cpp
-    hatman/source/main.cpp
-    hatman/source/player.cpp
-    hatman/source/saver.cpp
-    hatman/source/script.cpp
-    hatman/source/solid.cpp
-    hatman/source/sound.cpp
-    hatman/source/sprite.cpp
-    hatman/source/stats.cpp
-    hatman/source/tags.cpp
-    hatman/source/tile_base.cpp
-    hatman/source/tile_unique.cpp
-    hatman/source/timer.cpp
 )
 
 target_compile_features(main PRIVATE cxx_std_17)
