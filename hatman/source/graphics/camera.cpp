@@ -40,7 +40,7 @@ Vector2d Camera::get_LevelPos_from_ScreenPos(const Vector2d &screenPos) const {
 }
 
 void Camera::set_zoom(double zoom) {
-	this->FOV = (natural::DIMENSIONS * zoom).toVector2();
+	this->FOV = (natural::DIMENSIONS * zoom).to_Vector2();
 }
 
 void Camera::draw_sprite(sf::Sprite &sprite) {

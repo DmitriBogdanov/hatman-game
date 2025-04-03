@@ -6,7 +6,7 @@
 #include "systems/game.h" // access to game state
 #include "systems/controls.h" // access to control keys
 #include "entity/unique_s.h" // particles and projectiles
-#include "utility/ct_math.hpp" // for compile-time math
+#include "utility/cx_math.hpp" // for compile-time math
 #include "utility/globalconsts.hpp" // physical consts
 #include "utility/debug_tools.hpp" /// TEMP
 
@@ -108,7 +108,7 @@ namespace Sludge_consts {
 	constexpr double DEAGGRO_RANGE_X = 200.;
 	constexpr double DEAGGRO_RANGE_Y = 80.;
 
-	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = ct_sqr(8.);
+	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = cx_math::sqr(8.);
 
 	// Death
 	constexpr int PARTICLE_COUNT = 16;
@@ -360,7 +360,7 @@ namespace Worm_consts {
 	constexpr double DEAGGRO_RANGE_X = 200.;
 	constexpr double DEAGGRO_RANGE_Y = 90.;
 
-	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = ct_sqr(4.);
+	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = cx_math::sqr(4.);
 
 	// Death
 	constexpr int PARTICLE_COUNT = 8;
@@ -610,7 +610,7 @@ namespace Golem_consts {
 	constexpr double DEAGGRO_RANGE_X = 250.;
 	constexpr double DEAGGRO_RANGE_Y = 60.;
 
-	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = ct_sqr(8.);
+	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = cx_math::sqr(8.);
 
 	// Death
 	constexpr int PARTICLE_COUNT = 40;
@@ -874,7 +874,7 @@ namespace SkeletonHalberd_consts {
 	constexpr double ATTACK_RANGE_UP = 20.;
 	constexpr double ATTACK_RANGE_DOWN = 12.;
 
-	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = ct_sqr(2.);
+	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = cx_math::sqr(2.);
 
 	// Behaviour
 	constexpr double AGGRO_RANGE_X = 280.;
@@ -1169,7 +1169,7 @@ namespace PygmyWarrior_consts {
 	constexpr double ATTACK_RANGE_UP = 10.;
 	constexpr double ATTACK_RANGE_DOWN = 10.;
 
-	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = ct_sqr(2.);
+	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = cx_math::sqr(2.);
 
 	// Behaviour
 	constexpr double AGGRO_RANGE_X = 200.;
@@ -1442,7 +1442,7 @@ namespace Devourer_consts {
 	constexpr double ATTACK_KNOCKBACK_X = 150. * 100.;
 	constexpr double ATTACK_KNOCKBACK_Y = 50. * 100.;
 
-	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = ct_sqr(3.);
+	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = cx_math::sqr(3.);
 
 	// Behaviour
 	constexpr double AGGRO_RANGE_X = 150.;
@@ -2067,8 +2067,8 @@ namespace Hellhound_consts {
 	constexpr double ATTACK_RANGE_UP = 10.;
 	constexpr double ATTACK_RANGE_DOWN = 10.;
 
-	constexpr double TRIGGER_HITBOX_OVERLAP_REQUIRED = ct_sqr(4.);
-	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = ct_sqr(4.);
+	constexpr double TRIGGER_HITBOX_OVERLAP_REQUIRED = cx_math::sqr(4.);
+	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = cx_math::sqr(4.);
 
 	// Behaviour
 	constexpr double AGGRO_RANGE_X = 200.;
@@ -2568,7 +2568,7 @@ namespace Tentacle_consts {
 	constexpr double DEAGGRO_RANGE_X = 180.;
 	constexpr double DEAGGRO_RANGE_Y = 160.;
 
-	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = ct_sqr(8.);
+	constexpr double HITBOX_OVERLAP_REQUIRED_TO_ATTACK = cx_math::sqr(8.);
 
 	// Death
 	constexpr int PARTICLE_COUNT = 10;
@@ -3701,7 +3701,7 @@ void m::enemy::BossMage3::update_when_aggroed([[maybe_unused]] Milliseconds elap
 	case State::SUMMON_BOMBS: {
 
 		Vector2d direction = Vector2d(1, 0);
-		const double angle_increment = 2. * helpers::PI / SUMMON_BOMBS_COUNT;
+		const double angle_increment = 2. * helpers::pi / SUMMON_BOMBS_COUNT;
 
 		for (int i = 0; i < SUMMON_BOMBS_COUNT; ++i) { 
 			direction.rotate(angle_increment);

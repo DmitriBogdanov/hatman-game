@@ -136,7 +136,7 @@ namespace helpers {
 
 	// Methods for getting cell index from position
 	constexpr Vector2 divide32(const Vector2d &position) {
-		return (position / 32.).toVector2(); // returns floor(position / 32)
+		return (position / 32.).to_Vector2(); // returns floor(position / 32)
 	}
 
 	constexpr Vector2 divide32(const Vector2 &position) {

@@ -20,7 +20,7 @@ enum class ExitCode {
 // - Handles most high-level logic
 class Game {
 public:
-	Game(int music_volume_setting, int sound_volume_setting, bool fps_counter_setting); // inits SDL
+	Game(bool fps_counter_setting); // inits SDL
 
 	~Game();
 
@@ -28,15 +28,6 @@ public:
 	static Game* ACCESS;
 
 	ExitCode game_loop(); // called from outside to start the game loop
-
-	void play_music(const std::string &name, double volumeMod = 1.); // additional volume mod to adjust particular sounds
-
-	double music_volume_mod;
-	double sound_volume_mod;
-
-	std::string music_current_track;
-
-	sf::Music music;
 
 	bool show_fps_counter;
 	bool toggle_F3;

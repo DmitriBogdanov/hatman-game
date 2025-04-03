@@ -8,7 +8,7 @@ Sound::Sound(const std::string &name, double volumeMod) {
 	this->sound.setBuffer(Audio::ACCESS->getSoundBuffer(name));
 
 	constexpr double SFML_MAX_VOLUME = 100; // SFML uses volume range [0, 100]
-	const double total_volume = SFML_MAX_VOLUME * audio::FX_BASE_VOLUME * Game::READ->sound_volume_mod * volumeMod;
+	const double total_volume = SFML_MAX_VOLUME * audio::FX_BASE_VOLUME * Audio::READ->sound_volume_mod * volumeMod;
 	const float clamped_volume = std::clamp(static_cast<float>(total_volume), 0.f, 100.f);
 	this->sound.setVolume(clamped_volume);
 }

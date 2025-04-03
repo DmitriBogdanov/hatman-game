@@ -944,3 +944,4 @@
     - Ran everything through cppcheck and pedantic compiler flags
     - Fixed 2 memory safety issues that weren't apparent on Windowns
     - Made a Linux build
+    - Smooth music transitions (finally)

@@ -6,7 +6,7 @@
 #include "systems/controls.h" // access to control keys
 #include "utility/globalconsts.hpp" // physical consts
 #include "entity/unique_s.h" // for spawning projectile entities
-#include "utility/ct_math.hpp" // for calculating jump speed
+#include "utility/cx_math.hpp" // for calculating jump speed
 
 
 using namespace ntt;
@@ -23,11 +23,11 @@ namespace Player_consts {
 	constexpr double MOVEMENT_ACCELERATION = 600.;
 	constexpr double MOVEMENT_FORCE = MASS * MOVEMENT_ACCELERATION;
 
-	constexpr double JUMP_SPEED = ct_speed_corresponding_to_jump_height(physics::GRAVITY_ACCELERATION, 36.);
+	constexpr double JUMP_SPEED = cx_math::speed_corresponding_to_jump_height(physics::GRAVITY_ACCELERATION, 36.);
 	constexpr double JUMP_IMPULSE = MASS * JUMP_SPEED;
 
 	constexpr Milliseconds DROPPING_DOWN_STICKY_DELAY_DURATION = 
-		sec_to_ms(ct_sqrt(2 * physics::PLATFORM_EPSILON / physics::GRAVITY_ACCELERATION) + 1e-4);
+		sec_to_ms(cx_math::sqrt(2 * physics::PLATFORM_EPSILON / physics::GRAVITY_ACCELERATION) + 1e-4);
 		// required time is chosen based on guaranteeing that player falls down further than platform epsilon
 		// g t^2 / 2 = platform_epsion   =>   t = sqrt(2 * platform_epsion / g)
 

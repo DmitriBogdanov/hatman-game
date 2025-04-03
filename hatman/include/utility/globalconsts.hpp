@@ -56,6 +56,7 @@ namespace physics {
 // - Default values for mostly visual settings
 namespace defaults {
 	constexpr double TRANSITION_FADE_DURATION = 500.;
+	constexpr double MUSIC_FADE_DURATION = TRANSITION_FADE_DURATION * 4.;
 	constexpr double GAME_ENDING_FADE_DURATION = 8'000.;
 }
 

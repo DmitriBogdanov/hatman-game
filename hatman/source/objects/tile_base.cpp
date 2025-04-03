@@ -163,7 +163,7 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 			// Parse things above
 			nlohmann::json objects_node = tile_node["objectgroup"]["objects"];
 			for (auto const& object : objects_node) {
-				const std::string objectType = tags::getPrefix(object["type"].get<std::string>());
+				const std::string objectType = tags::get_prefix(object["type"].get<std::string>());
 
 				// HITBOX
 				if (objectType == "tile_hitbox") {
@@ -304,7 +304,7 @@ TileInteraction Tileset::parse_as_interaction(const nlohmann::json& object_node)
 
 EntitySpawnData Tileset::parse_as_entity(const nlohmann::json& object_node) {
 	// Parse entity type
-	const std::string entityType = tags::getSuffix(object_node["type"].get<std::string>());
+	const std::string entityType = tags::get_suffix(object_node["type"].get<std::string>());
 
 	// Parse entity name
 	std::string entityName;

@@ -69,8 +69,9 @@ add_executable(
 target_compile_features(main PRIVATE cxx_std_17)
 
 target_compile_options(main PRIVATE
-    -O2
+    -O0
     -g3
+    -fno-omit-frame-pointer
     -Wall -Wextra -Wpedantic
 )
 target_link_libraries(main PRIVATE sfml-system sfml-window sfml-graphics sfml-audio -fsanitize=undefined,address,leak)

@@ -34,7 +34,7 @@ bool s_type::Projectile::update(Milliseconds elapsedTile) {
 	if (!Entity::update(elapsedTile)) return false;
 
 	this->sprite->flip = (this->solid->speed.x >= 0.) ? Flip::NONE : Flip::HORIZONTAL;
-	this->sprite->setRotation(this->solid->speed.angleToX());
+	this->sprite->setRotation(this->solid->speed.angle_to_x());
 
 	if (this->solid->enabled && (this->checkEntityCollision() || this->checkTerrainCollision())) this->onCollision();
 

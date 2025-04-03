@@ -21,6 +21,8 @@
 
 // ____________________ IMPLEMENTATION ____________________
 
+
+
 int main() {
     std::srand(static_cast<int>(std::time(nullptr))); // TODO: Remove this nonsense
 
@@ -51,15 +53,15 @@ int main() {
         }
 
         // Initialize all the storage objects
+        TimerController timerController; // [!] timers must be created first 
         Graphics        graphics(resolution_x, resolution_y, convert_string_to_window_flags(screen_mode));
-        Audio           audio;
+        Audio           audio(music, sound);
         TilesetStorage  tilesets;
         EmitStorage     emits;
         Flags           flags;
         Saver           saver(save_filepath);
-        TimerController timerController;
         Controls        controls;
-        Game            game(music, sound, fps_counter);
+        Game            game(fps_counter);
         // from now on all these objects can be accessed through 'ClassName::ACCESS' / 'ClassName::READ'
         // anywhere that has their header included
 

@@ -1,35 +1,37 @@
 #pragma once
 
-/*
-Classes/methods for 2D vector manipulation
-*/
+// _______________________ INCLUDES _______________________
 
-#include <cmath> // 'sqrt()', 'sin()', 'cos()', 'acos()', etc
-#include <cstddef> // 'std::size_t' type for hash function
-#include <functional> // contains 'std::hash()'
-#include <string> // conversion to string
+#include <cmath>      // sqrt(), sin(), cos(), acos()
+#include <cstddef>    // size_t
+#include <functional> // std::hash
+#include <string>     // string, to_string()
 
-#include "utility/ct_math.hpp" // constexpr math functions
+#include "utility/cx_math.hpp" // constexpr math functions
+
+// ____________________ DEVELOPER DOCS ____________________
+
+// 2D integer / float vector class, also a few misc utilities for math
+
+// ____________________ IMPLEMENTATION ____________________
 
 
 
 // helpers::
-// - Related utility functions
+// - Math utils for 2D vectors
 namespace helpers {
-	constexpr double PI = 3.1415926;
 
-	constexpr double degree_to_rad(double degrees) {
-		return degrees * helpers::PI / 180.;
-	}
-	constexpr double rad_to_degree(double radians) {
-		return radians * 180. / helpers::PI;
-	}
+constexpr double pi = 3.14159265358979323846;
 
-	template<typename T>
-	constexpr int sign(T val) { // standard 'sign()' function (x<0 => -1, x==0 => 0, x>0 => 1)
-		return (T(0) < val) - (val < T(0));
-	}
+constexpr double degree_to_rad(double degrees) noexcept { return degrees * helpers::pi / 180.; }
+constexpr double rad_to_degree(double radians) noexcept { return radians * 180. / helpers::pi; }
+
+template <typename T>
+constexpr int sign(T val) { // standard 'sign()' function (x<0 => -1, x==0 => 0, x>0 => 1)
+    return (T(0) < val) - (val < T(0));
 }
+
+} // namespace helpers
 
 
 
@@ -37,237 +39,172 @@ namespace helpers {
 // - Represents int 2D vector
 class Vector2 {
 public:
-	constexpr Vector2() : x(0), y(0) {}
-	constexpr Vector2(int X, int Y) : x(X), y(Y) {}
+    constexpr Vector2()                          = default;
+    constexpr Vector2(const Vector2&)            = default;
+    constexpr Vector2(Vector2&&)                 = default;
+    constexpr Vector2& operator=(const Vector2&) = default;
+    constexpr Vector2& operator=(Vector2&&)      = default;
 
-	int x, y;
+    constexpr Vector2(int X, int Y) : x(X), y(Y) {}
 
-	// Operators
-	constexpr bool operator == (const Vector2 &other) const {
-		return (this->x == other.x) && (this->y == other.y);
-	}
+    int x{}, y{};
 
-	constexpr bool operator != (const Vector2 &other) const {
-		return (this->x != other.x) || (this->y != other.y);
-	}
+    // Operators
+    constexpr bool operator==(const Vector2& other) const noexcept {
+        return (this->x == other.x) && (this->y == other.y);
+    }
+    constexpr bool operator!=(const Vector2& other) const noexcept {
+        return (this->x != other.x) || (this->y != other.y);
+    }
+    constexpr Vector2 operator+(const Vector2& other) const noexcept {
+        return Vector2(this->x + other.x, this->y + other.y);
+    }
+    constexpr Vector2 operator-(const Vector2& other) const noexcept {
+        return Vector2(this->x - other.x, this->y - other.y);
+    }
+    constexpr Vector2 operator*(double value) const noexcept {
+        return Vector2(static_cast<int>(this->x * value), static_cast<int>(this->y * value));
+    }
+    constexpr Vector2 operator/(double value) const noexcept {
+        return Vector2(static_cast<int>(static_cast<double>(this->x) / value),
+                       static_cast<int>(static_cast<double>(this->y) / value));
+    }
+    constexpr Vector2& operator+=(const Vector2& other) noexcept {
+        this->x += other.x;
+        this->y += other.y;
+        return *this;
+    }
+    constexpr Vector2& operator-=(const Vector2& other) noexcept {
+        this->x -= other.x;
+        this->y -= other.y;
+        return *this;
+    }
+    constexpr Vector2& operator*=(double value) noexcept {
+        this->x = static_cast<int>(this->x * value);
+        // using *= would result in a warning due to implicit double -> int conversion
+        this->y = static_cast<int>(this->y * value);
+        return *this;
+    }
 
-	constexpr Vector2 operator + (const Vector2 &other) const {
-		return Vector2(
-			this->x + other.x,
-			this->y + other.y);
-	}
+    constexpr Vector2& operator/=(double value) noexcept {
+        this->x = static_cast<int>(this->x / value);
+        // using *= would result in a warning due to implicit double -> int conversion
+        this->y = static_cast<int>(this->y / value);
+        return *this;
+    }
 
-	constexpr Vector2 operator - (const Vector2 &other) const {
-		return Vector2(
-			this->x - other.x,
-			this->y - other.y
-		);
-	}
+    // Methods
+    constexpr Vector2& set(int x, int y) noexcept {
+        this->x = x;
+        this->y = y;
+        return *this;
+    }
 
-	constexpr Vector2 operator * (double value) const {
-		return Vector2(
-			static_cast<int>(this->x * value),
-			static_cast<int>(this->y * value)
-		);
-	}
+    constexpr int length2() const noexcept { // square of length
+        return this->x * this->x + this->y * this->y;
+    }
 
-	constexpr Vector2 operator / (double value) const {
-		return Vector2(
-			static_cast<int>(static_cast<double>(this->x) / value),
-			static_cast<int>(static_cast<double>(this->y) / value)
-		);
-	}
+    double length() const { // slower than length2()
+        return std::sqrt(this->x * this->x + this->y * this->y);
+    }
 
-	constexpr Vector2& operator += (const Vector2 &other) {
-		this->x += other.x;
-		this->y += other.y;
-		return *this;
-	}
-
-	constexpr Vector2& operator -= (const Vector2 &other) {
-		this->x -= other.x;
-		this->y -= other.y;
-		return *this;
-	}
-
-	constexpr Vector2& operator *= (double value) {
-		this->x = static_cast<int>(this->x * value); // using *= would result in a warning due to double->int implicit conversion
-		this->y = static_cast<int>(this->y * value);
-		return *this;
-	}
-
-	constexpr Vector2& operator /= (double value) {
-		this->x = static_cast<int>(this->x / value); // using *= would result in a warning due to double->int implicit conversion
-		this->y = static_cast<int>(this->y / value);
-		return *this;
-	}
-
-	// Methods
-	constexpr Vector2& set(int x, int y) {
-		this->x = x;
-		this->y = y;
-		return *this;
-	}
-
-	constexpr int length2() const { // square of length
-		return this->x * this->x + this->y * this->y;
-	}
-
-	inline double length() const { // slower than length2()
-		return std::sqrt(this->x * this->x + this->y * this->y);
-	}
-
-	inline std::string toString() const {
-		return std::string("{" + std::to_string(this->x) + ", " + std::to_string(this->y) + "}");
-	}
+    std::string to_string() const { return '{' + std::to_string(this->x) + ", " + std::to_string(this->y) + '}'; }
 };
-
-// Hash function
-struct Vector2_Hash {
-	// Hash function
-	std::size_t operator () (const Vector2 &vector) const {
-		// Hashes both fiels and apply bitwise XOR
-		std::size_t h1 = std::hash<int>()(vector.x);
-		std::size_t h2 = std::hash<int>()(vector.y);
-
-		return h1 ^ (h2 << 1);
-		// If we didn't shift the bits and two vectors were the same,
-		// the XOR would cause them to cancel each other out.
-		// So hash(A,A,1) would be the same as hash(B,B,1).
-		// Also order wouldn't matter, so hash(A,B,1) would be the same as hash(B,A,1)
-	}
-};
-
-
 
 // # Vector2d #
 // - Represents double 2D vector
 class Vector2d {
 public:
-	constexpr Vector2d() : x(0.), y(0.) {}
-	constexpr Vector2d(double X, double Y) : x(X), y(Y) {}
-	constexpr Vector2d(const Vector2 &vector) : x(vector.x), y(vector.y) {} // Vector2 implicitly converts to a wider tupe
+    constexpr Vector2d()                           = default;
+    constexpr Vector2d(const Vector2d&)            = default;
+    constexpr Vector2d(Vector2d&&)                 = default;
+    constexpr Vector2d& operator=(const Vector2d&) = default;
+    constexpr Vector2d& operator=(Vector2d&&)      = default;
 
-	double x, y;
+    constexpr Vector2d(double X, double Y) noexcept : x(X), y(Y) {}
+    constexpr Vector2d(const Vector2& vector) noexcept : x(vector.x), y(vector.y) {}
+    // Vector2 implicitly converts to a wider type
 
-	// Operators
-	constexpr bool operator == (const Vector2d &other) const {
-		return (this->x == other.x) && (this->y == other.y);
-	}
+    double x{}, y{};
 
-	constexpr bool operator != (const Vector2d &other) const {
-		return (this->x != other.x) || (this->y != other.y);
+    // Operators
+    constexpr bool operator==(const Vector2d& other) const noexcept {
+        return (this->x == other.x) && (this->y == other.y);
+    }
+    constexpr bool operator!=(const Vector2d& other) const noexcept {
+        return (this->x != other.x) || (this->y != other.y);
+    }
+    constexpr Vector2d operator+(const Vector2d& other) const noexcept {
+        return Vector2d(this->x + other.x, this->y + other.y);
+    }
+    constexpr Vector2d operator-(const Vector2d& other) const noexcept {
+        return Vector2d(this->x - other.x, this->y - other.y);
+    }
+    constexpr Vector2d operator*(double value) const noexcept { return Vector2d(this->x * value, this->y * value); }
+    constexpr Vector2d operator/(double value) const noexcept { return Vector2d(this->x / value, this->y / value); }
 
-	}
+    constexpr Vector2d& operator+=(const Vector2d& other) noexcept {
+        this->x += other.x;
+        this->y += other.y;
+        return *this;
+    }
 
-	constexpr Vector2d operator + (const Vector2d &other) const {
-		return Vector2d(
-			this->x + other.x,
-			this->y + other.y
-		);
-	}
+    constexpr Vector2d& operator-=(const Vector2d& other) noexcept {
+        this->x -= other.x;
+        this->y -= other.y;
+        return *this;
+    }
 
-	constexpr Vector2d operator - (const Vector2d &other) const {
-		return Vector2d(
-			this->x - other.x,
-			this->y - other.y
-		);
-	}
+    constexpr Vector2d& operator*=(double value) noexcept {
+        this->x *= value;
+        this->y *= value;
+        return *this;
+    }
 
-	constexpr Vector2d operator * (double value) const {
-		return Vector2d(
-			this->x * value,
-			this->y * value
-		);
-	}
+    constexpr Vector2d& operator/=(double value) noexcept {
+        this->x /= value;
+        this->y /= value;
+        return *this;
+    }
 
-	constexpr Vector2d operator / (double value) const {
-		return Vector2d(
-			this->x / value,
-			this->y / value
-		);
-	}
+    // Methods
+    constexpr Vector2d& set(double x, double y) noexcept {
+        this->x = x;
+        this->y = y;
+        return *this;
+    }
 
-	constexpr Vector2d& operator += (const Vector2d &other) {
-		this->x += other.x;
-		this->y += other.y;
-		return *this;
-	}
+    Vector2d& rotate(double radians) {
+        const auto x1 = this->x;
+        const auto y1 = this->y;
+        this->x       = x1 * std::cos(radians) - y1 * std::sin(radians);
+        this->y       = x1 * std::sin(radians) + y1 * std::cos(radians);
 
-	constexpr Vector2d& operator -= (const Vector2d &other) {
-		this->x -= other.x;
-		this->y -= other.y;
-		return *this;
-	}
+        return *this;
+    }
 
-	constexpr Vector2d& operator *= (double value) {
-		this->x *= value;
-		this->y *= value;
-		return *this;
-	}
+    /// LOOK FOR OPTIMIZATIONS
+    double angle_to_x() const { // check out CORDIC if better performance is needed
+        return std::acos(this->x / this->length()) * helpers::sign(this->y);
+    }
+    /// LOOK FOR OPTIMIZATIONS
+    double angle_to_y() const { return std::acos(this->y / this->length()) * helpers::sign(this->x); }
 
-	constexpr Vector2d& operator /= (double value) {
-		this->x /= value;
-		this->y /= value;
-		return *this;
-	}
+    double length2() const noexcept { // square of length
+        return this->x * this->x + this->y * this->y;
+    }
 
-	// Methods
-	constexpr Vector2d& set(double x, double y) {
-		this->x = x;
-		this->y = y;
-		return *this;
-	}
-	/// LOOK FOR OPTIMIZATIONS
-	Vector2d& rotate(double radians) {
-		const auto x1 = this->x;
-		const auto y1 = this->y;
-		this->x = x1 * std::cos(radians) - y1 * std::sin(radians);
-		this->y = x1 * std::sin(radians) + y1 * std::cos(radians);
+    double length() const { // slower than length2()
+        return std::sqrt(this->x * this->x + this->y * this->y);
+    }
 
-		return *this;
-	}
-	/// LOOK FOR OPTIMIZATIONS
-	Vector2d& rotateDegrees(double degrees) {
-		this->rotate(helpers::degree_to_rad(degrees));
+    Vector2d normalized() const { return (*this / this->length()); }
 
-		return *this;
-	}
+    constexpr Vector2 to_Vector2() const { // conversion to Vector2 loses precision, only explicit conversion is allowed
+        return Vector2(static_cast<int>(this->x), static_cast<int>(this->y));
+    }
 
-	/// LOOK FOR OPTIMIZATIONS
-	double angleToX() const { // check out CORDIC if better performance is needed
-		return std::acos(this->x / this->length()) * helpers::sign(this->y);
-	}
-	/// LOOK FOR OPTIMIZATIONS
-	double andgleToY() const {
-		return std::acos(this->y / this->length()) * helpers::sign(this->x);
-	}
-
-	double length2() const { // square of length
-		return this->x * this->x + this->y * this->y;
-	}
-
-	inline double length() const { // slower than length2()
-		return std::sqrt(this->x * this->x + this->y * this->y);
-	}
-
-	inline Vector2d normalized() const {
-		return (*this / this->length());
-	}
-
-	constexpr Vector2 toVector2() const { // convertion to Vector2 loses precision, only explicit conversion is allowed
-		return Vector2(
-			static_cast<int>(this->x),
-			static_cast<int>(this->y)
-		);
-	}
-
-	inline std::string toString() const {
-		return std::string("{" + std::to_string(this->x) + ", " + std::to_string(this->y) +"}");
-	}
+    std::string to_string() const {
+        return std::string("{" + std::to_string(this->x) + ", " + std::to_string(this->y) + "}");
+    }
 };
-
-/// TRY IMPLEMENTING CONSTEXPR VERSION
-inline Vector2d make_rotated_Vector2d(double length, double rotation) {
-	return Vector2d(length, 0.).rotate(rotation);
-}

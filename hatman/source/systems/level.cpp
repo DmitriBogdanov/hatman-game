@@ -13,7 +13,7 @@
 #include "objects/tile_unique.h" // creation of unique tiles
 #include "entity/unique_m.h" // creation of unique entities
 #include "utility/globalconsts.hpp" // performnce-related consts
-#include "systems/game.h" // to play music
+#include "systems/audio.h" // to play music
 
 
 // # Level #
@@ -304,7 +304,7 @@ void Level::parseFromJSON(const std::string &filePath) {
 
 	// Parse map properties
 	for (const auto &property_node : JSON["properties"]) {
-		const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+		const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
 
 		if (prefix == "background") {
 			this->background_sprite.setTexture(
@@ -312,7 +312,7 @@ void Level::parseFromJSON(const std::string &filePath) {
 			);
 		}
 		if (prefix == "music") {
-			Game::ACCESS->play_music(property_node["value"].get<std::string>());
+			Audio::ACCESS->queue_music(property_node["value"].get<std::string>());
 		}
 		/// new properties go there
 	}
@@ -359,7 +359,7 @@ void Level::parseFromJSON(const std::string &filePath) {
 
 void Level::parse_tilelayer(const nlohmann::json &tilelayer_node) {
 	// Determine layer type
-	const auto layerPrefix = tags::getPrefix(tilelayer_node["name"].get<std::string>());
+	const auto layerPrefix = tags::get_prefix(tilelayer_node["name"].get<std::string>());
 
 	int tileCount = 0; // used to determine tile position
 
@@ -391,8 +391,8 @@ void Level::parse_tilelayer(const nlohmann::json &tilelayer_node) {
 
 void Level::parse_objectgroup(const nlohmann::json &objectgroup_node) {
 	// get layer prefix and suffix
-	const std::string layer_prefix = tags::getPrefix(objectgroup_node["name"].get<std::string>());
-	const std::string layer_suffix = tags::getSuffix(objectgroup_node["name"].get<std::string>());
+	const std::string layer_prefix = tags::get_prefix(objectgroup_node["name"].get<std::string>());
+	const std::string layer_suffix = tags::get_suffix(objectgroup_node["name"].get<std::string>());
 
 	if (layer_prefix == "entity") {
 		this->parse_objectgroup_entity(objectgroup_node);
@@ -489,7 +489,7 @@ void Level::parse_objectgroup_script_levelChange(const nlohmann::json &objectgro
 
 		// Parse custom properties
 		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+			const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
 
 			if (prefix == "goes_to_level") {
 				goes_to_level = property_node["value"].get<std::string>();
@@ -520,7 +520,7 @@ void Level::parse_objectgroup_script_levelSwitch(const nlohmann::json &objectgro
 
 		// Parse custom properties
 		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+			const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
 
 			if (prefix == "goes_to_level") {
 				goes_to_level = property_node["value"].get<std::string>();
@@ -551,7 +551,7 @@ void Level::parse_objectgroup_script_portal(const nlohmann::json &objectgroup_no
 
 		// Parse custom properties
 		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+			const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
 
 			if (prefix == "goes_to_x") {
 				goes_to_pos.x = property_node["value"].get<int>();
@@ -581,7 +581,7 @@ void Level::parse_objectgroup_script_hint(const nlohmann::json &objectgroup_node
 		
 		// Parse custom properties
 		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::getPrefix(property_node["name"].get<std::string>());
+			const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
 
 			if (prefix == "text") {
 				text = property_node["value"].get<std::string>();

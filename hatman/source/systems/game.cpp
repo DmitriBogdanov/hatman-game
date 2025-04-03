@@ -9,6 +9,7 @@
 #include "firstparty/UTL/log.hpp"
 
 #include "graphics/graphics.h" // access to rendering updating
+#include "systems/audio.h"
 #include "systems/saver.h" // access to save loading
 #include "systems/emit.h" // acess to 'EmitStorage' (DEV method _drawInfo())
 #include "utility/globalconsts.hpp"
@@ -22,9 +23,7 @@
 const Game* Game::READ;
 Game* Game::ACCESS;
 
-Game::Game(int music_volume_setting, int sound_volume_setting, bool fps_counter_setting) :
-	music_volume_mod(music_volume_setting / 10.),
-	sound_volume_mod(sound_volume_setting / 10.),
+Game::Game(bool fps_counter_setting) :
 	show_fps_counter(fps_counter_setting),
     toggle_F3(false),
 	paused(false),
@@ -49,7 +48,7 @@ Game::Game(int music_volume_setting, int sound_volume_setting, bool fps_counter_
 	this->request_goToMainMenu();
 
 	Graphics::ACCESS->gui->FPSCounter_on();
-	this->play_music("a_nights_respite.wav");
+	Audio::ACCESS->queue_music("a_nights_respite.wav");
 	
 	Graphics::ACCESS->window.setKeyRepeatEnabled(false);
 
@@ -57,28 +56,6 @@ Game::Game(int music_volume_setting, int sound_volume_setting, bool fps_counter_
 }
 
 Game::~Game() {}
-
-void Game::play_music(const std::string &name, double volumeMod) {
-	if (this->music_current_track == name) return; // don't repeat music if it's already playing
-
-	this->music_current_track = name;
-
-	// SFML version
-	if (!music.openFromFile("content/audio/mx/" + name))
-		std::cout << "Error: Could no open music file...\n";
-
-	constexpr double SFML_MAX_VOLUME = 100; // SFML uses volume range [0, 100]
-	const double total_volume = SFML_MAX_VOLUME * audio::MUSIC_BASE_VOLUME * Game::READ->music_volume_mod * volumeMod;
-	const float clamped_volume = std::clamp(static_cast<float>(total_volume), 0.f, 100.f);
-	music.setVolume(clamped_volume);
-	music.setLoop(true); // for some reason music doesn't loop by default
-
-	music.play();
-
-	// SDL version
-	//const int total_volume = static_cast<int>(SDL_MIX_MAXVOLUME * audio::MUSIC_BASE_VOLUME * this->music_volume_mod * volumeMod);
-	//playMusic(("content/audio/mx/" + name).c_str(), total_volume);
-}
 
 bool Game::is_running() const {
 	return static_cast<bool>(this->level);
@@ -274,8 +251,6 @@ ExitCode Game::handle_requests() {
 		this->_requested_toggle_esc_menu = false; // protects from trying to turn on 'Esc' during some GUI transitions
 
 	if (this->_requested_toggle_esc_menu && this->smooth_transition_timer.finished()) {
-        // TEMP:
-        UTL_LOG_WARN("Handling esc menu toggle");
 		Graphics::ACCESS->gui->EscMenu_toggle();
 		this->paused = !this->paused;
 
@@ -284,8 +259,6 @@ ExitCode Game::handle_requests() {
 
 	// Handle inventory toggle
 	if (this->_requested_toggle_inventory && this->smooth_transition_timer.finished()) {
-        // TEMP:
-        UTL_LOG_WARN("Handling inventory toggle");
 		Graphics::ACCESS->gui->Inventory_toggle();
 		this->paused = !this->paused;
 
@@ -345,6 +318,9 @@ void Game::update_everything(Milliseconds elapsedTime) {
 	}
 
 	// Updated regardless
+    //this->update_music(elapsedTime);
+    Audio::ACCESS->update(elapsedTime);
+    
 	Graphics::ACCESS->gui->update(elapsedTime);
 
 	EmitStorage::ACCESS->update(elapsedTime);

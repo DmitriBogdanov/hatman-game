@@ -1,17 +1,31 @@
 #pragma once
 
-#include <string> // related type
+// _______________________ INCLUDES _______________________
+
+// Includes: std
+#include <string> // string
+
+// Includes: dependencies
+
+// Includes: project
+
+// ____________________ DEVELOPER DOCS ____________________
+
+// The game often uses strings of following format: [prefix]{suffix},
+// this header contains functions for dealing with such strings
+
+// ____________________ IMPLEMENTATION ____________________
 
 
 
-// tags::
-// - Contains utility function that deal with [prefixes] and {suffixes] inside a string
 namespace tags {
-	std::string getPrefix(const std::string &target); // [prefix]
-	std::string getSuffix(const std::string &target); // {suffix}
 
-	bool containsPrefix(const std::string &target, const std::string &prefix);
-	bool containsSuffix(const std::string &target, const std::string &suffix);
+std::string get_prefix(const std::string& target); // [prefix]
+std::string get_suffix(const std::string& target); // {suffix}
 
-	std::string makeTag(const std::string &prefix, const std::string &suffix); // makes string "[prefix]{suffix}"
-}
+bool contains_prefix(const std::string& target, const std::string& prefix);
+bool contains_suffix(const std::string& target, const std::string& suffix);
+
+std::string make_tag(const std::string& prefix, const std::string& suffix); // returns string "[prefix]{suffix}"
+
+} // namespace tags
