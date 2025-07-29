@@ -94,6 +94,8 @@ namespace scripts {
 
 		dRect text_field;
 		std::string text;
+        
+        Timer persistence_timer; // timer adds a delay before text begins to gradually disappear
 		
 		Collection<Text>::handle popup_handle; // handle to popup created upon tile activation
 	};

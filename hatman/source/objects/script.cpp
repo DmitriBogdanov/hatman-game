@@ -3,6 +3,7 @@
 #include "systems/game.h" // access to game state
 #include "systems/controls.h" // access to control keys
 #include "graphics/graphics.h" // acess to GUI for text creation
+#include "systems/timer.h"
 #include "utility/globalconsts.hpp" // fade duration during teleportation
 #include "systems/saver.h" // used by 'Checkpoint'
 
@@ -73,6 +74,7 @@ void scripts::Portal::update([[maybe_unused]] Milliseconds elapsedTime) {
 // # Hint #
 namespace Hint_consts {
 	constexpr Milliseconds TEXT_DELAY = 20.;
+    constexpr Milliseconds TEXT_PERSISTENCE_DELAY = 550.;
 }
 
 scripts::Hint::Hint(const dRect &hitbox, const dRect &textField, const std::string &text) :
@@ -80,7 +82,11 @@ scripts::Hint::Hint(const dRect &hitbox, const dRect &textField, const std::stri
 	is_active(false),
 	text_field(textField),
 	text(text)
-{}
+{
+    this->popup_handle = Graphics::ACCESS->gui->make_text(this->text, this->text_field);
+    this->popup_handle.get().set_properties(colors::SH_YELLOW, false, false, Hint_consts::TEXT_DELAY);
+    this->popup_handle.get().reverse_delay = true;
+}
 
 scripts::Hint::~Hint() {
 	this->popup_handle.erase();
@@ -91,21 +97,25 @@ void scripts::Hint::update([[maybe_unused]] Milliseconds elapsedTime) {
 	const bool current_activation = this->hitbox.containsPoint(Game::READ->level->player->position);
 
 	// Check if there is a change compared to previous frame
-	const bool activation_has_changed = (this->is_active != current_activation);
+	//const bool activation_has_changed = (this->is_active != current_activation);
 
 	// If there was no change of state => nothing has to be done
-	if (activation_has_changed) this->is_active = current_activation;
-	else return;
+	//if (activation_has_changed) this->is_active = current_activation;
+	//else return;
+    this->is_active = current_activation;
 
 	// Handle state change
-	using namespace Hint_consts;
+	//using namespace Hint_consts;
 
 	if (this->is_active) {
-		this->popup_handle = Graphics::ACCESS->gui->make_text(this->text, this->text_field);
-		this->popup_handle.get().set_properties(colors::SH_YELLOW, false, false, TEXT_DELAY);
+		//this->popup_handle = Graphics::ACCESS->gui->make_text(this->text, this->text_field);
+		//this->popup_handle.get().set_properties(colors::SH_YELLOW, false, false, TEXT_DELAY);
+        this->popup_handle.get().reverse_delay = false;
+        this->persistence_timer.start(Hint_consts::TEXT_PERSISTENCE_DELAY);
 	}
 	else {
-		this->popup_handle.erase();
+		//this->popup_handle.erase(); TEMP:
+        if (this->persistence_timer.finished()) this->popup_handle.get().reverse_delay = true;
 	}
 }
 

@@ -2,7 +2,7 @@
 
 #include <string> // related type
 #include <unordered_set> // flags are stored as a set
-#include "thirdparty/nlohmann.hpp" // parsing from JSON, 'nlohmann::json' type
+#include "firstparty/UTL/json.hpp"
 
 #include "utility/geometry.h" // geometry types
 #include "modules/inventory.h" // since we have to parse inventory from save
@@ -46,7 +46,7 @@ private:
 
 	bool save_is_present;
 
-	nlohmann::json state;
+	utl::json::Node state;
 };
 
 

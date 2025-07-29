@@ -8,7 +8,7 @@
 #include <unordered_map> // related type (tileset storage)
 #include <memory> // 'unique_ptr' type
 
-#include "thirdparty/nlohmann.hpp" // parsing from JSON
+#include "firstparty/UTL/json.hpp" // parsing JSON
 #include "utility/geometry.h" // geometry types
 #include "modules/sprite.h" // 'Sprite' module
 
@@ -119,9 +119,9 @@ public:
 
 	void parseFromJSON(const std::string &filePath);
 
-	TileHitboxRect parse_as_hitboxrect(const nlohmann::json& object_node);
-	TileInteraction parse_as_interaction(const nlohmann::json& object_node);
-	EntitySpawnData parse_as_entity(const nlohmann::json& object_node);
+	TileHitboxRect parse_as_hitboxrect(const utl::json::Node& object_node);
+	TileInteraction parse_as_interaction(const utl::json::Node& object_node);
+	EntitySpawnData parse_as_entity(const utl::json::Node& object_node);
 
 	// Getting data from tileset
 	srcRect get_tile_source_rect(int tileId) const;

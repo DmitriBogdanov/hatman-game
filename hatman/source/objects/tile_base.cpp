@@ -123,8 +123,7 @@ Tileset::Tileset(const std::string &fileName) {
 }
 
 void Tileset::parseFromJSON(const std::string &filePath) {
-	std::ifstream ifStream(filePath);
-	nlohmann::json JSON = nlohmann::json::parse(ifStream);
+	utl::json::Node JSON = utl::json::from_file(filePath);
 
 	// Parsing...
 	// (these field have to be in any valid tileset)
@@ -133,23 +132,23 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 	tilesetFileName = tilesetFileName.substr(tilesetFileName.rfind("\\") + 1); // cut before '\'
 	this->filename = tilesetFileName;
 
-	std::string imageFileName = JSON["image"].get<std::string>();
+	std::string imageFileName = JSON["image"].get_string();
 	imageFileName = imageFileName.substr(imageFileName.rfind("/") + 1); // cut before '/'
 	imageFileName = imageFileName.substr(imageFileName.rfind("\\") + 1); // cut before '\'
 	this->texture = &Graphics::ACCESS->getTexture_Tileset(imageFileName);
 
-	const int columns = JSON["columns"].get<int>();
-	const int rows = JSON["tilecount"].get<int>() / columns;
+	const int columns = JSON["columns"].get_number();
+	const int rows = JSON["tilecount"].get_number() / columns;
 	this->size = Vector2(columns, rows);
 
 	// Parsing tile objects (hitboxes, animations)
 	// (this field may not be present, in that case 'for' does 0 iterations)
-	nlohmann::json tiles_array_node = JSON["tiles"]; // Array of tile objects (contains hitboxes)
+	const auto& tiles_array_node = JSON["tiles"].get_array(); // Array of tile objects (contains hitboxes)
 	for (auto const& tile_node : tiles_array_node) {
-		const int tileId = tile_node["id"].get<int>();
+		const int tileId = tile_node["id"].get_number();
 
 		// Parse hitbox/interaction/entity
-		if (tile_node.find("objectgroup") != tile_node.end()) { // ["objectgroup"] is present => parse hitboxes/actionboxes
+		if (tile_node.contains("objectgroup")) { // ["objectgroup"] is present => parse hitboxes/actionboxes
 
 			TileHitbox hitbox;
 			bool hitboxPresent = false;
@@ -161,9 +160,9 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 			bool entityPresent = false;
 
 			// Parse things above
-			nlohmann::json objects_node = tile_node["objectgroup"]["objects"];
-			for (auto const& object : objects_node) {
-				const std::string objectType = tags::get_prefix(object["type"].get<std::string>());
+			const auto& objects_node = tile_node["objectgroup"]["objects"];
+			for (auto const& object : objects_node.get_array()) {
+				const std::string objectType = tags::get_prefix(object["type"].get_string());
 
 				// HITBOX
 				if (objectType == "tile_hitbox") {
@@ -188,8 +187,8 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 
 				///// OLD
 				//const dRect hitboxRect = dRect(
-				//	Vector2(object["x"].get<int>(), object["y"].get<int>()),
-				//	Vector2(object["width"].get<int>(), object["height"].get<int>())
+				//	Vector2(object["x"].get_number(), object["y"].get_number()),
+				//	Vector2(object["width"].get_number(), object["height"].get_number())
 				//);
 
 				//bool hitboxRectIsPlatform = false;
@@ -198,12 +197,12 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 				//std::string rectType;
 				//nlohmann::json properties_array_node = object["properties"];
 				//for (const auto& property_node : properties_array_node) {
-				//	const auto propertyName = property_node["name"].get<std::string>();
+				//	const auto propertyName = property_node["name"].get_string();
 				//	if (propertyName == "type") {
-				//		rectType = property_node["value"].get<std::string>();
+				//		rectType = property_node["value"].get_string();
 				//	}
 				//	else if (propertyName == "is_platform") {
-				//		hitboxRectIsPlatform = property_node["value"].get<bool>();
+				//		hitboxRectIsPlatform = property_node["value"].get_bool();
 				//	}
 				//}
 				// 
@@ -220,8 +219,8 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 				//// Parse properties unique for interactions (if interaction is present)
 				//if (interactionPresent) {
 				//	for (const auto& property_node : properties_array_node) {
-				//		if (property_node["name"].get<std::string>() == "interactive_type") {
-				//			interaction.interactive_type = property_node["value"].get<std::string>();
+				//		if (property_node["name"].get_string() == "interactive_type") {
+				//			interaction.interactive_type = property_node["value"].get_string();
 				//		}
 				//	}
 				//}
@@ -235,13 +234,13 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 		}	
 
 		// Parse animation
-		if (tile_node.find("animation") != tile_node.end()) { // ["animation"] is present => parse animation
+		if (tile_node.contains("animation")) { // ["animation"] is present => parse animation
 
 			std::vector<AnimationFrame> frames;
 
-			nlohmann::json animation_array_node = tile_node["animation"];
+			const auto animation_array_node = tile_node["animation"].get_array();
 			for (const auto& frame_node : animation_array_node) {
-				const int frameTileId = frame_node["tileid"].get<int>();
+				const int frameTileId = frame_node["tileid"].get_number();
 				const int tilePosX = frameTileId % this->size.x;
 				const int tilePosY = frameTileId / this->size.x;
 				const int tileSize = natural::TILE_SIZE;
@@ -250,7 +249,7 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 					tileSize, tileSize
 				};
 
-				const double frameDuration = frame_node["duration"].get<double>();
+				const double frameDuration = frame_node["duration"].get_number();
 
 				frames.push_back(AnimationFrame{ frameRect, frameDuration });
 			}
@@ -261,63 +260,63 @@ void Tileset::parseFromJSON(const std::string &filePath) {
 
 }
 
-TileHitboxRect Tileset::parse_as_hitboxrect(const nlohmann::json& object_node) {
+TileHitboxRect Tileset::parse_as_hitboxrect(const utl::json::Node& object_node) {
 	// Parse rect
 	const auto hitboxRect = dRect(
-		Vector2(object_node["x"].get<int>(), object_node["y"].get<int>()),
-		Vector2(object_node["width"].get<int>(), object_node["height"].get<int>())
+		Vector2(object_node["x"].get_number(), object_node["y"].get_number()),
+		Vector2(object_node["width"].get_number(), object_node["height"].get_number())
 	);
 
 	// Determine if it's a platform
 	bool isPlatform = false;
 
-	nlohmann::json properties_array_node = object_node["properties"];
+	const auto& properties_array_node = object_node["properties"].get_array();
 	for (const auto& property_node : properties_array_node) {
-		const auto propertyName = property_node["name"].get<std::string>();
+		const auto propertyName = property_node["name"].get_string();
 		if (propertyName == "is_platform") {
-			isPlatform = property_node["value"].get<bool>();
+			isPlatform = property_node["value"].get_bool();
 		}
 	}
 
 	return { hitboxRect, isPlatform };
 }
 
-TileInteraction Tileset::parse_as_interaction(const nlohmann::json& object_node) {
+TileInteraction Tileset::parse_as_interaction(const utl::json::Node& object_node) {
 	TileInteraction interaction;
 
 	// Parse rect
 	interaction.actionbox = dRect(
-		Vector2(object_node["x"].get<int>(), object_node["y"].get<int>()),
-		Vector2(object_node["width"].get<int>(), object_node["height"].get<int>())
+		Vector2(object_node["x"].get_number(), object_node["y"].get_number()),
+		Vector2(object_node["width"].get_number(), object_node["height"].get_number())
 	);
 
 	// Parse interactive type
-	nlohmann::json properties_array_node = object_node["properties"];
+	const auto& properties_array_node = object_node["properties"].get_array();
 	for (const auto& property_node : properties_array_node) {
-		if (property_node["name"].get<std::string>() == "interactive_type") {
-			interaction.interactive_type = property_node["value"].get<std::string>();
+		if (property_node["name"].get_string() == "interactive_type") {
+			interaction.interactive_type = property_node["value"].get_string();
 		}
 	}
 
 	return interaction;
 }
 
-EntitySpawnData Tileset::parse_as_entity(const nlohmann::json& object_node) {
+EntitySpawnData Tileset::parse_as_entity(const utl::json::Node& object_node) {
 	// Parse entity type
-	const std::string entityType = tags::get_suffix(object_node["type"].get<std::string>());
+	const std::string entityType = tags::get_suffix(object_node["type"].get_string());
 
 	// Parse entity name
 	std::string entityName;
 
-	nlohmann::json properties_array_node = object_node["properties"];
+	const auto& properties_array_node = object_node["properties"].get_array();
 	for (const auto& property_node : properties_array_node) {
-		if (property_node["name"].get<std::string>() == "[name]") {
-			entityName = property_node["value"].get<std::string>();
+		if (property_node["name"].get_string() == "[name]") {
+			entityName = property_node["value"].get_string();
 		}
 	}
 
 	// Parse entity position
-	const auto positionInTile = Vector2d(object_node["x"].get<double>(), object_node["y"].get<double>());
+	const auto positionInTile = Vector2d(object_node["x"].get_number(), object_node["y"].get_number());
 
 	return { entityType, entityName, positionInTile };
 }

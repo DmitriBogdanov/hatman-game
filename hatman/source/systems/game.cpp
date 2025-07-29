@@ -6,8 +6,6 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Audio/Music.hpp>
 
-#include "firstparty/UTL/log.hpp"
-
 #include "graphics/graphics.h" // access to rendering updating
 #include "systems/audio.h"
 #include "systems/saver.h" // access to save loading
@@ -159,11 +157,9 @@ ExitCode Game::game_loop() {
 				this->input.event_MouseMove(event);
 				break;
 			case sf::Event::KeyPressed:
-                UTL_LOG_INFO("Key pressed event.");
 				this->input.event_KeyDown(event);
 				break;
 			case sf::Event::KeyReleased:
-			    UTL_LOG_INFO("Key released event.");
 				this->input.event_KeyUp(event);
 				break;
 			case sf::Event::MouseButtonPressed:
@@ -350,8 +346,6 @@ void Game::draw_everything() {
 
 // Level loading/changing
 void Game::_level_swapToTarget() {
-    UTL_LOG_INFO("Swapping to level {", this->level_change_target, "}");
-    
 	auto extractedPlayer = this->level->_extractPlayer(); // extract player
 
 	auto playerPtr = static_cast<ntt::player::Player*>(extractedPlayer.get());
@@ -380,8 +374,6 @@ void Game::_level_loadFromSave() {
 	const auto savedPosition = Saver::READ->get_PlayerPosition();
 	auto savedInventory = Saver::READ->get_PlayerInventory(); // not const so we can std::move it
 	auto savedFlags = Saver::READ->get_Flags(); // not const so we can std::move it
-
-    UTL_LOG_INFO("Loading level {", savedLevel, "} from save");
 
 	// Construct Player
 	auto constructedPlayer = std::make_unique<ntt::player::Player>(savedPosition);

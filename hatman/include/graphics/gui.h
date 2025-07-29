@@ -81,7 +81,7 @@ public:
 	const Font& get_font() const;
 
 	// Setters
-	void set_properties(const RGBColor &color, bool overlay, bool centered, Milliseconds delay); // for all properites at the same time
+	void set_properties(const RGBColor &color, bool overlay, bool centered, Milliseconds delay); // for all properties at the same time
 
 	void set_color(const RGBColor &color); // here purely for interface convenience
 	void set_color(Uint8 r, Uint8 g, Uint8 b, Uint8 alpha = 255);
@@ -95,6 +95,11 @@ public:
 	bool overlay = true; // if false, text is rendered to camera
 
 	bool centered = false;
+    
+    bool reverse_delay = false;
+    // used to make text gradually disappear as time goes on
+    // (rather than gradually appear as time goes on) a band-aid solution really
+    
 private:
 	std::string content; // necessary to have elements in correct order
 	std::set<std::string::const_iterator> line_breaks; // unordered_set can't properly hash iterators

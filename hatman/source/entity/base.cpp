@@ -1,7 +1,7 @@
 #include "entity/base.h"
 
 #include <fstream> // reading files
-#include "thirdparty/nlohmann.hpp" // parsing JSON
+#include "firstparty/UTL/json.hpp" // parsing JSON
 
 #include "graphics/graphics.h" // access to texture loading
 #include "utility/filepaths.hpp" // path to textures
@@ -100,8 +100,7 @@ void Entity::_parse_controllable_sprite(const std::string &entityName, std::init
 
 /// THINK ABOUT CACHING ANIMATIONS
 Animation _parse_animation(const std::string &path) {
-	std::ifstream ifStream(path + ".json");
-	nlohmann::json JSON = nlohmann::json::parse(ifStream);
+    const utl::json::Node JSON = utl::json::from_file(path + ".json");
 
 	// Parse texture
 	sf::Texture &texture = Graphics::ACCESS->getTexture(path + ".png");
@@ -109,14 +108,14 @@ Animation _parse_animation(const std::string &path) {
 	// Parse frames
 	std::vector<AnimationFrame> frames;
 
-	for (const auto &node : JSON["frames"]) {
+	for (const auto &node : JSON["frames"].get_array()) {
 		frames.push_back(AnimationFrame{
 			make_srcRect(
-				node["frame"]["x"].get<int>(),
-				node["frame"]["y"].get<int>(),
-				node["frame"]["w"].get<int>(),
-				node["frame"]["h"].get<int>()),
-			node["duration"].get<double>()
+				node["frame"]["x"].get_number(),
+				node["frame"]["y"].get_number(),
+				node["frame"]["w"].get_number(),
+				node["frame"]["h"].get_number()),
+			node["duration"].get_number()
 			});
 	}
 

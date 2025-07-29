@@ -299,42 +299,41 @@ ntt::Entity* Level::add_Entity(const std::string &type, const std::string &name,
 // Parsing
 void Level::parseFromJSON(const std::string &filePath) {
 	// Load JSON doc
-	std::ifstream ifStream(filePath);
-	nlohmann::json JSON = nlohmann::json::parse(ifStream);
-
+    utl::json::Node JSON = utl::json::from_file(filePath);
+    
 	// Parse map properties
-	for (const auto &property_node : JSON["properties"]) {
-		const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
+	for (const auto &property_node : JSON.at("properties").get_array()) {
+		const std::string prefix = tags::get_prefix(property_node["name"].get_string());
 
 		if (prefix == "background") {
 			this->background_sprite.setTexture(
-				Graphics::ACCESS->getTexture_Background(property_node["value"].get<std::string>())
+				Graphics::ACCESS->getTexture_Background(property_node["value"].get_string())
 			);
 		}
 		if (prefix == "music") {
-			Audio::ACCESS->queue_music(property_node["value"].get<std::string>());
+			Audio::ACCESS->queue_music(property_node["value"].get_string());
 		}
 		/// new properties go there
 	}
 
 	// Parse tilesets
-	const nlohmann::json &tilesets_array_node = JSON["tilesets"];
+	const auto &tilesets_array_node = JSON.at("tilesets").get_array();
 	for (const auto &tileset_node : tilesets_array_node) {
 		// Extract tileset name
-		std::string fileName = tileset_node["source"].get<std::string>();
+		std::string fileName = tileset_node["source"].get_string();
 		fileName = fileName.substr(fileName.rfind("/") + 1); // cut before '/'
 		fileName = fileName.substr(fileName.rfind("\\") + 1); // cut before '\'
 
 		// Create tileset object and set firstgid
 		Tileset tileset = TilesetStorage::ACCESS->getTileset(fileName);
-		tileset.first_gid = tileset_node["firstgid"].get<int>(); // firstgid is map-dependant (that's also why we copy tilesets)
+		tileset.first_gid = tileset_node["firstgid"].get_number(); // firstgid is map-dependant (that's also why we copy tilesets)
 
 		this->tilesets.push_back(std::move(tileset)); // save tileset
 	}
 
 	// Parse map properties (size and etc)
-	this->map_size.x = JSON["width"].get<int>();
-	this->map_size.y = JSON["height"].get<int>();
+	this->map_size.x = JSON["width"].get_number();
+	this->map_size.y = JSON["height"].get_number();
 
 	this->tiles_backlayer.resize(this->map_size.x * this->map_size.y);
 	this->tiles.resize(this->map_size.x * this->map_size.y);
@@ -342,9 +341,9 @@ void Level::parseFromJSON(const std::string &filePath) {
 	this->tiles_frontlayer.resize(this->map_size.x * this->map_size.y);
 
 	// Parse tile layers
-	const nlohmann::json &layers_array_node = JSON["layers"];
+	const auto &layers_array_node = JSON.at("layers").get_array();
 	for (const auto &layer_node : layers_array_node) {
-		const std::string layer_type = layer_node["type"].get<std::string>(); // can be "tilelayer" or "objectgroup"
+		const std::string layer_type = layer_node["type"].get_string(); // can be "tilelayer" or "objectgroup"
 
 		// Parse data depending on layer_type
 		if (layer_type == "tilelayer") {
@@ -357,15 +356,15 @@ void Level::parseFromJSON(const std::string &filePath) {
 
 }
 
-void Level::parse_tilelayer(const nlohmann::json &tilelayer_node) {
+void Level::parse_tilelayer(const utl::json::Node &tilelayer_node) {
 	// Determine layer type
-	const auto layerPrefix = tags::get_prefix(tilelayer_node["name"].get<std::string>());
+	const auto layerPrefix = tags::get_prefix(tilelayer_node.at("name").get_string());
 
 	int tileCount = 0; // used to determine tile position
 
-	const nlohmann::json &data_array_node = tilelayer_node["data"];
+	const auto &data_array_node = tilelayer_node.at("data").get_array();
 	for (const auto &data_node : data_array_node) {
-		const int gid = data_node.get<int>();
+		const int gid = data_node.get_number();
 
 		if (gid) { // if tile is present
 			// Calculate tile position
@@ -389,10 +388,10 @@ void Level::parse_tilelayer(const nlohmann::json &tilelayer_node) {
 	}
 }
 
-void Level::parse_objectgroup(const nlohmann::json &objectgroup_node) {
+void Level::parse_objectgroup(const utl::json::Node &objectgroup_node) {
 	// get layer prefix and suffix
-	const std::string layer_prefix = tags::get_prefix(objectgroup_node["name"].get<std::string>());
-	const std::string layer_suffix = tags::get_suffix(objectgroup_node["name"].get<std::string>());
+	const std::string layer_prefix = tags::get_prefix(objectgroup_node.at("name").get_string());
+	const std::string layer_suffix = tags::get_suffix(objectgroup_node.at("name").get_string());
 
 	if (layer_prefix == "entity") {
 		this->parse_objectgroup_entity(objectgroup_node);
@@ -418,20 +417,20 @@ void Level::parse_objectgroup(const nlohmann::json &objectgroup_node) {
 }
 
 // Entity types parsing
-void Level::parse_objectgroup_entity(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+void Level::parse_objectgroup_entity(const utl::json::Node &objectgroup_node) {
+	const auto &objects_array_node = objectgroup_node.at("objects").get_array();
 	for (const auto& object_node : objects_array_node) {
 		// Get custom properties
 		Flag requires_flag = "";
 		Flag emits_flag = "";
 
-		const auto properties_node_iter = object_node.find("properties");
+		const auto properties_node_iter = object_node.get_object().find("properties");
 
-		if (properties_node_iter != object_node.end()) {
-			const nlohmann::json &properties_array = *properties_node_iter;
+		if (properties_node_iter != object_node.get_object().end()) {
+			const auto &properties_array = properties_node_iter->second.get_array();
 
 			for (const auto &property_node : properties_array) {
-				const std::string name = property_node["name"];
+				const std::string name = property_node.at("name").get_string();
 
 				if (name == "requires_flag") {
 					requires_flag = property_node["value"].get<std::string>();
@@ -446,7 +445,7 @@ void Level::parse_objectgroup_entity(const nlohmann::json &objectgroup_node) {
 		if (!requires_flag.empty() && !Flags::READ->check(requires_flag)) continue;
 
 		// Determine which tileset 'entity-tile' belongs to (based on gid)
-		const auto gid = object_node["gid"].get<int>();
+		const auto gid = object_node["gid"].get_number();
 		
 		const Tileset* correspondingTileset = &this->tilesets.front();
 
@@ -458,7 +457,7 @@ void Level::parse_objectgroup_entity(const nlohmann::json &objectgroup_node) {
 		const auto &enitySpawnData = correspondingTileset->get_entity_spawn_data(id);
 
 		// Parse position
-		const auto tilePosition = Vector2d(object_node["x"].get<double>(), object_node["y"].get<double>());
+		const auto tilePosition = Vector2d(object_node["x"].get_number(), object_node["y"].get_number());
 
 		// Create entity
 		const auto ptr_to_entity = this->add_Entity(
@@ -475,30 +474,30 @@ void Level::parse_objectgroup_entity(const nlohmann::json &objectgroup_node) {
 }
 
 // Scripts parsing
-void Level::parse_objectgroup_script_levelChange(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+void Level::parse_objectgroup_script_levelChange(const utl::json::Node &objectgroup_node) {
+	const auto &objects_array_node = objectgroup_node.at("objects").get_array();
 	for (const auto &object_node : objects_array_node) {
 		// Parse hitbox
 		const dRect hitbox = dRect(
-			object_node["x"].get<int>(), object_node["y"].get<int>(),
-			object_node["width"].get<int>(), object_node["height"].get<int>()
+			object_node["x"].get_number(), object_node["y"].get_number(),
+			object_node["width"].get_number(), object_node["height"].get_number()
 		);
 
 		std::string goes_to_level;
 		Vector2 goes_to_pos;
 
 		// Parse custom properties
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
+		for (const auto &property_node : object_node.at("properties").get_array()) {
+			const std::string prefix = tags::get_prefix(property_node["name"].get_string());
 
 			if (prefix == "goes_to_level") {
-				goes_to_level = property_node["value"].get<std::string>();
+				goes_to_level = property_node["value"].get_string();
 			}
 			else if (prefix == "goes_to_x") {
-				goes_to_pos.x = property_node["value"].get<int>();
+				goes_to_pos.x = property_node["value"].get_number();
 			}
 			else if (prefix == "goes_to_y") {
-				goes_to_pos.y = property_node["value"].get<int>();
+				goes_to_pos.y = property_node["value"].get_number();
 			}
 		}
 
@@ -506,30 +505,30 @@ void Level::parse_objectgroup_script_levelChange(const nlohmann::json &objectgro
 	}
 }
 
-void Level::parse_objectgroup_script_levelSwitch(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+void Level::parse_objectgroup_script_levelSwitch(const utl::json::Node &objectgroup_node) {
+	const auto &objects_array_node = objectgroup_node.at("objects").get_array();
 	for (const auto &object_node : objects_array_node) {
 		// Parse hitbox
 		const dRect hitbox = dRect(
-			object_node["x"].get<int>(), object_node["y"].get<int>(),
-			object_node["width"].get<int>(), object_node["height"].get<int>()
+			object_node["x"].get_number(), object_node["y"].get_number(),
+			object_node["width"].get_number(), object_node["height"].get_number()
 		);
 
 		std::string goes_to_level;
 		Vector2 goes_to_pos;
 
 		// Parse custom properties
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
+		for (const auto &property_node : object_node.at("properties").get_array()) {
+			const std::string prefix = tags::get_prefix(property_node["name"].get_string());
 
 			if (prefix == "goes_to_level") {
-				goes_to_level = property_node["value"].get<std::string>();
+				goes_to_level = property_node["value"].get_string();
 			}
 			else if (prefix == "goes_to_x") {
-				goes_to_pos.x = property_node["value"].get<int>();
+				goes_to_pos.x = property_node["value"].get_number();
 			}
 			else if (prefix == "goes_to_y") {
-				goes_to_pos.y = property_node["value"].get<int>();
+				goes_to_pos.y = property_node["value"].get_number();
 			}
 		}
 
@@ -537,27 +536,27 @@ void Level::parse_objectgroup_script_levelSwitch(const nlohmann::json &objectgro
 	}
 }
 
-void Level::parse_objectgroup_script_portal(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+void Level::parse_objectgroup_script_portal(const utl::json::Node &objectgroup_node) {
+	const auto &objects_array_node = objectgroup_node["objects"].get_array();
 	for (const auto &object_node : objects_array_node) {
 		// Parse hitbox
 		const dRect hitbox = dRect(
-			object_node["x"].get<int>(), object_node["y"].get<int>(),
-			object_node["width"].get<int>(), object_node["height"].get<int>()
+			object_node["x"].get_number(), object_node["y"].get_number(),
+			object_node["width"].get_number(), object_node["height"].get_number()
 		);
 
 		std::string goes_to_level;
 		Vector2 goes_to_pos;
 
 		// Parse custom properties
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
+		for (const auto &property_node : object_node["properties"].get_array()) {
+			const std::string prefix = tags::get_prefix(property_node["name"].get_string());
 
 			if (prefix == "goes_to_x") {
-				goes_to_pos.x = property_node["value"].get<int>();
+				goes_to_pos.x = property_node["value"].get_number();
 			}
 			else if (prefix == "goes_to_y") {
-				goes_to_pos.y = property_node["value"].get<int>();
+				goes_to_pos.y = property_node["value"].get_number();
 			}
 		}
 
@@ -565,13 +564,13 @@ void Level::parse_objectgroup_script_portal(const nlohmann::json &objectgroup_no
 	}
 }
 
-void Level::parse_objectgroup_script_hint(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+void Level::parse_objectgroup_script_hint(const utl::json::Node &objectgroup_node) {
+	const auto &objects_array_node = objectgroup_node["objects"].get_array();
 	for (const auto &object_node : objects_array_node) {
 		// Parse hitbox
 		const dRect hitbox = dRect(
-			object_node["x"].get<int>(), object_node["y"].get<int>(),
-			object_node["width"].get<int>(), object_node["height"].get<int>()
+			object_node["x"].get_number(), object_node["y"].get_number(),
+			object_node["width"].get_number(), object_node["height"].get_number()
 		);
 
 		Vector2d field_center;
@@ -580,23 +579,23 @@ void Level::parse_objectgroup_script_hint(const nlohmann::json &objectgroup_node
 		std::string text;
 		
 		// Parse custom properties
-		for (const auto &property_node : object_node["properties"]) {
-			const std::string prefix = tags::get_prefix(property_node["name"].get<std::string>());
+		for (const auto &property_node : object_node["properties"].get_array()) {
+			const std::string prefix = tags::get_prefix(property_node["name"].get_string());
 
 			if (prefix == "text") {
 				text = property_node["value"].get<std::string>();
 			}
 			else if (prefix == "text_x") {
-				field_center.x = property_node["value"].get<int>();
+				field_center.x = property_node["value"].get_number();
 			}
 			else if (prefix == "text_y") {
-				field_center.y = property_node["value"].get<int>();
+				field_center.y = property_node["value"].get_number();
 			}
 			else if (prefix == "text_width") {
-				field_size.x = property_node["value"].get<int>();
+				field_size.x = property_node["value"].get_number();
 			}
 			else if (prefix == "text_height") {
-				field_size.y = property_node["value"].get<int>();
+				field_size.y = property_node["value"].get_number();
 			}
 		}
 
@@ -606,32 +605,32 @@ void Level::parse_objectgroup_script_hint(const nlohmann::json &objectgroup_node
 	}
 }
 
-void Level::parse_objectgroup_script_checkpoint(const nlohmann::json &objectgroup_node) {
-	const nlohmann::json &objects_array_node = objectgroup_node["objects"];
+void Level::parse_objectgroup_script_checkpoint(const utl::json::Node &objectgroup_node) {
+	const auto &objects_array_node = objectgroup_node.at("objects").get_array();
 	for (const auto &object_node : objects_array_node) {
 		// Parse hitbox
 		const dRect hitbox = dRect(
-			object_node["x"].get<int>(), object_node["y"].get<int>(),
-			object_node["width"].get<int>(), object_node["height"].get<int>()
+			object_node["x"].get_number(), object_node["y"].get_number(),
+			object_node["width"].get_number(), object_node["height"].get_number()
 		);
 
 		// Get custom properties
 		Flag requires_flag = "";
 		Flag emits_flag = "";
 
-		const auto properties_node_iter = object_node.find("properties");
+		const auto properties_node_iter = object_node.get_object().find("properties");
 
-		if (properties_node_iter != object_node.end()) {
-			const nlohmann::json &properties_array = *properties_node_iter;
+		if (properties_node_iter != object_node.get_object().end()) {
+			const auto &properties_array = properties_node_iter->second.get_array();
 
 			for (const auto &property_node : properties_array) {
-				const std::string name = property_node["name"];
+				const std::string name = property_node["name"].get_string();
 
 				if (name == "requires_flag") {
-					requires_flag = property_node["value"].get<std::string>();
+					requires_flag = property_node["value"].get_string();
 				}
 				else if (name == "emits_flag") {
-					emits_flag = property_node["value"].get<std::string>();
+					emits_flag = property_node["value"].get_string();
 				}
 			}
 		}

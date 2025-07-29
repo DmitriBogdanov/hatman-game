@@ -578,9 +578,9 @@
 	- Drew a dwarf NPC
 
 # 21.08.05 #
-	- Made entities update() return bool which tells wheter furter levels of derivation should execute
+	- Made entities update() return bool which tells whether further levels of derivation should execute
 	update() logic
-	- Made it so enemy hp bar disappears at the same time as enemy 'dies' instead of staying up untill
+	- Made it so enemy hp bar disappears at the same time as enemy 'dies' instead of staying up until
 	death animation is finished
 
 # 21.08.06 #
@@ -597,7 +597,7 @@
 # 21.08.09 #
 	- Redone 'Sludge' and 'SkeletonHalberd' sprites for new monochromatic palette
 	- Drew player animation for walking, attacking and standing idle
-	- Drew basic tileset for monochronatic palette
+	- Drew basic tileset for monochromatic palette
 
 # 21.08.10 #
 	- Due to changes in style and core idea of the game abolished form change mechanic
@@ -613,15 +613,15 @@
 	- Fixed a bug that broke jumping down mechanic after all recent changes
 
 # 21.08.12 #
-	- Added colors from new sprite pallete to the system
+	- Added colors from new sprite palette to the system
 	- Updated sludge on-death particle color
 	- Implemented uber-algorithm that for horizontal teleportation that respects terrain
 	and doesn't allow phasing through tiles
 
 # 21.08.13 # 
-	- Made camera center at player immideately upon level creation, before first update(), nothing changed
+	- Made camera center at player immediately upon level creation, before first update(), nothing changed
 	visually but internally it's a more robust logic
-	- Implemented smooth camera that moves faster the furter away player is, mostly noticeble during teleportation
+	- Implemented smooth camera that moves faster the further away player is, mostly noticeable during teleportation
 
 # 21.08.14 # 
 	- Refactored some old GUI code
@@ -635,11 +635,11 @@
 	- Lowered number of sounds played simultaneously, GUI sounds less ridiculous
 	- Made 'Damage' constexpr-friendly
 	- Cleared relic initializer_lists that were still passed by reference
-	- Finetuned performance-related consts
+	- Fine-tuned performance-related consts
 	- Fixed a bug where character would sometimes fall through platforms during alt+tab
 	- Made the entirety of 'dRect' constexpr-friendly
-	- Made the rest of geometry_utils.h constexpr-frindly for the company
-	- Moved 'rand_...' methods out of the namespace to be less lenghty and more like original rand()
+	- Made the rest of geometry_utils.h constexpr-friendly for the company
+	- Moved 'rand_...' methods out of the namespace to be less lengthy and more like original rand()
 
 # 21.08.17 #
 	- Implemented main menu
@@ -649,7 +649,7 @@
 	having a loaded level and camera
 	- Deprecated 'damageInArea()'
 	- Updated 'Saver' class to be in a the same style as newer code
-	- Implemented conditional dislaying of 'Continue' button in main menu
+	- Implemented conditional displaying of 'Continue' button in main menu
 	- Got 'New game' and 'Exit' buttons in main menu working
 	- Made transition from menu into the game smooth
 
@@ -679,14 +679,14 @@
 # 21.08.29 #
 	- Changed parsing logic for tiles and tilesets
 	- Allowed placing entities through 'entity tilesets'
-	- Creaned up deprectated files, structured names for remaining files
+	- Cleaned up deprecated files, structured names for remaining files
 	- Started building first actually playable level for the end product
 
 # 21.08.31 #
-	- Chanded color of inventory icons and text to be distinct from the environment
+	- Changed color of inventory icons and text to be distinct from the environment
 
 # 22.07.21 #
-	- Fixed a bunch of places using 'ACCESS' ptr insead of 'READ'
+	- Fixed a bunch of places using 'ACCESS' ptr instead of 'READ'
 	- Added inventory saving/loading to 'Saver'
 	- Fixed player loading twice during loading form save
 
@@ -695,9 +695,9 @@
 	- Implemented conditional loading for entities
 	- Implemented flag emits on entity death
 	- Added flag support to 'Saver', which allows the game to save its state and make non-respawnable objects
-	- Fixed objects entities spawning 1 tile lower than they should due to Tiled usign bottom-left corner
+	- Fixed objects entities spawning 1 tile lower than they should due to Tiled using bottom-left corner
 	coords for tile objects instead of standard upper-left corner
-	- Fixed 'SaveOrb' not erasing 'Progess saved.' pop-up when player leaves level while staying near the orb
+	- Fixed 'SaveOrb' not erasing 'Progress saved.' pop-up when player leaves level while staying near the orb
 
 # 22.07.23 - 22.07.24 #
 	- Contemplated lore, final goal and player progression. Formulated a general game progression.
@@ -706,7 +706,7 @@
 
 # 22.07.25 #
 	- Improved script system
-	- Implenmented new script - 'Hint'
+	- Implemented new script - 'Hint'
 	- Set up hints to introduce basic mechanics to the player
 	- Finished 1st level - 'Desolation'
 
@@ -734,10 +734,10 @@
 	- Added new item - 'Twin Souls' that increases chaos res
 	- Implemented dmg increase from Power Shards
 	- Fixed 'Damage' type not having const qualifiers on operators
-	- Added sound que when activationg Save Orb
+	- Added sound que when activating Save Orb
 	- Added new item - 'Magic Negator' that increases magic res
 	- Added a new secret to 'The Great Bridge' level
-	- Built 4th level - 'Devouring Dephs'
+	- Built 4th level - 'Devouring Depths'
 	- Worked on assets
 
 # 22.07.29 #
@@ -753,12 +753,12 @@
 
 # 22.07.30 #
 	- Worked on assets for future enemies
-	- Impelemented proper 'Portal' script as using 'LevelSwitch' insted would cause enemies to respawn
+	- Implemented proper 'Portal' script as using 'LevelSwitch' instead would cause enemies to respawn
 	- Expanded levels:
 	1) 'Desolation'
 	2) 'The Great Bridge'
 	3) 'Descent'
-	4) 'Devouring Dephs'
+	4) 'Devouring Depths'
 	5) 'Plains'
 	with new sections and secrets. Increased number of artifacts scattered around the maps.
 
@@ -766,11 +766,11 @@
 	- Built 6th level - 'Floating Isles'
 
 # 22.08.01 #
-	- Implemeted charges that are used to limit skill usage and powerfull jumps.
-	Each skill use OR powerfull jump consumes 1 charge. Player has 3 charges by default,
+	- Implemented charges that are used to limit skill usage and powerful jumps.
+	Each skill use OR powerful jump consumes 1 charge. Player has 3 charges by default,
 	charges regenerate with time
 	- Implemented player GUI for charges
-	- Added effect to 'watching eye' item: increse number of charges by 1 up to 5
+	- Added effect to 'watching eye' item: increase number of charges by 1 up to 5
 	- Cleared up deprecated code from 'Gui.h' and 'Gui.cpp'
 
 # 22.08.03 #
@@ -796,7 +796,7 @@
 	Due to texture interpolation issue began transitioning the entire project from SDL2 to SFML
 	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	- Mostly reworked graphics system, managed to compile and display main menu
-	- Reworked input polling and 'Input' class to SFML due to proper polling requiring existance
+	- Reworked input polling and 'Input' class to SFML due to proper polling requiring existence
 	of a window which SDL2 no longer has. Controls remain to be adapted
 
 # 23.02.01 #
@@ -807,7 +807,7 @@
 	- Switching from SDL2 to SFML improved performance from ~750-950 FPS to ~1000-1200 FPS
 	- Removed rotation from sprites (was only used for SpritBomber projectiles)
 	- Fixed all implicit conversion warnings and got rid of redundant 'sf::Vector2f()' constructions
-	- Fixed an issue that caused text to have visual tears at certain resolusion. Cause of the big not
+	- Fixed an issue that caused text to have visual tears at certain resolution. Cause of the big not
 	identified but putting 1 pixel wide transparent border around symbol textures fixed the issue
 
 # 23.02.03 #
@@ -827,7 +827,7 @@
 # 23.02.05 #
 	- Slightly increased player jump height (34->36)
 	- Sped up attack animation by ~30%
-	- Tested and adjusted terrain in some levels due to being inreachable or frustrating
+	- Tested and adjusted terrain in some levels due to being unreachable or frustrating
 	- In-level text is now hidden when EscMenu or Inventory GUI is up to prevent the situation
 	when background text blends with GUI text of the same color
 	- Simplified FPSCounter so it draws text directly instead of constantly creating and destroying
@@ -840,8 +840,8 @@
 # 23.02.06 #
 	- Added added text scaling functionality to 'Font' and 'Text', 'make_line_...()' methods
 	still produce unscaled text for simplicity
-	- Added 'GUI_LevelName' class which displayes fading level name upon entering a new level
-	- Changed the hint before the treausery from 'Great foe lies ahead' to 'A great foe protects
+	- Added 'GUI_LevelName' class which displays fading level name upon entering a new level
+	- Changed the hint before the treasury from 'Great foe lies ahead' to 'A great foe protects
 	ample rewards' to better reflect optional nature of the encounter
 	- Began working on a new level 'Mountainside fortress'
 
@@ -867,7 +867,7 @@
 	- Added 'Tentacle' enemy that will be used during bossfight
 	- Fixed 'Necromancer' spawning creatures below the ground instead of above
 	- Began working on final boss, added first phase. Boss follows player on a with vertical level, while
-	keeping some distance horizontaly. Spawns Skeleton Halberds and summons tentacles around the player.
+	keeping some distance horizontally. Spawns Skeleton Halberds and summons tentacles around the player.
 
 # 23.07.20 #
 	- Added restart functionality through propagating exit codes to an external loop
@@ -892,7 +892,7 @@
 	- Deprecated 'TNT' destructible that was used for testing
 	- Added 'OrbOfBetrayal' destructible (used for 2nd boss phase)
 	- Fixed 'make_line_centered()' not accounting for text scale
-	- Abstracted healhbar displays behind a pure virtual class
+	- Abstracted healthbar displays behind a pure virtual class
 	- Added 'BossHealthbarDisplay' that displays large healthbar with a boss title
 	at the bottom of the screen. Added corresponding init-methods
 
@@ -925,7 +925,7 @@
 	- Added death particles and a longer fade after phase 3
 	- Extended 'Flags' and 'Saver' classes to suit aforementioned features
 	- Increased default sound levels
-	- Added protection agains turning on 'Esc' during game ending screen transition
+	- Added protection against turning on 'Esc' during game ending screen transition
 	- Changed default value for setting 'Show FPS' to 'Off'
 	- Fixed animated sprite not zero-initializing time_elapsed
 	- Added tracking of time since last damage received to 'Health'
@@ -935,13 +935,22 @@
 	- Fixed an issue that caused 'sticky' movement when switching
 	from pressing 'A' to pressing 'D' or otherwise during a single frame
 	- Added delay on resetting 'is_dropping_down' when player releases 'S'
-	which prevents player from being rubberbanded back when releasing 'S' too quickly
+	which prevents player from being rubber-banded back when releasing 'S' too quickly
 	- Added computation of total bonuses to inventory, removed 'additive' and 'multiplicative'
 	comments since they are no longer necessary
-	- Reduced hellhound hurtbox to make it realistic to beat without trading hits
+	- Reduced hellhound attack hitbox to make it realistic to beat without trading hits
     
 # 25.04.02 #
     - Ran everything through cppcheck and pedantic compiler flags
-    - Fixed 2 memory safety issues that weren't apparent on Windowns
+    - Fixed 2 memory safety issues that weren't apparent on Windows
     - Made a Linux build
     - Smooth music transitions (finally)
+    - Made hint text rendering smooth
+    - Improved first level to explain jumping down the platforms,
+    made it impossible to skip a major tutorial section by restructuring the map a little
+    - Fixed and issue that messed up font rendering on Linux in 1920x1080 resolution
+    - Made window & borderless always center on screen
+    
+# 25.08.30 #
+    - Added a delay before the hint text disappearance 
+    - Cleaned up the old README

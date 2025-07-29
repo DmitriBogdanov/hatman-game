@@ -21,7 +21,12 @@
 
 // ____________________ IMPLEMENTATION ____________________
 
+#define BACKWARD_HAS_DW 1 // TEMP:
+#include "backward.hpp" // TEMP:
 
+namespace backward {
+backward::SignalHandling signal_handling;
+}
 
 int main() {
     std::srand(static_cast<int>(std::time(nullptr))); // TODO: Remove this nonsense

@@ -152,13 +152,15 @@ Text::Text(const std::string &content, const dRect &bounds, Font* font) :
 
 
 void Text::update(Milliseconds elapsedTime) {
-	if (this->delay && this->finish != this->content.end()) {
+	if (this->delay) {
 		this->time_elapsed += elapsedTime;
 
 		// Advance 'finish' if necessary
 		if (this->time_elapsed > this->delay) { // account for timescale
 			this->time_elapsed = 0;
-			++this->finish;
+               
+            if (this->reverse_delay && this->finish != this->content.begin()) --this->finish;
+            else if (!this->reverse_delay && this->finish != this->content.end()) ++this->finish;
 		}
 	}
 }

@@ -18,6 +18,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sfml)
 
+FetchContent_Declare(backward
+    GIT_REPOSITORY https://github.com/bombela/backward-cpp
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(backward)
+
 # Include
 include_directories(hatman/include)
 include_directories(hatman/dependencies)
@@ -74,7 +80,7 @@ target_compile_options(main PRIVATE
     -fno-omit-frame-pointer
     -Wall -Wextra -Wpedantic
 )
-target_link_libraries(main PRIVATE sfml-system sfml-window sfml-graphics sfml-audio -fsanitize=undefined,address,leak)
+target_link_libraries(main PRIVATE sfml-system sfml-window sfml-graphics sfml-audio -fsanitize=undefined,address,leak Backward::Interface)
 target_include_directories(main PRIVATE hatman/include)
 #target_link_directories(main PRIVATE hatman/source)
 #target_link_options(main PRIVATE -fsanitize=undefined,address,leak)

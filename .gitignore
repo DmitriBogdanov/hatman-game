@@ -25,6 +25,7 @@
 !*.svg
 !*.jpg
 !*.png
+!*.ico
 # > Data
 !*.json
 # > Website

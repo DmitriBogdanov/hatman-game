@@ -2,7 +2,8 @@
 
 #include <unordered_map> // entities sorted by type are stored in a map
 #include <unordered_set> // used to create access groups for entities
-#include "thirdparty/nlohmann.hpp" // parsing from JSON, 'nlohmann::json' type
+
+#include "firstparty/UTL/json.hpp"
 
 #include "utility/geometry.h" // geometry types
 #include "objects/tile_base.h" // 'Tile' base class
@@ -83,18 +84,18 @@ private:
 	void parseFromJSON(const std::string &filePath);
 
 	// Tile parsing
-	void parse_tilelayer(const nlohmann::json &tilelayer_node); // does all tilelayer parsing
+	void parse_tilelayer(const utl::json::Node &tilelayer_node); // does all tilelayer parsing
 
 	// Entity parsing
-	void parse_objectgroup(const nlohmann::json &objectgroup_node); // redirects to parse_entity() or parse_script()
-	void parse_objectgroup_entity(const nlohmann::json &objectgroup_node);
+	void parse_objectgroup(const utl::json::Node &objectgroup_node); // redirects to parse_entity() or parse_script()
+	void parse_objectgroup_entity(const utl::json::Node &objectgroup_node);
 
 	// Scripts parsing
-	void parse_objectgroup_script_levelChange(const nlohmann::json &objectgroup_node);
-	void parse_objectgroup_script_levelSwitch(const nlohmann::json &objectgroup_node);
-	void parse_objectgroup_script_portal(const nlohmann::json &objectgroup_node);
-	void parse_objectgroup_script_hint(const nlohmann::json &objectgroup_node);
-	void parse_objectgroup_script_checkpoint(const nlohmann::json &objectgroup_node);
+	void parse_objectgroup_script_levelChange(const utl::json::Node &objectgroup_node);
+	void parse_objectgroup_script_levelSwitch(const utl::json::Node &objectgroup_node);
+	void parse_objectgroup_script_portal(const utl::json::Node &objectgroup_node);
+	void parse_objectgroup_script_hint(const utl::json::Node &objectgroup_node);
+	void parse_objectgroup_script_checkpoint(const utl::json::Node &objectgroup_node);
 	/*void parse_objectgroup_script_PlayerInArea(const nlohmann::json &objectgroup_node);
 	void parse_objectgroup_script_AND(const nlohmann::json &objectgroup_node);
 	void parse_objectgroup_script_OR(const nlohmann::json &objectgroup_node);
