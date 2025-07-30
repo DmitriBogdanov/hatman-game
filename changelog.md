@@ -522,7 +522,7 @@
 # 21.07.23 #
 	- Implemented .color_mod for sprites
 	- Implemented selectable colors for 'OnDeathParticle'
-	- Implemented methods for random choises and random linear combinations
+	- Implemented methods for random choices and random linear combinations
 	- Implemented more decorative tile layers with following rendering priority:
 	[backlayer]->[layer]->[midlayer]->(entitites)->[frontlayer], logic and physics are only handled for [layer]
 	- Went from storing tiles in a map to storing them as 1D vector with 2D indexation for better performance,
@@ -544,7 +544,7 @@
 	- Implemented audio system that allows playing sounds and looping music
 
 # 21.07.30 #
-	- Implemented barebones of 'SkeletonHalberd' enemy
+	- Implemented base functionality of 'SkeletonHalberd' enemy
 	- United 'Animation' and 'TileAnimation' under a single class
 	- Replace ambiguous std::pair with 'AnimationFrame' struct
 	- Optimized the way animations are passed to sprites
@@ -562,8 +562,8 @@
 # 21.08.01 #
 	- Compiled project with clang, found and fixed a number of warnings. Also, clang doesn't seem to provide any
 	performance boost
-	- Finetuned gravity
-	- Reimplemeted all creatures as finite state machines, got skeleton halberd enemy working, weird sprite
+	- Fine-tuned gravity
+	- Reimplemented all creatures as finite state machines, got skeleton halberd enemy working, weird sprite
 	'flicker' remains to fix
 	- Improved 'ControllableSprite', implemented methods that allow smooth animation transitions
 	- Implemented proper aggro logic for enemies, now they will target any creatures of different faction
@@ -571,7 +571,7 @@
 # 21.08.02 #
 	- Traced the cause of sprite 'flicker', fixed the issue
 	- Changed containers with observer pointers to entities to unordered_set to allow quick validation
-	of entity existance (mostly needed to implement target deselection for creatures)
+	of entity existence (mostly needed to implement target deselection for creatures)
 	- Implemented deaggro if target no longer exists for entities
 
 # 21.08.04 #
@@ -880,7 +880,7 @@
 	to current configuration, if nonstandard resolution was selected in 'CONFIG.json' it's
 	added as another option when choosing resolutions
 	- Implemented settings menu with following options: 1) Resolution (custom supported);
-	2) Screen mode (windowed, borderless, fulscreen); 3) Music (0-10); 4) Sound (0-10);
+	2) Screen mode (windowed, borderless, fullscreen); 3) Music (0-10); 4) Sound (0-10);
 	5) FPS counter (On/Off)
 	- Added ability to adjust volume according to settings
 	- Added ability to turn FPS counter on and off
@@ -906,7 +906,7 @@
 	- Limited projectile lifetime to prevent them from accumulation off-screen due to update culling
 	- Adjusted collision system to account for hitbox size and check more tiles for big solids
 	(thus handling solids over 1 tile in size correctly)
-	- Fixed Tentacle/Fireball spawn tries breaking the loop upon faliure instead of continuing it
+	- Fixed Tentacle/Fireball spawn tries breaking the loop upon failure instead of continuing it
 	- Implemented spawn checks for tentacle summoning that require it to be grounded at both sides
 	- Finished 2nd boss phase
 	- Blacked out resize button in windowed screen mode
@@ -952,5 +952,6 @@
     - Made window & borderless always center on screen
     
 # 25.08.30 #
-    - Added a delay before the hint text disappearance 
+    - Added a delay before the hint text disappearance
+    - Removed dependency on nlohmann_json in favor of utl::json
     - Cleaned up the old README

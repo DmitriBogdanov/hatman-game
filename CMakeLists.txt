@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.21.0...3.22.1)
 
 project(
     Hatman
-    VERSION 2.0.1
-    DESCRIPTION "2D metroidvania with trichromatic artstyle.."
+    VERSION 3.0.0
+    DESCRIPTION "2D metroidvania with trichromatic artstyle."
     HOMEPAGE_URL "https://github.com/DmitriBogdanov/hatman-game"
 )
 
@@ -11,6 +11,8 @@ project(
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 include(FetchContent)
+
+# SFML
 FetchContent_Declare(
     sfml
     GIT_REPOSITORY "https://github.com/SFML/SFML.git"
@@ -18,11 +20,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sfml)
 
-FetchContent_Declare(backward
-    GIT_REPOSITORY https://github.com/bombela/backward-cpp
-    GIT_TAG master
-)
-FetchContent_MakeAvailable(backward)
+# UTL
+TODO:
+
+# backward-cpp (useful for debugging)
+# FetchContent_Declare(backward
+#     GIT_REPOSITORY https://github.com/bombela/backward-cpp
+#     GIT_TAG master
+# )
+# FetchContent_MakeAvailable(backward)
 
 # Include
 include_directories(hatman/include)

@@ -4,7 +4,7 @@
 
 // Includes: std
 #include <ctime>    // used to generate seed for random
-#include <iostream> // Text to console TEMP:
+#include <iostream> // logging to console
 
 // Includes: dependencies
 
@@ -20,13 +20,6 @@
 #include "utility/launch_info.h" // 'LaunchInfo' class
 
 // ____________________ IMPLEMENTATION ____________________
-
-#define BACKWARD_HAS_DW 1 // TEMP:
-#include "backward.hpp" // TEMP:
-
-namespace backward {
-backward::SignalHandling signal_handling;
-}
 
 int main() {
     std::srand(static_cast<int>(std::time(nullptr))); // TODO: Remove this nonsense
@@ -58,7 +51,7 @@ int main() {
         }
 
         // Initialize all the storage objects
-        TimerController timerController; // [!] timers must be created first 
+        TimerController timerController; // [!] timers must be created first
         Graphics        graphics(resolution_x, resolution_y, convert_string_to_window_flags(screen_mode));
         Audio           audio(music, sound);
         TilesetStorage  tilesets;
