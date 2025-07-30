@@ -955,3 +955,7 @@
     - Added a delay before the hint text disappearance
     - Removed dependency on nlohmann_json in favor of utl::json
     - Cleaned up the old README
+
+# 25.08.31 #
+    - Build system cleanup, switched to using CMake presets
+    - Documentation, guides, wiki

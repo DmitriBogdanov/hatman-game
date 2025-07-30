@@ -1,0 +1,94 @@
+{
+    "version": 3,
+    
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    
+    "configurePresets": [
+        {
+            "name": "base",
+            "description": "Common configuration variables.",
+            "hidden": true,
+            "binaryDir": "build/",
+            "cacheVariables": {
+                "HATMAN_COMPILE_FEATURES": "cxx_std_17"
+            }
+        },
+        {
+            "name": "gcc",
+            "description": "GCC configuration variables.",
+            "inherits": [ "base" ],
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "HATMAN_COMPILER_FLAGS": "-O2;-Wall;-Wextra;-Wpedantic;-Werror",
+                "HATMAN_LINKER_FLAGS": ""
+            }
+        },
+        {
+            "name": "gcc-debug",
+            "description": "GCC configuration variables.",
+            "inherits": [ "base" ],
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "HATMAN_COMPILER_FLAGS": "-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
+                "HATMAN_LINKER_FLAGS": "-fsanitize=address,undefined"
+            }
+        },
+        {
+            "name": "clang",
+            "description": "Clang configuration variables.",
+            "inherits": [ "base" ],
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "HATMAN_COMPILER_FLAGS": "-O2;-Wall;-Wextra;-Wpedantic;-Werror",
+                "HATMAN_LINKER_FLAGS": ""
+            }
+        },
+        {
+            "name": "clang-debug",
+            "description": "Clang configuration variables.",
+            "inherits": [ "base" ],
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "HATMAN_COMPILER_FLAGS": "-O0;-g3;-Wall;-Wextra;-Wpedantic;-Werror;-fsanitize=address,undefined;-fno-sanitize-recover=all",
+                "HATMAN_LINKER_FLAGS": "-fsanitize=address,undefined"
+            }
+        },
+        {
+            "name": "msvc",
+            "description": "MSVC configuration variables.",
+            "inherits": [ "base" ],
+            "cacheVariables": {
+                "HATMAN_COMPILER_FLAGS": "/W3;/sdl;/Zc:preprocessor",
+                "HATMAN_LINKER_FLAGS": ""
+            }
+        },
+        {
+            "name": "msvc-debug",
+            "description": "MSVC configuration variables.",
+            "inherits": [ "base" ],
+            "cacheVariables": {
+                "HATMAN_COMPILER_FLAGS": "/W3;/sdl;/Zc:preprocessor",
+                "HATMAN_LINKER_FLAGS": ""
+            }
+        }
+    ],
+    
+    "buildPresets": [
+        {
+            "name": "base",
+            "description": "Common build variables.",
+            "hidden": true,
+            "jobs": 4
+        },
+        { "name": "gcc"        , "configurePreset": "gcc"        , "inherits": [ "base" ] },
+        { "name": "gcc-debug"  , "configurePreset": "gcc-debug"  , "inherits": [ "base" ] },
+        { "name": "clang"      , "configurePreset": "clang"      , "inherits": [ "base" ] },
+        { "name": "clang-debug", "configurePreset": "clang-debug", "inherits": [ "base" ] },
+        { "name": "msvc"       , "configurePreset": "msvc"       , "inherits": [ "base" ] },
+        { "name": "msvc-debug" , "configurePreset": "msvc-debug" , "inherits": [ "base" ] }
+    ]
+}

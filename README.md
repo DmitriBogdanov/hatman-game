@@ -43,16 +43,19 @@ Pre-built binaries are available at the corresponding [itch.io page](https://hat
 
 ## Guides
 
-- [Building the project]()
-- [In-game debug mode](./docs/debug_mode.md)
-- [Asset credits](./docs/asset_credits.md)
+- [Building the project](./docs/guide_building_the_project.md)
+- [In-game debug mode](./docs/guide_debug_mode.md)
+- [Items (contains spoilers)](./docs/guide_items.md)
+- [Levels (contains spoilers)](./docs/guide_levels.md)
+- [Bestiary (contains spoilers)](./docs/guide_bestiary.md)
+- [Asset credits](./docs/guide_asset_credits.md)
 
 ## Dependencies
 
 | Dependency                                   | License                                                      | Used for                        | Type        | Build process                     |
 | -------------------------------------------- | ------------------------------------------------------------ | ------------------------------- | ----------- | --------------------------------- |
 | [SFML](https://github.com/SFML/SFML)         | [zlib](https://github.com/SFML/SFML/blob/master/license.md)  | Graphics, audio, input handling | Third party | Fetched by CMake `FetchContent()` |
-| [UTL](https://github.com/DmitriBogdanov/UTL) | [MIT](https://github.com/DmitriBogdanov/UTL/blob/master/LICENSE.md) | JSON                            | First party | Fetched by CMake `FetchContent()` |
+| [UTL](https://github.com/DmitriBogdanov/UTL) | [MIT](https://github.com/DmitriBogdanov/UTL/blob/master/LICENSE.md) | JSON                            | First party | Embedded in repo                  |
 
 ## Changelog
 
