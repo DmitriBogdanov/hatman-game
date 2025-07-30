@@ -25,8 +25,8 @@ namespace tiles {
 
 		~SaveOrb(); // don't forget to erase text pop-up if level unloads
 
-		bool checkActivation() const override;
-		bool checkTrigger() const override; // checks if player is in range, and holds a 'USE' button
+		bool check_activation() const override;
+		bool check_trigger() const override; // checks if player is in range, and holds a 'USE' button
 		void activate() override;
 		void deactivate() override;
 		void trigger() override;
@@ -51,8 +51,8 @@ namespace tiles {
 
 		~Portal(); // don't forget to erase text pop-up if level unloads
 
-		bool checkActivation() const override;
-		bool checkTrigger() const override; // checks if player is in range, and holds a 'USE' button
+		bool check_activation() const override;
+		bool check_trigger() const override; // checks if player is in range, and holds a 'USE' button
 		void activate() override;
 		void deactivate() override;
 		void trigger() override;

@@ -87,7 +87,7 @@ namespace ntt::s_type {
 		virtual bool update(Milliseconds elapsedTime) override;
 
 	protected:
-		void _init_sprite(bool animated, const std::string &folder, const std::string &filename = DEFAULT_ANIMATION_NAME);
+		void _init_sprite(bool animated, const std::string &folder, const std::string &filename = default_animation_name);
 		virtual void _optinit_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction);
 		// optional, inits solid
 

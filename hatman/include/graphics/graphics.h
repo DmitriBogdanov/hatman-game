@@ -36,7 +36,7 @@ public:
 	std::unique_ptr<Camera> camera;
 	std::unique_ptr<Gui> gui;
 
-	sf::Texture& getTexture(const std::string &filePath);
+	sf::Texture& get_texture(const std::string &filePath);
 	// Cases of getTexture() (convenience thing)
 	sf::Texture& getTexture_Entity(const std::string &name);
 	sf::Texture& getTexture_Item(const std::string &name);

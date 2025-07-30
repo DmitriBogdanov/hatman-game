@@ -45,6 +45,7 @@ then
     cppcheck --project="${directory_build}/compile_commands.json" \
         --suppressions-list="${cppcheck_suppressions_file}" \
         --cppcheck-build-dir="${cppcheck_cache_directory}" \
+        --enable=warning
     # --enable=all can be added for more warning, but there is A LOT of false positives
 else
     printf "${ansi_yellow}Missing ${ansi_reset}${ansi_cyan}cppcheck${ansi_reset}${ansi_yellow} static analyzer, skipping...${ansi_reset}\n"

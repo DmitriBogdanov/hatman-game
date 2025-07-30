@@ -1,6 +1,10 @@
-#pragma once
+// ____________________ HEADER SUMMARY ____________________
 
-// _______________________ INCLUDES _______________________
+// 2D integer / float vector class, also a few misc utilities for math
+
+// ____________________ IMPLEMENTATION ____________________
+
+#pragma once
 
 #include <cmath>      // sqrt(), sin(), cos(), acos()
 #include <cstddef>    // size_t
@@ -8,12 +12,6 @@
 #include <string>     // string, to_string()
 
 #include "utility/cx_math.hpp" // constexpr math functions
-
-// ____________________ DEVELOPER DOCS ____________________
-
-// 2D integer / float vector class, also a few misc utilities for math
-
-// ____________________ IMPLEMENTATION ____________________
 
 
 

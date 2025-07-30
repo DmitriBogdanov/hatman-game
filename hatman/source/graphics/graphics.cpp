@@ -8,6 +8,7 @@
 
 #include "utility/geometry.h"
 #include "utility/globalconsts.hpp" // natural consts
+#include "utility/filepaths.hpp"
 
 // # Graphics #
 const Graphics* Graphics::READ;
@@ -73,7 +74,7 @@ Graphics::Graphics(int width, int height, sf::Uint32 style) :
 }
 
 // Image loading
-sf::Texture& Graphics::getTexture(const std::string &filePath) {
+sf::Texture& Graphics::get_texture(const std::string &filePath) {
 	if (!this->loadedTextures.count(filePath)) { // image is not loaded => load it, add to the map
 		sf::Texture texture;
 		texture.loadFromFile(filePath);
@@ -85,20 +86,20 @@ sf::Texture& Graphics::getTexture(const std::string &filePath) {
 	return this->loadedTextures.at(filePath);
 }
 sf::Texture& Graphics::getTexture_Entity(const std::string &name) {
-	return this->getTexture("content/textures/entities/" + name);
+	return this->get_texture(paths::textures_entities + name);
 }
 
 sf::Texture& Graphics::getTexture_Item(const std::string &name) {
-	return this->getTexture("content/textures/items/" + name);
+	return this->get_texture(paths::textures_items + name);
 }
 sf::Texture& Graphics::getTexture_Tileset(const std::string &name) {
-	return this->getTexture("content/textures/tilesets/" + name);
+	return this->get_texture(paths::textures_tilesets + name);
 }
 sf::Texture& Graphics::getTexture_Background(const std::string &name) {
-	return this->getTexture("content/textures/backgrounds/" + name);
+	return this->get_texture(paths::textures_backgrounds + name);
 }
 sf::Texture& Graphics::getTexture_GUI(const std::string &name) {
-	return this->getTexture("content/textures/gui/" + name);
+	return this->get_texture(paths::textures_gui + name);
 }
 
 // Rendering

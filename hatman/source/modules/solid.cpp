@@ -213,12 +213,12 @@ void SolidRectangle::applyForceTillMaxSpeed_Down(double force, double maxSpeed) 
 }
 
 void SolidRectangle::apply_GravityForce() {
-	this->applyForce_Down(this->mass * physics::GRAVITY_ACCELERATION);
+	this->applyForce_Down(this->mass * physics::gravity_acceleration);
 }
 
 void SolidRectangle::apply_FrictionForce() {
 	this->applyForce_Horizontal(
-		-helpers::sign(this->speed.x) * this->mass * physics::GRAVITY_ACCELERATION * this->friction
+		-helpers::sign(this->speed.x) * this->mass * physics::gravity_acceleration * this->friction
 	);	
 }
 
@@ -282,7 +282,7 @@ void SolidRectangle::apply_TileCollisions() {
 		const int rightBound = std::min(centerIndex.x + adjustedHalfSize.x, Game::READ->level->getSizeX() - 1);
 		const int upperBound = std::max(centerIndex.y, 0); // no need to check upper row
 		const int lowerBound = std::min(centerIndex.y + adjustedHalfSize.y, Game::READ->level->getSizeY() - 1);
-		///const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPH, Game::READ->level->getSizeY() - 1);
+		///const int lowerBound = std::min(centerIndex.y + performance::COLLISION_CHECK_DEPTH, Game::READ->level->getSizeY() - 1);
 
 		for (int X = leftBound; X <= rightBound; ++X)
 			for (int Y = upperBound; Y <= lowerBound; ++Y) {
@@ -300,7 +300,7 @@ void SolidRectangle::apply_TileCollisions() {
 								this->is_grounded = true;
 							}
                             // collision with platform, condition may need fine-tuning
-							else if (entityRect.getBottom() < hitboxRect.rect.getTop() + physics::PLATFORM_EPSILON && !this->is_dropping_down) {
+							else if (entityRect.getBottom() < hitboxRect.rect.getTop() + physics::platform_epsilon && !this->is_dropping_down) {
 								entityRect.moveBottomTo(hitboxRect.rect.getTop());
 								this->speed.y = 0.;
 								this->is_grounded = true;

@@ -58,11 +58,11 @@ tiles::SaveOrb::~SaveOrb() {
 	this->popup_handle.erase();
 }
 
-bool tiles::SaveOrb::checkActivation() const {
+bool tiles::SaveOrb::check_activation() const {
 	// Check if player is in range
 	return this->interaction->actionbox.containsPoint(Game::READ->level->player->position);
 }
-bool tiles::SaveOrb::checkTrigger() const {
+bool tiles::SaveOrb::check_trigger() const {
 	// Check if player pressed USE button
 	return Game::ACCESS->input.key_pressed(Controls::READ->USE);
 }
@@ -112,11 +112,11 @@ tiles::Portal::~Portal() {
 	this->popup_handle.erase();
 }
 
-bool tiles::Portal::checkActivation() const {
+bool tiles::Portal::check_activation() const {
 	// Check if player is in range
 	return this->interaction->actionbox.containsPoint(Game::READ->level->player->position);
 }
-bool tiles::Portal::checkTrigger() const {
+bool tiles::Portal::check_trigger() const {
 	// Check if player pressed USE button
 	return Game::ACCESS->input.key_pressed(Controls::READ->USE);
 }

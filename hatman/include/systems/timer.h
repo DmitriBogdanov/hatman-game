@@ -7,7 +7,7 @@
 
 using Milliseconds = double;
 
-constexpr auto MAX_POSSIBLE_TIME = std::numeric_limits<double>::max();
+constexpr auto max_possible_time = std::numeric_limits<double>::max();
 
 constexpr inline double sec_to_ms(double seconds) { return seconds * 1000.; }
 

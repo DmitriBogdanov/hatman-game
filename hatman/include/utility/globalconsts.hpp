@@ -45,9 +45,9 @@ namespace performance {
 // physics::
 // - Fundamental physical consts (like gravity)
 namespace physics {
-	constexpr double GRAVITY_ACCELERATION = 1200.;
+	constexpr double gravity_acceleration = 1200.;
 
-	constexpr double PLATFORM_EPSILON = 7.; // how
+	constexpr double platform_epsilon = 7.; // how
 }
 
 

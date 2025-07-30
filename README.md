@@ -63,7 +63,7 @@ See [`changelog.md`](./changelog.md) for a detailed development history.
 
 ## Project history
 
-This game was my first truly large personal project. The codebase underwent several style changes, switched multiple dependencies (SDL, tinyxml ➞ SDL, simple_audio, nlohmann_json, SFML ➞ SFML, UTL) and changed scope several times. Despite some questionable practices in its development, this project went a long way in terms of my personal improvement as a specialist due to sheer coverage and scale of building a fully custom game engine.
+This game was my first truly large personal project. The codebase underwent several style changes, switched multiple dependencies (SDL, tinyxml ➞ SDL, simple_audio, nlohmann_json, SFML ➞ SFML, UTL) and changed scope several times. Despite some questionable practices in its development (including the **incredibly** inconsistent style), this project went a long way in terms of my personal improvement as a specialist due to sheer coverage and scale of building a fully custom game engine.
 
 After a few years I went back to clean up the build system, add some documentation, fix a few bugs, adjust some nit-picks, cull dependencies and set up proper CMake with a Linux build using the experience gained from developing [UTL](https://github.com/DmitriBogdanov/UTL).
 

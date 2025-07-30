@@ -959,3 +959,5 @@
 # 25.08.31 #
     - Build system cleanup, switched to using CMake presets
     - Documentation, guides, wiki
+    - Refactored hard-coded filepaths
+    - Refactored many defines into constexpr variables

@@ -13,7 +13,7 @@
 #include "utility/geometry.h" // geometry types
 #include "utility/color.hpp" // 'RGBColor' type
 
-#define DEFAULT_ANIMATION_NAME "default"
+constexpr auto default_animation_name = "default";
 
 
 

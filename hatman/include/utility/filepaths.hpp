@@ -1,18 +1,28 @@
+// ____________________ HEADER SUMMARY ____________________
+
+// Hard-coded filepaths.
+
+// ____________________ IMPLEMENTATION ____________________
+
 #pragma once
 
-#define PATH_CONTENT "content/"
+namespace paths {
 
-#define PATH_LEVELS "content/levels/"
+constexpr auto content = "content/";
 
-#define PATH_TILESETS "content/tilesets/"
+constexpr auto levels = "content/levels/";
 
-#define PATH_TEXTURES "content/textures/"
-#define PATH_TEXTURES_ENTITIES "content/textures/entities/"
-#define PATH_TEXTURES_ITEMS "content/textures/items/"
-#define PATH_TEXTURES_TILESETS "content/textures/tilesets/"
-#define PATH_TEXTURES_BACKGROUNDS "content/textures/backgrounds/"
-#define PATH_TEXTURES_GUI "content/textures/gui/"
+constexpr auto tilesets = "content/tilesets/";
 
-#define PATH_AUDIO "content/audio/"
-#define PATH_AUDIO_MX "content/audio/mx/"
-#define PATH_AUDIO_FX "content/audio/fx/"
+constexpr auto textures             = "content/textures/";
+constexpr auto textures_entities    = "content/textures/entities/";
+constexpr auto textures_items       = "content/textures/items/";
+constexpr auto textures_tilesets    = "content/textures/tilesets/";
+constexpr auto textures_backgrounds = "content/textures/backgrounds/";
+constexpr auto textures_gui         = "content/textures/gui/";
+
+constexpr auto audio    = "content/audio/";
+constexpr auto audio_ms = "content/audio/mx/";
+constexpr auto audio_fx = "content/audio/fx/";
+
+} // namespace paths

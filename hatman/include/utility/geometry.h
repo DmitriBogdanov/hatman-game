@@ -83,7 +83,7 @@ constexpr srcRect make_srcRect(const Vector2 &point, const Vector2 &size, bool i
 	}
 }
 
-constexpr srcRect make_srcRect(int x, int y, int width, int height, bool initializeAsCentered = false) {
+constexpr srcRect make_src_rect(int x, int y, int width, int height, bool initializeAsCentered = false) {
 	if (initializeAsCentered) {
 		return srcRect{ x - width / 2, y - height / 2, width, height };
 	}

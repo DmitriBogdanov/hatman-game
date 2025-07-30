@@ -65,7 +65,7 @@ void scripts::Portal::update([[maybe_unused]] Milliseconds elapsedTime) {
 		Graphics::ACCESS->gui->Fade_on(colors::SH_BLACK, colors::SH_BLACK.transparent(), defaults::TRANSITION_FADE_DURATION);
 
 		Game::ACCESS->level->player->position = this->goes_to_pos;
-		Game::ACCESS->level->player->cameraTrap_center();
+		Game::ACCESS->level->player->camera_trap_center();
 	}
 }
 

@@ -28,6 +28,7 @@ Game::Game(bool fps_counter_setting) :
 	timescale(1.),
 	_true_time_elapsed(0.),
 	_requested_go_to_main_menu(false),
+    _requested_ending_screen(false),
 	_requested_toggle_esc_menu(false),
     _requested_toggle_inventory(false),
 	_requested_toggle_F3(false),
@@ -310,7 +311,7 @@ void Game::update_everything(Milliseconds elapsedTime) {
 	if (this->is_running() && !this->paused) {
 		this->level->update(elapsedTime);
 
-		Graphics::ACCESS->camera->position = this->level->player->cameraTrap_getPosition();
+		Graphics::ACCESS->camera->position = this->level->player->camera_trap_get_pos();
 	}
 
 	// Updated regardless
@@ -354,8 +355,8 @@ void Game::_level_swapToTarget() {
 		// set player position in a new level,
 		// this should be done before spawning in a new level
 
-	playerPtr->cameraTrap_center();
-	Graphics::ACCESS->camera->position = playerPtr->cameraTrap_getPosition();
+	playerPtr->camera_trap_center();
+	Graphics::ACCESS->camera->position = playerPtr->camera_trap_get_pos();
 		// center camera at the player to prevent situation where player doesn't get
 		// updated due to being too far away from camera
 
@@ -378,8 +379,8 @@ void Game::_level_loadFromSave() {
 	// Construct Player
 	auto constructedPlayer = std::make_unique<ntt::player::Player>(savedPosition);
 		
-	constructedPlayer->cameraTrap_center();
-	Graphics::ACCESS->camera->position = constructedPlayer->cameraTrap_getPosition();
+	constructedPlayer->camera_trap_center();
+	Graphics::ACCESS->camera->position = constructedPlayer->camera_trap_get_pos();
 		// center camera at the player to prevent situation where player doesn't get
 		// updated due to being too far away from camera
 
@@ -407,12 +408,12 @@ void Game::_drawHitboxes() {
 
 	// Draw tile hitboxes and actionboxes
 	sf::Sprite tileHitboxBorder;
-	tileHitboxBorder.setTexture(Graphics::ACCESS->getTexture("content/textures/hitbox_border_tile.png"));
+	tileHitboxBorder.setTexture(Graphics::ACCESS->get_texture("content/textures/hitbox_border_tile.png"));
 
 	sf::Sprite tileActionboxBorder;
-	tileActionboxBorder.setTexture(Graphics::ACCESS->getTexture("content/textures/actionbox_border_tile.png"));
+	tileActionboxBorder.setTexture(Graphics::ACCESS->get_texture("content/textures/actionbox_border_tile.png"));
 
-	const auto& cameraPos = this->level->player->cameraTrap_getPosition();
+	const auto& cameraPos = this->level->player->camera_trap_get_pos();
 
 	const Vector2 centerIndex = helpers::divide32(cameraPos);
 
@@ -463,7 +464,7 @@ void Game::_drawHitboxes() {
 
 	// Draw entity hitboxes
 	sf::Sprite entityHitboxBorder;
-	entityHitboxBorder.setTexture(Graphics::ACCESS->getTexture("content/textures/hitbox_border_entity.png"));
+	entityHitboxBorder.setTexture(Graphics::ACCESS->get_texture("content/textures/hitbox_border_entity.png"));
 
 	for (const auto &entity : this->level->entities_solid) {
 		const dstRect destRect = entity->solid->getHitbox().to_dstRect();

@@ -88,8 +88,8 @@ public:
 	void update(Milliseconds elapsedTime); // updates animation
 	void draw() const; // draws to the screen
 
-	virtual bool checkActivation() const { return false; }  // checks if tile should be activated
-	virtual bool checkTrigger() const { return false; } // checks if trigger condition is true (tile must be ativated)
+	virtual bool check_activation() const { return false; }  // checks if tile should be activated
+	virtual bool check_trigger() const { return false; } // checks if trigger condition is true (tile must be ativated)
 	virtual void activate() {} // toggles active state
 	virtual void deactivate() {} // executed upon leaving active state
 	virtual void trigger() {} // triggers some action
@@ -101,7 +101,7 @@ public:
 	std::unique_ptr<TileInteraction> interaction; // Unique logic for derived classes
 
 protected:
-	bool toggle_active;
+	bool toggle_active = false;
 
 	sf::Sprite tilesheet_sprite;
 };

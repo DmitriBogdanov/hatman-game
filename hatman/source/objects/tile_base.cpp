@@ -99,7 +99,7 @@ void Tile::update(Milliseconds elapsedTime) {
 
 	// Update interaction (if present)
 	if (this->interaction) {
-		const bool activation = this->checkActivation();
+		const bool activation = this->check_activation();
 		if (this->toggle_active != activation) { // activation changed
 			this->toggle_active = activation;
 
@@ -107,7 +107,7 @@ void Tile::update(Milliseconds elapsedTime) {
 			else { this->deactivate(); }
 		}
 
-		if (this->toggle_active && this->checkTrigger()) { this->trigger(); }
+		if (this->toggle_active && this->check_trigger()) { this->trigger(); }
 	}
 }
 

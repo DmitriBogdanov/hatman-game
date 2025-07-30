@@ -575,12 +575,12 @@
                         {
                          "name":"emits_flag",
                          "type":"string",
-                         "value":"devouring_dephs_118"
+                         "value":"devouring_depths_118"
                         }, 
                         {
                          "name":"requires_flag",
                          "type":"string",
-                         "value":"!devouring_dephs_118"
+                         "value":"!devouring_depths_118"
                         }],
                  "rotation":0,
                  "type":"",
@@ -634,12 +634,12 @@
                         {
                          "name":"emits_flag",
                          "type":"string",
-                         "value":"devouring_dephs_122"
+                         "value":"devouring_depths_122"
                         }, 
                         {
                          "name":"requires_flag",
                          "type":"string",
-                         "value":"!devouring_dephs_122"
+                         "value":"!devouring_depths_122"
                         }],
                  "rotation":0,
                  "type":"",
@@ -801,12 +801,12 @@
                         {
                          "name":"emits_flag",
                          "type":"string",
-                         "value":"devouring_dephs_135"
+                         "value":"devouring_depths_135"
                         }, 
                         {
                          "name":"requires_flag",
                          "type":"string",
-                         "value":"!devouring_dephs_135"
+                         "value":"!devouring_depths_135"
                         }],
                  "rotation":0,
                  "type":"",
@@ -884,12 +884,12 @@
                         {
                          "name":"emits_flag",
                          "type":"string",
-                         "value":"devouring_dephs_141"
+                         "value":"devouring_depths_141"
                         }, 
                         {
                          "name":"requires_flag",
                          "type":"string",
-                         "value":"!devouring_dephs_141"
+                         "value":"!devouring_depths_141"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1015,12 +1015,12 @@
                         {
                          "name":"emits_flag",
                          "type":"string",
-                         "value":"devouring_dephs_152"
+                         "value":"devouring_depths_152"
                         }, 
                         {
                          "name":"requires_flag",
                          "type":"string",
-                         "value":"!devouring_dephs_152"
+                         "value":"!devouring_depths_152"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1170,12 +1170,12 @@
                         {
                          "name":"emits_flag",
                          "type":"string",
-                         "value":"devouring_dephs_166"
+                         "value":"devouring_depths_166"
                         }, 
                         {
                          "name":"requires_flag",
                          "type":"string",
-                         "value":"!devouring_dephs_166"
+                         "value":"!devouring_depths_166"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1193,12 +1193,12 @@
                         {
                          "name":"emits_flag",
                          "type":"string",
-                         "value":"devouring_dephs_167"
+                         "value":"devouring_depths_167"
                         }, 
                         {
                          "name":"requires_flag",
                          "type":"string",
-                         "value":"!devouring_dephs_167"
+                         "value":"!devouring_depths_167"
                         }],
                  "rotation":0,
                  "type":"",
@@ -1504,12 +1504,12 @@
                         {
                          "name":"emits_flag",
                          "type":"string",
-                         "value":"devouring_dephs_192"
+                         "value":"devouring_depths_192"
                         }, 
                         {
                          "name":"requires_flag",
                          "type":"string",
-                         "value":"!devouring_dephs_192"
+                         "value":"!devouring_depths_192"
                         }],
                  "rotation":0,
                  "type":"",

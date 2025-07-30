@@ -23,7 +23,7 @@
             "inherits": [ "base" ],
             "cacheVariables": {
                 "CMAKE_CXX_COMPILER": "g++",
-                "HATMAN_COMPILER_FLAGS": "-O2;-Wall;-Wextra;-Wpedantic;-Werror",
+                "HATMAN_COMPILER_FLAGS": "-O0;-Wall;-Wextra;-Wpedantic;-Werror",
                 "HATMAN_LINKER_FLAGS": ""
             }
         },

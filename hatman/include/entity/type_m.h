@@ -1,11 +1,13 @@
-#pragma once
+// ____________________ HEADER SUMMARY ____________________
 
-/*
-Suffix _m stands for 'makable' entities that:
-- Take only position in their constructors
-- Can be parsed from a map file
-- Have predetermined values upon creation
-*/
+// Suffix _m stands for 'makable' entities that:
+// - Take only position in their constructors
+// - Can be parsed from a map file
+// - Have predetermined values upon creation
+
+// ____________________ IMPLEMENTATION ____________________
+
+#pragma once
 
 #include "entity/base.h" // 'Entity' base class
 #include "modules/inventory.h" // 'Inventory' module
@@ -18,7 +20,7 @@ Suffix _m stands for 'makable' entities that:
 // - Contains all types of 'm' entities
 namespace ntt::m_type {
 	// # Creature #
-	// - Entity with conrollable sprite, solid and health
+	// - Entity with controllable sprite, solid and health
 	// - Has a LEFT/RIGHT orientation
 	class Creature : public Entity {
 	public:
@@ -36,14 +38,14 @@ namespace ntt::m_type {
 
 	protected:
 		// Utilities
-		bool _has_ground_in_front() const;
+		bool has_ground_in_front() const;
 
 		// State
 		int state_get() const;
 		bool state_isLocked() const;
 		bool state_isUnlocked() const;
 
-		void state_lock(Milliseconds duration = MAX_POSSIBLE_TIME); // prevents state change for duration, locks forever by default
+		void state_lock(Milliseconds duration = max_possible_time); // prevents state change for duration, locks forever by default
 		void state_unlock();
 
 		template<typename StateEnum>
@@ -52,11 +54,11 @@ namespace ntt::m_type {
 		}
 
 		// Module inits
-		void _init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames);
-		void _init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction);
-		void _init_health(Faction faction, uint maxHp, sint regen, sint physRes = 0, sint magicRes = 0, sint chaosRes = 0);
+		void init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames);
+		void init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction);
+		void init_health(Faction faction, uint maxHp, sint regen, sint physRes = 0, sint magicRes = 0, sint chaosRes = 0);
 
-		virtual void deathTransition(); // called when hp reaches 0
+		virtual void death_transition(); // called when hp reaches 0
 
 		ControllableSprite* _sprite; // casted version of 'sprite', used to access methods in 'ControllableSprite'
 
@@ -66,13 +68,13 @@ namespace ntt::m_type {
 		int state;
 		Timer state_lock_timer;	
 
-		void _kill_if_out_of_bounds();
+		void kill_if_out_of_bounds();
 	};
 
 
 
 	// # Enemy #
-	// - Agressive creature that only attacks player
+	// - Aggressive creature that only attacks player
 	class Enemy : public Creature {
 	public:
 		Enemy() = delete;
@@ -102,23 +104,23 @@ namespace ntt::m_type {
 		virtual void update_when_deaggroed(Milliseconds elapsedTime) = 0;	
 
 		// Effects
-		virtual void deathTransition() override; // dies after a delay
+		virtual void death_transition() override; // dies after a delay
 
 		// Module inits, call after 'Creature' inits are done
 		template<typename StateEnum>
-		void _init_default_aggroed_state(StateEnum state) {
+		void init_default_aggroed_state(StateEnum state) {
 			this->default_aggroed_state = static_cast<int>(state);
 		}
 
 		template<typename StateEnum>
-		void _init_default_deaggroed_state(StateEnum state) {
+		void init_default_deaggroed_state(StateEnum state) {
 			this->default_deaggroed_state = static_cast<int>(state);
 		}
 
-		void _optinit_healthbar_display(const Vector2d &parentPosition, const Health &parentHealth, const Vector2d &bottomCenterpointAlignment);
-		void _optinit_boss_healthbar_display(const Health &parentHealth, const std::string &bossTitle);
+		void optinit_healthbar_display(const Vector2d &parentPosition, const Health &parentHealth, const Vector2d &bottomCenterpointAlignment);
+		void optinit_boss_healthbar_display(const Health &parentHealth, const std::string &bossTitle);
 	
-		void _optinit_death_delay(Milliseconds delay);
+		void optinit_death_delay(Milliseconds delay);
 	private:
 		std::unique_ptr<HealthbarDisplay_Base> healthbar_display; // it's assumed that 'Health' module is always present
 
@@ -150,20 +152,20 @@ namespace ntt::m_type {
 		Sound pickup_sound;
 
 		// Checks
-		virtual bool checkActivation() const;  // checks if item should be activated
-		virtual bool checkTrigger() const; // checks if trigger condition is true (item must be ativated)
+		virtual bool check_activation() const;  // checks if item should be activated
+		virtual bool check_trigger() const; // checks if trigger condition is true (item must be activated)
 
 		// Actions
 		virtual void activate(); // triggers the item active state
 		virtual void trigger(); // triggers item effect (pickup by default)
 
 		// Module inits
-		void _init_sprite(bool animated, const std::string &folder, const std::string &filename = DEFAULT_ANIMATION_NAME);
-		void _init_solid(const Vector2d &hitboxSize);
+		void init_sprite(bool animated, const std::string &folder, const std::string &filename = default_animation_name);
+		void init_solid(const Vector2d &hitboxSize);
 			// inits solid with standard flags
 
 		// Member inits
-		void _init_name(const std::string &name);
+		void init_name(const std::string &name);
 	};
 
 
@@ -191,12 +193,12 @@ namespace ntt::m_type {
 		virtual void effect(); // any effect that is triggered upon entity death
 
 		// Module inits
-		void _init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames);
-		void _init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction);
-		void _init_health(Faction faction, uint maxHp, sint regen, sint physRes = 0, sint magicRes = 0, sint chaosRes = 0);
+		void init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames);
+		void init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction);
+		void init_health(Faction faction, uint maxHp, sint regen, sint physRes = 0, sint magicRes = 0, sint chaosRes = 0);
 
 		// Member inits
-		void _init_delay(Milliseconds erasionDelay);
+		void init_delay(Milliseconds erasionDelay);
 
 	protected:
 		ControllableSprite* _sprite; // casted version of 'sprite', used to access methods in 'ControllableSprite'

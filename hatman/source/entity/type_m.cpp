@@ -23,17 +23,17 @@ bool m_type::Creature::update(Milliseconds elapsedTime) {
 	
 	this->sprite->flip = (this->orientation == Orientation::RIGHT) ? Flip::NONE : Flip::HORIZONTAL;
 
-	this->_kill_if_out_of_bounds();
+	this->kill_if_out_of_bounds();
 
 	if (this->health->dead() && creature_is_alive) {
-		this->deathTransition();
+		this->death_transition();
 	}
 
 	return true;
 }
 
 // Utilities
-bool m_type::Creature::_has_ground_in_front() const {
+bool m_type::Creature::has_ground_in_front() const {
 	return
 		this->orientation == Orientation::LEFT
 		? this->solid->is_grounded_at_left
@@ -61,14 +61,14 @@ void m_type::Creature::state_unlock() {
 	this->state_lock_timer.stop();
 }
 
-void m_type::Creature::_init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames) {
-	this->_parse_controllable_sprite(folder, animationNames);
+void m_type::Creature::init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames) {
+	this->parse_controllable_sprite(folder, animationNames);
 
 	this->_sprite = static_cast<ControllableSprite*>(this->sprite.get());
 }
 
 // Module inits
-void m_type::Creature::_init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction) {
+void m_type::Creature::init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction) {
 	this->solid = std::make_unique<SolidRectangle>(
 		this->position,
 		hitboxSize,
@@ -78,15 +78,15 @@ void m_type::Creature::_init_solid(const Vector2d &hitboxSize, SolidFlags flags,
 		);
 }
 
-void m_type::Creature::_init_health(Faction faction, uint maxHp, sint regen, sint physRes, sint magicRes, sint chaosRes) {
+void m_type::Creature::init_health(Faction faction, uint maxHp, sint regen, sint physRes, sint magicRes, sint chaosRes) {
 	this->health = std::make_unique<Health>(faction, maxHp, regen, physRes, magicRes, chaosRes);
 }
 
-void m_type::Creature::deathTransition() {
+void m_type::Creature::death_transition() {
 	this->creature_is_alive = false;
 }
 
-void m_type::Creature::_kill_if_out_of_bounds() {
+void m_type::Creature::kill_if_out_of_bounds() {
 	const auto hitbox = this->solid->getHitbox();
 	const double levelHeight = Game::READ->level->getSizeY() * natural::TILE_SIZE;
 
@@ -158,22 +158,22 @@ void m_type::Enemy::aggroTransition() {}
 void m_type::Enemy::deaggroTransition() {}
 
 // Effects
-void m_type::Enemy::deathTransition() {
-	Creature::deathTransition();
+void m_type::Enemy::death_transition() {
+	Creature::death_transition();
 
 	this->mark_for_erase(this->death_delay);
 }
 
 // Module inits
-void m_type::Enemy::_optinit_healthbar_display(const Vector2d &parentPosition, const Health &parentHealth, const Vector2d &bottomCenterpointAlignment) {
+void m_type::Enemy::optinit_healthbar_display(const Vector2d &parentPosition, const Health &parentHealth, const Vector2d &bottomCenterpointAlignment) {
 	this->healthbar_display = std::make_unique<HealthbarDisplay>(parentPosition, parentHealth, bottomCenterpointAlignment);
 }
 
-void m_type::Enemy::_optinit_boss_healthbar_display(const Health &parentHealth, const std::string &bossTitle) {
+void m_type::Enemy::optinit_boss_healthbar_display(const Health &parentHealth, const std::string &bossTitle) {
 	this->healthbar_display = std::make_unique<BossHealthbarDisplay>(parentHealth, bossTitle);
 }
 
-void m_type::Enemy::_optinit_death_delay(Milliseconds delay) {
+void m_type::Enemy::optinit_death_delay(Milliseconds delay) {
 	this->death_delay = delay;
 }
 
@@ -195,10 +195,10 @@ TypeId m_type::ItemEntity::type_id() const { return TypeId::ITEM_ENTITY; }
 bool m_type::ItemEntity::update(Milliseconds elapsedTime) {
 	if (!Entity::update(elapsedTime)) return false;
 
-	if (this->checkActivation()) {
+	if (this->check_activation()) {
 		this->activate();
 
-		if (this->checkTrigger())
+		if (this->check_trigger())
 			this->trigger();
 	}
 
@@ -206,11 +206,11 @@ bool m_type::ItemEntity::update(Milliseconds elapsedTime) {
 }
 
 // Checks
-bool m_type::ItemEntity::checkActivation() const {
+bool m_type::ItemEntity::check_activation() const {
 	return this->solid && this->solid->getHitbox().overlapsWithRect(Game::ACCESS->level->player->solid->getHitbox());
 }
 
-bool m_type::ItemEntity::checkTrigger() const {
+bool m_type::ItemEntity::check_trigger() const {
 	return Game::ACCESS->input.key_pressed(Controls::READ->USE);
 }
 
@@ -232,14 +232,14 @@ void m_type::ItemEntity::trigger() {
 }
 
 // Module inits
-void m_type::ItemEntity::_init_sprite(bool animated, const std::string &folder, const std::string &filename) {
+void m_type::ItemEntity::init_sprite(bool animated, const std::string &folder, const std::string &filename) {
 	if (animated)
-		this->_parse_animated_sprite(folder, filename);
+		this->parse_animated_sprite(folder, filename);
 	else
-		this->_parse_static_sprite(folder, filename);
+		this->parse_static_sprite(folder, filename);
 }
 
-void m_type::ItemEntity::_init_solid(const Vector2d &hitboxSize) {
+void m_type::ItemEntity::init_solid(const Vector2d &hitboxSize) {
 	this->solid = std::make_unique<SolidRectangle>(
 		this->position,
 		hitboxSize,
@@ -250,18 +250,13 @@ void m_type::ItemEntity::_init_solid(const Vector2d &hitboxSize) {
 }
 
 // Member inits
-void m_type::ItemEntity::_init_name(const std::string &name) {
+void m_type::ItemEntity::init_name(const std::string &name) {
 	this->name = name;
 }
 
 
 
 // # Destructible #
-namespace Destructible_consts {
-	constexpr double DEFAULT_MASS = 80.;
-	constexpr double DEFAULT_FRICTION = 0.6;
-}
-
 m_type::Destructible::Destructible(const Vector2d &position) :
 	Entity(position)
 {}
@@ -293,13 +288,13 @@ bool m_type::Destructible::update(Milliseconds elapsedTime) {
 void m_type::Destructible::effect() {} // nothing by default
 
 // Module inits
-void m_type::Destructible::_init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames) {
-	this->_parse_controllable_sprite(folder, animationNames);
+void m_type::Destructible::init_sprite(const std::string &folder, std::initializer_list<std::string> animationNames) {
+	this->parse_controllable_sprite(folder, animationNames);
 
 	this->_sprite = static_cast<ControllableSprite*>(this->sprite.get());
 }
 
-void m_type::Destructible::_init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction) {
+void m_type::Destructible::init_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction) {
 	this->solid = std::make_unique<SolidRectangle>(
 		this->position,
 		hitboxSize,
@@ -309,11 +304,11 @@ void m_type::Destructible::_init_solid(const Vector2d &hitboxSize, SolidFlags fl
 		);
 }
 
-void m_type::Destructible::_init_health(Faction faction, uint maxHp, sint regen, sint physRes, sint magicRes, sint chaosRes) {
+void m_type::Destructible::init_health(Faction faction, uint maxHp, sint regen, sint physRes, sint magicRes, sint chaosRes) {
 	this->health = std::make_unique<Health>(faction, maxHp, regen, physRes, magicRes, chaosRes);
 }
 
 // Member inits
-void m_type::Destructible::_init_delay(Milliseconds erasionDelay) {
+void m_type::Destructible::init_delay(Milliseconds erasionDelay) {
 	this->erasion_delay = erasionDelay;
 }

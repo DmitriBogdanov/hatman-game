@@ -50,7 +50,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 		};
@@ -79,7 +79,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 		};
@@ -110,7 +110,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 		};
@@ -143,7 +143,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 
@@ -179,7 +179,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 
@@ -212,7 +212,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 			Milliseconds time_target_was_looking_away;
@@ -244,7 +244,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 		};
@@ -274,7 +274,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 		};
@@ -307,7 +307,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 			Timer flee_timer;
@@ -340,7 +340,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 		};
@@ -371,7 +371,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer attack_cd;
 			Timer emerge_timer;
@@ -403,7 +403,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Timer summon_tentacle_cd;
 			Timer summon_skeleton_cd;
@@ -433,7 +433,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Vector2d anchor_position; // boss always floats to it's initial spawn pos, being effectively stationary
 
@@ -466,7 +466,7 @@ namespace ntt::m {
 			void update_when_aggroed(Milliseconds elapsedTime) override;
 			void update_when_deaggroed(Milliseconds elapsedTime) override;
 
-			void deathTransition() override;
+			void death_transition() override;
 
 			Vector2d anchor_position; // boss always floats to it's initial spawn pos, being effectively stationary
 

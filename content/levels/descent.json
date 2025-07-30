@@ -154,7 +154,7 @@
                         {
                          "name":"[goes_to_level]",
                          "type":"string",
-                         "value":"devouring_dephs"
+                         "value":"devouring_depths"
                         }, 
                         {
                          "name":"[goes_to_x]",

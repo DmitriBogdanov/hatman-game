@@ -92,7 +92,7 @@ void s_type::Projectile::onCollision() {
 
 // Module inits
 void s_type::Projectile::_init_sprite(const std::string &folder) {
-	this->_parse_controllable_sprite(folder, { DEFAULT_ANIMATION_NAME, "explosion" });
+	this->parse_controllable_sprite(folder, { default_animation_name, "explosion" });
 
 	this->_sprite = static_cast<ControllableSprite*>(this->sprite.get());
 }
@@ -153,9 +153,9 @@ bool s_type::Particle::update(Milliseconds elapsedTime) {
 // Module inits
 void s_type::Particle::_init_sprite(bool animated, const std::string &folder, const std::string &filename) {
 	if (animated)
-		this->_parse_animated_sprite(folder, filename);
+		this->parse_animated_sprite(folder, filename);
 	else
-		this->_parse_static_sprite(folder, filename);
+		this->parse_static_sprite(folder, filename);
 }
 
 void s_type::Particle::_optinit_solid(const Vector2d &hitboxSize, SolidFlags flags, double mass, double friction) {

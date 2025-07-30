@@ -125,16 +125,16 @@ m::enemy::Sludge::Sludge(const Vector2d &position) :
 	using namespace Sludge_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{sludge}", { DEFAULT_ANIMATION_NAME });
+	this->init_sprite("[enemy]{sludge}", { default_animation_name });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -144,11 +144,11 @@ m::enemy::Sludge::Sludge(const Vector2d &position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::CHASE);
-	this->_init_default_deaggroed_state(State::WANDER_STAND);
+	this->init_default_aggroed_state(State::CHASE);
+	this->init_default_deaggroed_state(State::WANDER_STAND);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 }
 
 bool m::enemy::Sludge::aggroCondition(Creature* creature) {
@@ -197,7 +197,7 @@ void m::enemy::Sludge::update_when_aggroed([[maybe_unused]] Milliseconds elapsed
 			this->state_change(State::ATTACK);
 		}
 		// Cannot pursue without falling => await
-		else if (!this->_has_ground_in_front()) {
+		else if (!this->has_ground_in_front()) {
 			this->state_change(State::AWAIT);
 		}
 
@@ -212,7 +212,7 @@ void m::enemy::Sludge::update_when_aggroed([[maybe_unused]] Milliseconds elapsed
 			this->state_change(State::ATTACK);
 		}
 		// Enemy can be chased witout falling => chase
-		if (this->_has_ground_in_front()) {
+		if (this->has_ground_in_front()) {
 			this->state_change(State::CHASE);
 		}
 
@@ -270,7 +270,7 @@ void m::enemy::Sludge::update_when_deaggroed([[maybe_unused]] Milliseconds elaps
 		);
 
 		// Transition
-		if (!this->_has_ground_in_front()) {
+		if (!this->has_ground_in_front()) {
 			this->state_change(State::WANDER_STAND);
 			this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
 		}
@@ -296,8 +296,8 @@ void m::enemy::Sludge::update_when_deaggroed([[maybe_unused]] Milliseconds elaps
 	}
 }
 
-void m::enemy::Sludge::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::Sludge::death_transition() {
+	Enemy::death_transition();
 
 	using namespace Sludge_consts;
 
@@ -377,16 +377,16 @@ m::enemy::Worm::Worm(const Vector2d &position) :
 	using namespace Worm_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{worm}", { DEFAULT_ANIMATION_NAME });
+	this->init_sprite("[enemy]{worm}", { default_animation_name });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -396,11 +396,11 @@ m::enemy::Worm::Worm(const Vector2d &position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::CHASE);
-	this->_init_default_deaggroed_state(State::WANDER_MOVE);
+	this->init_default_aggroed_state(State::CHASE);
+	this->init_default_deaggroed_state(State::WANDER_MOVE);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 }
 
 bool m::enemy::Worm::aggroCondition(Creature* creature) {
@@ -449,7 +449,7 @@ void m::enemy::Worm::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTi
 			this->state_change(State::ATTACK);
 		}
 		// Cannot pursue without falling => await
-		else if (!this->_has_ground_in_front()) {
+		else if (!this->has_ground_in_front()) {
 			this->state_change(State::AWAIT);
 		}
 
@@ -464,7 +464,7 @@ void m::enemy::Worm::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTi
 			this->state_change(State::ATTACK);
 		}
 		// Enemy can be chased witout falling => chase
-		if (this->_has_ground_in_front()) {
+		if (this->has_ground_in_front()) {
 			this->state_change(State::CHASE);
 		}
 
@@ -522,7 +522,7 @@ void m::enemy::Worm::update_when_deaggroed([[maybe_unused]] Milliseconds elapsed
 		);
 
 		// Transition
-		if (!this->_has_ground_in_front()) {
+		if (!this->has_ground_in_front()) {
 			this->state_change(State::WANDER_STAND);
 			this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
 		}
@@ -548,8 +548,8 @@ void m::enemy::Worm::update_when_deaggroed([[maybe_unused]] Milliseconds elapsed
 	}
 }
 
-void m::enemy::Worm::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::Worm::death_transition() {
+	Enemy::death_transition();
 
 	using namespace Worm_consts;
 
@@ -627,16 +627,16 @@ m::enemy::Golem::Golem(const Vector2d &position) :
 	using namespace Golem_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{golem}", { DEFAULT_ANIMATION_NAME, "move" });
+	this->init_sprite("[enemy]{golem}", { default_animation_name, "move" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -646,11 +646,11 @@ m::enemy::Golem::Golem(const Vector2d &position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::CHASE);
-	this->_init_default_deaggroed_state(State::WANDER_STAND);
+	this->init_default_aggroed_state(State::CHASE);
+	this->init_default_deaggroed_state(State::WANDER_STAND);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 }
 
 bool m::enemy::Golem::aggroCondition(Creature* creature) {
@@ -674,7 +674,7 @@ void m::enemy::Golem::aggroTransition() {
 }
 
 void m::enemy::Golem::deaggroTransition() {
-	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+	this->_sprite->animation_play(default_animation_name, true);
 }
 
 void m::enemy::Golem::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTime) {
@@ -707,8 +707,8 @@ void m::enemy::Golem::update_when_aggroed([[maybe_unused]] Milliseconds elapsedT
 			this->state_change(State::ATTACK);
 		}
 		// Cannot pursue without falling => await
-		else if (!this->_has_ground_in_front()) {
-			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+		else if (!this->has_ground_in_front()) {
+			this->_sprite->animation_play(default_animation_name, true);
 			this->state_change(State::AWAIT);
 		}
 
@@ -723,7 +723,7 @@ void m::enemy::Golem::update_when_aggroed([[maybe_unused]] Milliseconds elapsedT
 			this->state_change(State::ATTACK);
 		}
 		// Enemy can be chased witout falling => chase
-		if (this->_has_ground_in_front()) {
+		if (this->has_ground_in_front()) {
 			this->_sprite->animation_play("move", true);
 			this->state_change(State::CHASE);
 		}
@@ -784,8 +784,8 @@ void m::enemy::Golem::update_when_deaggroed([[maybe_unused]] Milliseconds elapse
 		);
 
 		// Transition
-		if (!this->_has_ground_in_front()) {
-			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+		if (!this->has_ground_in_front()) {
+			this->_sprite->animation_play(default_animation_name, true);
 			this->state_change(State::WANDER_STAND);
 			this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
 		}
@@ -800,7 +800,7 @@ void m::enemy::Golem::update_when_deaggroed([[maybe_unused]] Milliseconds elapse
 				this->state_lock(rand_double(WANDER_MOVE_TIMER_MIN, WANDER_MOVE_TIMER_MAX));
 			}
 			else {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+				this->_sprite->animation_play(default_animation_name, true);
 				this->state_change(State::WANDER_STAND);
 				this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
 			}
@@ -812,8 +812,8 @@ void m::enemy::Golem::update_when_deaggroed([[maybe_unused]] Milliseconds elapse
 	}
 }
 
-void m::enemy::Golem::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::Golem::death_transition() {
+	Enemy::death_transition();
 
 	using namespace Golem_consts;
 
@@ -893,16 +893,16 @@ m::enemy::SkeletonHalberd::SkeletonHalberd(const Vector2d &position) :
 	using namespace SkeletonHalberd_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{skeleton_halberd}", { DEFAULT_ANIMATION_NAME, "move", "attack_windup", "attack_recover", "death" });
+	this->init_sprite("[enemy]{skeleton_halberd}", { default_animation_name, "move", "attack_windup", "attack_recover", "death" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -912,13 +912,13 @@ m::enemy::SkeletonHalberd::SkeletonHalberd(const Vector2d &position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::CHASE);
-	this->_init_default_deaggroed_state(State::WANDER_STAND);
+	this->init_default_aggroed_state(State::CHASE);
+	this->init_default_deaggroed_state(State::WANDER_STAND);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 
-	this->_optinit_death_delay(
+	this->optinit_death_delay(
 		this->_sprite->animation_duration("death") +
 		rand_double(CORPSE_LIFETIME_MIN, CORPSE_LIFETIME_MAX)
 	);
@@ -945,7 +945,7 @@ void m::enemy::SkeletonHalberd::aggroTransition() {
 }
 
 void m::enemy::SkeletonHalberd::deaggroTransition() {
-	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+	this->_sprite->animation_play(default_animation_name, true);
 }
 
 void m::enemy::SkeletonHalberd::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTime) {
@@ -989,8 +989,8 @@ void m::enemy::SkeletonHalberd::update_when_aggroed([[maybe_unused]] Millisecond
 			// OR
 			// Enemy close horizontally but unreachable
 			// => await
-			else if (!this->_has_ground_in_front() || std::abs(this->target_relative_pos.x) < CHASE_UNTIL_RANGE) {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			else if (!this->has_ground_in_front() || std::abs(this->target_relative_pos.x) < CHASE_UNTIL_RANGE) {
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_change(State::AWAIT);
 			}
@@ -1007,7 +1007,7 @@ void m::enemy::SkeletonHalberd::update_when_aggroed([[maybe_unused]] Millisecond
 			// AND
 			// Enemy not close horizontally
 			// => chase
-			if (this->_has_ground_in_front() && std::abs(this->target_relative_pos.x) > CHASE_UNTIL_RANGE) {
+			if (this->has_ground_in_front() && std::abs(this->target_relative_pos.x) > CHASE_UNTIL_RANGE) {
 				this->_sprite->animation_play("move", true);
 
 				this->state_change(State::CHASE);
@@ -1070,7 +1070,7 @@ void m::enemy::SkeletonHalberd::update_when_deaggroed([[maybe_unused]] Milliseco
 				this->state_lock(rand_double(WANDER_MOVE_TIMER_MIN, WANDER_MOVE_TIMER_MAX));
 			}
 			else {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
 			}
@@ -1085,8 +1085,8 @@ void m::enemy::SkeletonHalberd::update_when_deaggroed([[maybe_unused]] Milliseco
 		);
 
 		// Transition
-		if (!this->_has_ground_in_front()) {
-			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+		if (!this->has_ground_in_front()) {
+			this->_sprite->animation_play(default_animation_name, true);
 
 			this->state_change(State::WANDER_STAND);
 			this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
@@ -1103,7 +1103,7 @@ void m::enemy::SkeletonHalberd::update_when_deaggroed([[maybe_unused]] Milliseco
 				this->state_lock(rand_double(WANDER_MOVE_TIMER_MIN, WANDER_MOVE_TIMER_MAX));
 			}
 			else {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_change(State::WANDER_STAND);
 				this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
@@ -1116,8 +1116,8 @@ void m::enemy::SkeletonHalberd::update_when_deaggroed([[maybe_unused]] Milliseco
 	}
 }
 
-void m::enemy::SkeletonHalberd::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::SkeletonHalberd::death_transition() {
+	Enemy::death_transition();
 
 	this->solid->mass *= 20.; // so the pile of bones doesn't get pushed around like a feather
 	this->_sprite->animation_play("death");
@@ -1184,16 +1184,16 @@ m::enemy::PygmyWarrior::PygmyWarrior(const Vector2d &position) :
 	using namespace PygmyWarrior_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{pygmy_warrior}", { DEFAULT_ANIMATION_NAME, "move", "attack_windup", "attack_recover", "death" });
+	this->init_sprite("[enemy]{pygmy_warrior}", { default_animation_name, "move", "attack_windup", "attack_recover", "death" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -1203,13 +1203,13 @@ m::enemy::PygmyWarrior::PygmyWarrior(const Vector2d &position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::CHASE);
-	this->_init_default_deaggroed_state(State::WANDER_STAND);
+	this->init_default_aggroed_state(State::CHASE);
+	this->init_default_deaggroed_state(State::WANDER_STAND);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 
-	this->_optinit_death_delay(
+	this->optinit_death_delay(
 		this->_sprite->animation_duration("death")
 	);
 }
@@ -1235,7 +1235,7 @@ void m::enemy::PygmyWarrior::aggroTransition() {
 }
 
 void m::enemy::PygmyWarrior::deaggroTransition() {
-	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+	this->_sprite->animation_play(default_animation_name, true);
 }
 
 void m::enemy::PygmyWarrior::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTime) {
@@ -1279,8 +1279,8 @@ void m::enemy::PygmyWarrior::update_when_aggroed([[maybe_unused]] Milliseconds e
 			// OR
 			// Enemy close horizontally but unreachable
 			// => await
-			else if (!this->_has_ground_in_front() || std::abs(this->target_relative_pos.x) < CHASE_UNTIL_RANGE) {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			else if (!this->has_ground_in_front() || std::abs(this->target_relative_pos.x) < CHASE_UNTIL_RANGE) {
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_change(State::AWAIT);
 			}
@@ -1297,7 +1297,7 @@ void m::enemy::PygmyWarrior::update_when_aggroed([[maybe_unused]] Milliseconds e
 			// AND
 			// Enemy not close horizontally
 			// => chase
-			if (this->_has_ground_in_front() && std::abs(this->target_relative_pos.x) > CHASE_UNTIL_RANGE) {
+			if (this->has_ground_in_front() && std::abs(this->target_relative_pos.x) > CHASE_UNTIL_RANGE) {
 				this->_sprite->animation_play("move", true);
 
 				this->state_change(State::CHASE);
@@ -1360,7 +1360,7 @@ void m::enemy::PygmyWarrior::update_when_deaggroed([[maybe_unused]] Milliseconds
 				this->state_lock(rand_double(WANDER_MOVE_TIMER_MIN, WANDER_MOVE_TIMER_MAX));
 			}
 			else {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
 			}
@@ -1375,8 +1375,8 @@ void m::enemy::PygmyWarrior::update_when_deaggroed([[maybe_unused]] Milliseconds
 		);
 
 		// Transition
-		if (!this->_has_ground_in_front()) {
-			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+		if (!this->has_ground_in_front()) {
+			this->_sprite->animation_play(default_animation_name, true);
 
 			this->state_change(State::WANDER_STAND);
 			this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
@@ -1393,7 +1393,7 @@ void m::enemy::PygmyWarrior::update_when_deaggroed([[maybe_unused]] Milliseconds
 				this->state_lock(rand_double(WANDER_MOVE_TIMER_MIN, WANDER_MOVE_TIMER_MAX));
 			}
 			else {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_change(State::WANDER_STAND);
 				this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
@@ -1406,8 +1406,8 @@ void m::enemy::PygmyWarrior::update_when_deaggroed([[maybe_unused]] Milliseconds
 	}
 }
 
-void m::enemy::PygmyWarrior::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::PygmyWarrior::death_transition() {
+	Enemy::death_transition();
 
 	this->solid->mass *= 20.; // so the pile of bones doesn't get pushed around like a feather
 	this->_sprite->animation_play("death");
@@ -1477,16 +1477,16 @@ m::enemy::Devourer::Devourer(const Vector2d& position) :
 	using namespace Devourer_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{devourer}", { DEFAULT_ANIMATION_NAME, "move" });
+	this->init_sprite("[enemy]{devourer}", { default_animation_name, "move" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -1496,11 +1496,11 @@ m::enemy::Devourer::Devourer(const Vector2d& position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::STAND);
-	this->_init_default_deaggroed_state(State::STAND);
+	this->init_default_aggroed_state(State::STAND);
+	this->init_default_deaggroed_state(State::STAND);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 }
 
 bool m::enemy::Devourer::aggroCondition(Creature* creature) {
@@ -1524,7 +1524,7 @@ void m::enemy::Devourer::aggroTransition() {
 }
 
 void m::enemy::Devourer::deaggroTransition() {
-	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+	this->_sprite->animation_play(default_animation_name, true);
 }
 
 void m::enemy::Devourer::update_when_aggroed(Milliseconds elapsedTime) {
@@ -1589,7 +1589,7 @@ void m::enemy::Devourer::update_when_aggroed(Milliseconds elapsedTime) {
 			this->state_unlock();
 
 		if (this->state_isUnlocked() && this->_sprite->animation_rushToEnd(ANIMATION_SPEEDUP)) {
-			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			this->_sprite->animation_play(default_animation_name, true);
 			this->state_change(State::STAND);
 			this->state_lock();
 		}
@@ -1605,8 +1605,8 @@ void m::enemy::Devourer::update_when_deaggroed([[maybe_unused]] Milliseconds ela
 	// Stand idle when deaggroed
 }
 
-void m::enemy::Devourer::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::Devourer::death_transition() {
+	Enemy::death_transition();
 
 	using namespace Devourer_consts;
 
@@ -1677,16 +1677,16 @@ m::enemy::SpiritBomber::SpiritBomber(const Vector2d& position) :
 	using namespace SpiritBomber_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{spirit_bomber}", { DEFAULT_ANIMATION_NAME, "attack_windup", "attack_recover" });
+	this->init_sprite("[enemy]{spirit_bomber}", { default_animation_name, "attack_windup", "attack_recover" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -1696,11 +1696,11 @@ m::enemy::SpiritBomber::SpiritBomber(const Vector2d& position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::STAND);
-	this->_init_default_deaggroed_state(State::STAND);
+	this->init_default_aggroed_state(State::STAND);
+	this->init_default_deaggroed_state(State::STAND);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 }
 
 bool m::enemy::SpiritBomber::aggroCondition(Creature* creature) {
@@ -1724,7 +1724,7 @@ void m::enemy::SpiritBomber::aggroTransition() {
 }
 
 void m::enemy::SpiritBomber::deaggroTransition() {
-	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+	this->_sprite->animation_play(default_animation_name, true);
 }
 
 void m::enemy::SpiritBomber::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTime) {
@@ -1780,7 +1780,7 @@ void m::enemy::SpiritBomber::update_when_aggroed([[maybe_unused]] Milliseconds e
 			this->state_unlock();
 
 		if (this->state_isUnlocked()) {
-			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			this->_sprite->animation_play(default_animation_name, true);
 			this->state_change(State::STAND);
 			this->state_lock();
 		}
@@ -1794,8 +1794,8 @@ void m::enemy::SpiritBomber::update_when_deaggroed([[maybe_unused]] Milliseconds
 	// Stand idle when deaggroed
 }
 
-void m::enemy::SpiritBomber::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::SpiritBomber::death_transition() {
+	Enemy::death_transition();
 
 	using namespace SpiritBomber_consts;
 
@@ -1865,16 +1865,16 @@ m::enemy::CultistMage::CultistMage(const Vector2d& position) :
 	using namespace CultistMage_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{cultist_mage}", { DEFAULT_ANIMATION_NAME, "attack_windup", "attack_recover" });
+	this->init_sprite("[enemy]{cultist_mage}", { default_animation_name, "attack_windup", "attack_recover" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -1884,11 +1884,11 @@ m::enemy::CultistMage::CultistMage(const Vector2d& position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::STAND);
-	this->_init_default_deaggroed_state(State::STAND);
+	this->init_default_aggroed_state(State::STAND);
+	this->init_default_deaggroed_state(State::STAND);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 }
 
 bool m::enemy::CultistMage::aggroCondition(Creature* creature) {
@@ -1912,7 +1912,7 @@ void m::enemy::CultistMage::aggroTransition() {
 }
 
 void m::enemy::CultistMage::deaggroTransition() {
-	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+	this->_sprite->animation_play(default_animation_name, true);
 }
 
 void m::enemy::CultistMage::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTime) {
@@ -1974,7 +1974,7 @@ void m::enemy::CultistMage::update_when_aggroed([[maybe_unused]] Milliseconds el
 			this->state_unlock();
 
 		if (this->state_isUnlocked()) {
-			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			this->_sprite->animation_play(default_animation_name, true);
 			this->state_change(State::STAND);
 			this->state_lock();
 		}
@@ -1988,8 +1988,8 @@ void m::enemy::CultistMage::update_when_deaggroed([[maybe_unused]] Milliseconds 
 	// Stand idle when deaggroed
 }
 
-void m::enemy::CultistMage::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::CultistMage::death_transition() {
+	Enemy::death_transition();
 
 	using namespace CultistMage_consts;
 
@@ -2090,16 +2090,16 @@ m::enemy::Hellhound::Hellhound(const Vector2d &position) :
 	using namespace Hellhound_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{hellhound}", { DEFAULT_ANIMATION_NAME, "walk", "run", "jump" });
+	this->init_sprite("[enemy]{hellhound}", { default_animation_name, "walk", "run", "jump" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -2109,11 +2109,11 @@ m::enemy::Hellhound::Hellhound(const Vector2d &position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::CHASE);
-	this->_init_default_deaggroed_state(State::WANDER_STAND);
+	this->init_default_aggroed_state(State::CHASE);
+	this->init_default_deaggroed_state(State::WANDER_STAND);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 }
 
 bool m::enemy::Hellhound::aggroCondition(Creature* creature) {
@@ -2137,7 +2137,7 @@ void m::enemy::Hellhound::aggroTransition() {
 }
 
 void m::enemy::Hellhound::deaggroTransition() {
-	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+	this->_sprite->animation_play(default_animation_name, true);
 }
 
 void m::enemy::Hellhound::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTime) {
@@ -2187,8 +2187,8 @@ void m::enemy::Hellhound::update_when_aggroed([[maybe_unused]] Milliseconds elap
 			// OR
 			// Enemy close horizontally but unreachable
 			// => await
-			else if (!this->_has_ground_in_front() || std::abs(this->target_relative_pos.x) < CHASE_UNTIL_RANGE) {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			else if (!this->has_ground_in_front() || std::abs(this->target_relative_pos.x) < CHASE_UNTIL_RANGE) {
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_change(State::AWAIT);
 			}
@@ -2220,8 +2220,8 @@ void m::enemy::Hellhound::update_when_aggroed([[maybe_unused]] Milliseconds elap
 			// OR
 			// Enemy far horizontally but unreachable
 			// => await
-			else if (!this->_has_ground_in_front()) {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			else if (!this->has_ground_in_front()) {
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_change(State::AWAIT);
 			}
@@ -2238,7 +2238,7 @@ void m::enemy::Hellhound::update_when_aggroed([[maybe_unused]] Milliseconds elap
 			// AND
 			// Enemy not close horizontally
 			// => chase
-			if (this->_has_ground_in_front() && std::abs(this->target_relative_pos.x) > CHASE_UNTIL_RANGE) {
+			if (this->has_ground_in_front() && std::abs(this->target_relative_pos.x) > CHASE_UNTIL_RANGE) {
 				this->_sprite->animation_play("run", true);
 
 				this->state_change(State::CHASE);
@@ -2304,7 +2304,7 @@ void m::enemy::Hellhound::update_when_deaggroed([[maybe_unused]] Milliseconds el
 				this->state_lock(rand_double(WANDER_MOVE_TIMER_MIN, WANDER_MOVE_TIMER_MAX));
 			}
 			else {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
 			}
@@ -2319,8 +2319,8 @@ void m::enemy::Hellhound::update_when_deaggroed([[maybe_unused]] Milliseconds el
 		);
 
 		// Transition
-		if (!this->_has_ground_in_front()) {
-			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+		if (!this->has_ground_in_front()) {
+			this->_sprite->animation_play(default_animation_name, true);
 
 			this->state_change(State::WANDER_STAND);
 			this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
@@ -2337,7 +2337,7 @@ void m::enemy::Hellhound::update_when_deaggroed([[maybe_unused]] Milliseconds el
 				this->state_lock(rand_double(WANDER_MOVE_TIMER_MIN, WANDER_MOVE_TIMER_MAX));
 			}
 			else {
-				this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+				this->_sprite->animation_play(default_animation_name, true);
 
 				this->state_change(State::WANDER_STAND);
 				this->state_lock(rand_double(WANDER_STAND_TIMER_MIN, WANDER_STAND_TIMER_MAX));
@@ -2350,8 +2350,8 @@ void m::enemy::Hellhound::update_when_deaggroed([[maybe_unused]] Milliseconds el
 	}
 }
 
-void m::enemy::Hellhound::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::Hellhound::death_transition() {
+	Enemy::death_transition();
 
 	using namespace Hellhound_consts;
 
@@ -2411,16 +2411,16 @@ m::enemy::Necromancer::Necromancer(const Vector2d& position) :
 	using namespace Necromancer_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{necromancer}", { DEFAULT_ANIMATION_NAME, "death" });
+	this->init_sprite("[enemy]{necromancer}", { default_animation_name, "death" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -2430,13 +2430,13 @@ m::enemy::Necromancer::Necromancer(const Vector2d& position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::STAND);
-	this->_init_default_deaggroed_state(State::STAND);
+	this->init_default_aggroed_state(State::STAND);
+	this->init_default_deaggroed_state(State::STAND);
 
 	const double HITBOX_GAP = 3.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 
-	this->_optinit_death_delay(
+	this->optinit_death_delay(
 		this->_sprite->animation_duration("death") +
 		rand_double(CORPSE_LIFETIME_MIN, CORPSE_LIFETIME_MAX)
 	);
@@ -2463,7 +2463,7 @@ void m::enemy::Necromancer::aggroTransition() {
 }
 
 void m::enemy::Necromancer::deaggroTransition() {
-	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+	this->_sprite->animation_play(default_animation_name, true);
 }
 
 void m::enemy::Necromancer::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTime) {
@@ -2514,7 +2514,7 @@ void m::enemy::Necromancer::update_when_aggroed([[maybe_unused]] Milliseconds el
 		// Transition
 		// (happens instantly, no conditions involved)
 		this->attack_cd.start(ATTACK_CD);
-		this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+		this->_sprite->animation_play(default_animation_name, true);
 		this->state_change(State::STAND);
 		this->state_lock();
 
@@ -2529,8 +2529,8 @@ void m::enemy::Necromancer::update_when_deaggroed([[maybe_unused]] Milliseconds 
 	// Stand idle when deaggroed
 }
 
-void m::enemy::Necromancer::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::Necromancer::death_transition() {
+	Enemy::death_transition();
 
 	using namespace Necromancer_consts;
 
@@ -2585,16 +2585,16 @@ m::enemy::Tentacle::Tentacle(const Vector2d &position) :
 	using namespace Tentacle_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{tentacle}", { DEFAULT_ANIMATION_NAME, "emerge" });
+	this->init_sprite("[enemy]{tentacle}", { default_animation_name, "emerge" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -2604,11 +2604,11 @@ m::enemy::Tentacle::Tentacle(const Vector2d &position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::ATTACK);
-	this->_init_default_deaggroed_state(State::STAND);
+	this->init_default_aggroed_state(State::ATTACK);
+	this->init_default_deaggroed_state(State::STAND);
 
 	const double HITBOX_GAP = 13.;
-	this->_optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
+	this->optinit_healthbar_display(this->position, *this->health, Vector2d(0., -this->solid->hitboxSize.y / 2. - HITBOX_GAP));
 
 	// Play emerging animation
 	this->_sprite->animation_play("emerge");
@@ -2639,7 +2639,7 @@ bool m::enemy::Tentacle::deaggroCondition(Creature* creature) {
 void m::enemy::Tentacle::aggroTransition() {
 	this->health->setFlat(0, 0, 0, 0, 0);
 
-	this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+	this->_sprite->animation_play(default_animation_name, true);
 }
 
 void m::enemy::Tentacle::update_when_aggroed([[maybe_unused]] Milliseconds elapsedTime) {
@@ -2691,7 +2691,7 @@ void m::enemy::Tentacle::update_when_deaggroed([[maybe_unused]] Milliseconds ela
 
 		// After emerging switch to peristing animation
 		if (this->_sprite->animation_finished())
-			this->_sprite->animation_play(DEFAULT_ANIMATION_NAME, true);
+			this->_sprite->animation_play(default_animation_name, true);
 
 		break;
 
@@ -2700,8 +2700,8 @@ void m::enemy::Tentacle::update_when_deaggroed([[maybe_unused]] Milliseconds ela
 	}
 }
 
-void m::enemy::Tentacle::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::Tentacle::death_transition() {
+	Enemy::death_transition();
 
 	using namespace Tentacle_consts;
 
@@ -2794,16 +2794,16 @@ m::enemy::BossMage1::BossMage1(const Vector2d& position) :
 	using namespace BossMage1_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{boss_mage_phase_1}", { DEFAULT_ANIMATION_NAME });
+	this->init_sprite("[enemy]{boss_mage_phase_1}", { default_animation_name });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -2813,12 +2813,12 @@ m::enemy::BossMage1::BossMage1(const Vector2d& position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::HOVER);
-	this->_init_default_deaggroed_state(State::STAND);
+	this->init_default_aggroed_state(State::HOVER);
+	this->init_default_deaggroed_state(State::STAND);
 
-	this->_optinit_boss_healthbar_display(*this->health, BOSS_TITLE);
+	this->optinit_boss_healthbar_display(*this->health, BOSS_TITLE);
 
-	this->_optinit_death_delay(DEATH_DELAY);
+	this->optinit_death_delay(DEATH_DELAY);
 }
 
 bool m::enemy::BossMage1::aggroCondition(Creature* creature) {
@@ -2987,8 +2987,8 @@ void m::enemy::BossMage1::update_when_deaggroed([[maybe_unused]] Milliseconds el
 	// Stand idle when deaggroed
 }
 
-void m::enemy::BossMage1::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::BossMage1::death_transition() {
+	Enemy::death_transition();
 
 	using namespace BossMage1_consts;
 
@@ -3099,16 +3099,16 @@ m::enemy::BossMage2::BossMage2(const Vector2d& position) :
 	using namespace BossMage2_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{boss_mage_phase_2}", { DEFAULT_ANIMATION_NAME });
+	this->init_sprite("[enemy]{boss_mage_phase_2}", { default_animation_name });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -3118,12 +3118,12 @@ m::enemy::BossMage2::BossMage2(const Vector2d& position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::HOVER);
-	this->_init_default_deaggroed_state(State::STAND);
+	this->init_default_aggroed_state(State::HOVER);
+	this->init_default_deaggroed_state(State::STAND);
 
-	this->_optinit_boss_healthbar_display(*this->health, BOSS_TITLE);
+	this->optinit_boss_healthbar_display(*this->health, BOSS_TITLE);
 
-	this->_optinit_death_delay(DEATH_DELAY);
+	this->optinit_death_delay(DEATH_DELAY);
 }
 
 bool m::enemy::BossMage2::aggroCondition(Creature* creature) {
@@ -3338,8 +3338,8 @@ void m::enemy::BossMage2::update_when_deaggroed([[maybe_unused]] Milliseconds el
 	// Stand idle when deaggroed
 }
 
-void m::enemy::BossMage2::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::BossMage2::death_transition() {
+	Enemy::death_transition();
 
 	using namespace BossMage2_consts;
 
@@ -3471,16 +3471,16 @@ m::enemy::BossMage3::BossMage3(const Vector2d& position) :
 	using namespace BossMage3_consts;
 
 	// Init modules
-	this->_init_sprite("[enemy]{boss_mage_phase_3}", { DEFAULT_ANIMATION_NAME });
+	this->init_sprite("[enemy]{boss_mage_phase_3}", { default_animation_name });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -3490,10 +3490,10 @@ m::enemy::BossMage3::BossMage3(const Vector2d& position) :
 	);
 
 	// Init members
-	this->_init_default_aggroed_state(State::HOVER);
-	this->_init_default_deaggroed_state(State::STAND);
+	this->init_default_aggroed_state(State::HOVER);
+	this->init_default_deaggroed_state(State::STAND);
 
-	this->_optinit_boss_healthbar_display(*this->health, BOSS_TITLE);
+	this->optinit_boss_healthbar_display(*this->health, BOSS_TITLE);
 }
 
 bool m::enemy::BossMage3::aggroCondition(Creature* creature) {
@@ -3734,8 +3734,8 @@ void m::enemy::BossMage3::update_when_deaggroed([[maybe_unused]] Milliseconds el
 	// Stand idle when deaggroed
 }
 
-void m::enemy::BossMage3::deathTransition() {
-	Enemy::deathTransition();
+void m::enemy::BossMage3::death_transition() {
+	Enemy::death_transition();
 
 	using namespace BossMage3_consts;
 
@@ -3760,8 +3760,8 @@ m::item_entity::EldritchBattery::EldritchBattery(const Vector2d& position) :
 	ItemEntity(position)
 {
 	constexpr auto HITBOX_SIZE = Vector2d(9., 13.);
-	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "[item]{eldritch_battery}");
+	this->init_solid(HITBOX_SIZE);
+	this->init_sprite(false, "[item]{eldritch_battery}");
 
 	this->name = "eldritch_battery";
 }
@@ -3771,8 +3771,8 @@ m::item_entity::PowerShard::PowerShard(const Vector2d& position) :
 	ItemEntity(position)
 {
 	constexpr auto HITBOX_SIZE = Vector2d(12., 12.);
-	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "[item]{power_shard}");
+	this->init_solid(HITBOX_SIZE);
+	this->init_sprite(false, "[item]{power_shard}");
 
 	this->name = "power_shard";
 }
@@ -3782,8 +3782,8 @@ m::item_entity::SpiderSignet::SpiderSignet(const Vector2d &position) :
 	ItemEntity(position)
 {
 	constexpr auto HITBOX_SIZE = Vector2d(14., 11.);
-	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "[item]{spider_signet}");
+	this->init_solid(HITBOX_SIZE);
+	this->init_sprite(false, "[item]{spider_signet}");
 
 	this->name = "spider_signet";
 }
@@ -3793,8 +3793,8 @@ m::item_entity::BoneMask::BoneMask(const Vector2d& position) :
 	ItemEntity(position)
 {
 	constexpr auto HITBOX_SIZE = Vector2d(16., 16.);
-	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "[item]{bone_mask}");
+	this->init_solid(HITBOX_SIZE);
+	this->init_sprite(false, "[item]{bone_mask}");
 
 	this->name = "bone_mask";
 }
@@ -3804,8 +3804,8 @@ m::item_entity::MagicNegator::MagicNegator(const Vector2d& position) :
 	ItemEntity(position)
 {
 	constexpr auto HITBOX_SIZE = Vector2d(16., 16.);
-	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "[item]{magic_negator}");
+	this->init_solid(HITBOX_SIZE);
+	this->init_sprite(false, "[item]{magic_negator}");
 
 	this->name = "magic_negator";
 }
@@ -3815,8 +3815,8 @@ m::item_entity::TwinSouls::TwinSouls(const Vector2d& position) :
 	ItemEntity(position)
 {
 	constexpr auto HITBOX_SIZE = Vector2d(16., 16.);
-	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "[item]{twin_souls}");
+	this->init_solid(HITBOX_SIZE);
+	this->init_sprite(false, "[item]{twin_souls}");
 
 	this->name = "twin_souls";
 }
@@ -3826,8 +3826,8 @@ m::item_entity::WatchingEye::WatchingEye(const Vector2d& position) :
 	ItemEntity(position)
 {
 	constexpr auto HITBOX_SIZE = Vector2d(14., 14.);
-	this->_init_solid(HITBOX_SIZE);
-	this->_init_sprite(false, "[item]{watching_eye}");
+	this->init_solid(HITBOX_SIZE);
+	this->init_sprite(false, "[item]{watching_eye}");
 
 	this->name = "watching_eye";
 }
@@ -3864,16 +3864,16 @@ m::destructible::OrbOfBetrayal::OrbOfBetrayal(const Vector2d &position) :
 	using namespace OrbOfBetrayal_consts;
 
 	// Init modules
-	this->_init_sprite("[destructible]{orb_of_betrayal}", { DEFAULT_ANIMATION_NAME, "explosion" });
+	this->init_sprite("[destructible]{orb_of_betrayal}", { default_animation_name, "explosion" });
 
-	this->_init_solid(
+	this->init_solid(
 		HITBOX_SIZE,
 		SOLID_FLAGS,
 		MASS,
 		FRICTION
 	);
 
-	this->_init_health(
+	this->init_health(
 		FACTION,
 		MAX_HP,
 		REGEN,
@@ -3883,7 +3883,7 @@ m::destructible::OrbOfBetrayal::OrbOfBetrayal(const Vector2d &position) :
 	);
 
 	// Init members
-	this->_init_delay(this->_sprite->animation_duration("explosion"));
+	this->init_delay(this->_sprite->animation_duration("explosion"));
 }
 
 void m::destructible::OrbOfBetrayal::effect() {

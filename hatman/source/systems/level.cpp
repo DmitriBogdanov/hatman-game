@@ -43,7 +43,7 @@ void Level::update(Milliseconds elapsedTime) {
 		this->_spawn_queue.clear();
 	}
 
-	const auto cameraPos = this->player->cameraTrap_getPosition();
+	const auto cameraPos = this->player->camera_trap_get_pos();
 
 	const Vector2 centerIndex = helpers::divide32(cameraPos);
 
@@ -79,7 +79,7 @@ void Level::draw() {
 	// Draw background
 	Graphics::ACCESS->gui->draw_sprite(this->background_sprite);
 
-	const auto cameraPos = this->player->cameraTrap_getPosition();
+	const auto cameraPos = this->player->camera_trap_get_pos();
 
 	const Vector2 centerIndex = helpers::divide32(cameraPos);
 

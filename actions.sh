@@ -51,15 +51,6 @@ command_config() {
 }
 
 command_build() {
-    # Invoke script to merge headers for single-include
-    if [ -f "${script_create_single_header}" ]; then
-        printf "${ansi_green}Merging single header include...${ansi_reset}\n"
-        bash "$script_create_single_header"
-        printf "${ansi_green}Merge complete.${ansi_reset}\n"
-    else
-        printf "${ansi_red}# Error: Could not find \"${script_create_single_header}\".${ansi_reset}\n"
-    fi
-    
     # Run CMake build
     require_command_exists "cmake"
     cmake --build --preset "${preset}"
