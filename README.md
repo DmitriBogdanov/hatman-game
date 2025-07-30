@@ -10,6 +10,27 @@ A classic 2D metroidvania with trichromatic artstyle.  You, a player, is a wande
 <img src ="docs/images/promo_items_large.png">
 <img src ="docs/images/promo_boss_large.png">
 
+## Gameplay
+
+**The player character** is a spirit trying to escape its limbo-like realm by moving forward through **an increasingly dangerous world**.
+
+**The world** itself is comprised of **12 distinct maps**, each map contains several safe zones that function a checkpoints.
+
+**Map progression** is mostly linear, each map contains a multitude of secrets and optional pathways that **reward exploration**.
+
+**Power progression** is based around **finding stat-boosting artifacts** during the exploration, these artifacts make are crucial for being able to handle late-game enemies.
+
+**The combat system** is mostly based around methodically **dodging enemy attacks** and striking during the safe window.
+
+**Movement system** follows a rather standard 2D platforming scheme, **charged jumps and short-range teleportation** based on a limited energy bar are required to reach many locations.
+
+## Controls
+
+<img src ="docs/images/controls.png">
+
+> [!Note]
+> This is a showcase, all controls can also be **found in-game**. 
+
 ## Screenshots
 
 TODO:
@@ -17,12 +38,14 @@ TODO:
 ## Executable
 
 Pre-built binaries are available at the corresponding [itch.io page](https://hatmangame.itch.io/hatman-adventure) for:
-- Windows x64
+- Windows x86-64
+- Linux x86-64 **(TODO)**
 
 ## Guides
 
 - [Building the project]()
-- 
+- [In-game debug mode](./docs/debug_mode.md)
+- [Asset credits](./docs/asset_credits.md)
 
 ## Dependencies
 
@@ -35,12 +58,12 @@ Pre-built binaries are available at the corresponding [itch.io page](https://hat
 
 See [`changelog.md`](./changelog.md) for a detailed development history.
 
-## Some history
+## Project history
 
 This game was my first truly large personal project. The codebase underwent several style changes, switched multiple dependencies (SDL, tinyxml ➞ SDL, simple_audio, nlohmann_json, SFML ➞ SFML, UTL) and changed scope several times. Despite some questionable practices in its development, this project went a long way in terms of my personal improvement as a specialist due to sheer coverage and scale of building a fully custom game engine.
 
-After a few years I went back to clean up the build system, add some documentation, fix a few bugs, adjust some nit-picks, cull dependencies and set up proper CMake with a Linux build using the experience from developing [UTL](https://github.com/DmitriBogdanov/UTL).
+After a few years I went back to clean up the build system, add some documentation, fix a few bugs, adjust some nit-picks, cull dependencies and set up proper CMake with a Linux build using the experience gained from developing [UTL](https://github.com/DmitriBogdanov/UTL).
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details
+This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.md) for details.
