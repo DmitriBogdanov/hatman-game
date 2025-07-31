@@ -958,6 +958,6 @@
 
 # 25.08.31 #
     - Build system cleanup, switched to using CMake presets
-    - Documentation, guides, wiki
+    - Documentation, guides, wiki for in-game levels
     - Refactored hard-coded filepaths
     - Refactored many defines into constexpr variables

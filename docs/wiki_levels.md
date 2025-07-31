@@ -1,11 +1,17 @@
-> [!Warning]
-> This page contains spoilers
-
-# Levels
+# Wiki / Levels
 
 [<- to README.md](..)
 
+> [!Warning]
+> This page contains spoilers
+
+The game world can represented as a graph of connected locations:
+
 <img src ="images/wiki_level_progression.png">
+
+All locations except for the last **3** contain optional paths and secrets that reward player exploration with artifacts. A thorough exploration makes late-game enemies and bosses significantly easier to clear.
+
+Many of the secrets are based around being able to find dropdowns and hidden jumps based on the environment clues, such as, for example, a portal exit with seemingly no corresponding entrance, or a drop near the saving orb, which allows player to scout the location without losing much progress.
 
 ### Desolation
 
