@@ -50,12 +50,12 @@ bool Entity::marked_for_erase() const {
 void Entity::parse_static_sprite(const std::string& entityName, const std::string& textureName) {
     this->sprite = std::make_unique<StaticSprite>(
         this->position, true, false,
-        Graphics::ACCESS->get_texture(paths::textures_entities + entityName + "/" + textureName + ".png"));
+        Graphics::ACCESS->get_texture(paths::TEXTURES_ENTITIES + entityName + "/" + textureName + ".png"));
 }
 
 void Entity::parse_animated_sprite(const std::string& entityName, const std::string& animationName) {
     this->sprite = std::make_unique<AnimatedSprite>(
-        this->position, true, false, parse_animation(paths::textures_entities + entityName + "/" + animationName));
+        this->position, true, false, parse_animation(paths::TEXTURES_ENTITIES + entityName + "/" + animationName));
 }
 
 void Entity::parse_controllable_sprite(const std::string&                 entityName,
@@ -65,7 +65,7 @@ void Entity::parse_controllable_sprite(const std::string&                 entity
     bool defaultAnimationNotSet = true;
 
     for (auto& name : animationNames) {
-        controllableSprite->animation_add(name, parse_animation(paths::textures_entities + entityName + "/" + name));
+        controllableSprite->animation_add(name, parse_animation(paths::TEXTURES_ENTITIES + entityName + "/" + name));
 
         if (defaultAnimationNotSet && name == default_animation_name) {
             controllableSprite->animation_play(default_animation_name, true);

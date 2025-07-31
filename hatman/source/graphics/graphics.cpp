@@ -86,20 +86,20 @@ sf::Texture& Graphics::get_texture(const std::string &filePath) {
 	return this->loadedTextures.at(filePath);
 }
 sf::Texture& Graphics::getTexture_Entity(const std::string &name) {
-	return this->get_texture(paths::textures_entities + name);
+	return this->get_texture(paths::TEXTURES_ENTITIES + name);
 }
 
 sf::Texture& Graphics::getTexture_Item(const std::string &name) {
-	return this->get_texture(paths::textures_items + name);
+	return this->get_texture(paths::TEXTURES_ITEMS + name);
 }
 sf::Texture& Graphics::getTexture_Tileset(const std::string &name) {
-	return this->get_texture(paths::textures_tilesets + name);
+	return this->get_texture(paths::TEXTURES_TILESETS + name);
 }
 sf::Texture& Graphics::getTexture_Background(const std::string &name) {
-	return this->get_texture(paths::textures_backgrounds + name);
+	return this->get_texture(paths::TEXTURES_BACKGROUNDS + name);
 }
 sf::Texture& Graphics::getTexture_GUI(const std::string &name) {
-	return this->get_texture(paths::textures_gui + name);
+	return this->get_texture(paths::TEXTURES_GUI + name);
 }
 
 // Rendering

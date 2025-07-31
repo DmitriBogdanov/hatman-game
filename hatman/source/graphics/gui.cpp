@@ -1510,15 +1510,15 @@ void GUI_Inventory::draw() {
 		std::string additional_description = "";
 		if (item.getName() == "eldritch_battery") additional_description =
 			" (current bonus +" + 
-			std::to_string(static_cast<int>(100 * artifacts::eldritch_battery_regen_boost * quantity)) + 
+			std::to_string(static_cast<int>(100 * artifacts::ELDRITCH_BATTERY_REGEN_BOOST * quantity)) + 
 			"%)";
 		else if (item.getName() == "power_shard") additional_description =
 			" (current bonus +" +
-			std::to_string(static_cast<int>(100 * artifacts::power_shard_dmg_boost * quantity)) +
+			std::to_string(static_cast<int>(100 * artifacts::POWER_SHARD_DMG_BOOST * quantity)) +
 			"%)";
 		else if (item.getName() == "spider_signet") additional_description =
 			" (current bonus +" +
-			std::to_string(static_cast<int>(100 * artifacts::spider_signet_jump_boost * quantity)) +
+			std::to_string(static_cast<int>(100 * artifacts::SPIDER_SIGNET_JUMP_BOOST * quantity)) +
 			"%)";
 		else if (item.getName() == "watching_eye") additional_description =
 			" (current bonus +" +
@@ -1526,15 +1526,15 @@ void GUI_Inventory::draw() {
 			")";
 		else if (item.getName() == "bone_mask") additional_description =
 			" (current reduction -" +
-			std::to_string(static_cast<int>(100 * (1. - std::pow(1. - artifacts::bone_mask_phys_dmg_reduction, quantity)))) +
+			std::to_string(static_cast<int>(100 * (1. - std::pow(1. - artifacts::BONE_MASK_PHYS_DMG_REDUCTION, quantity)))) +
 			"%)";
 		else if (item.getName() == "magic_negator") additional_description =
 			" (current reduction -" +
-			std::to_string(static_cast<int>(100 * (1. - std::pow(1. - artifacts::magic_negator_magic_dmg_reduction, quantity)))) +
+			std::to_string(static_cast<int>(100 * (1. - std::pow(1. - artifacts::MAGIC_NEGATOR_MAGIC_DMG_REDUCTION, quantity)))) +
 			"%)";
 		else if (item.getName() == "twin_souls") additional_description =
 			" (current reduction -" +
-			std::to_string(static_cast<int>(100 * (1. - std::pow(1. - artifacts::twin_souls_chaos_dmg_reduction, quantity)))) +
+			std::to_string(static_cast<int>(100 * (1. - std::pow(1. - artifacts::TWIN_SOULS_CHAOS_DMG_REDUCTION, quantity)))) +
 			"%)";
 
 		this->font->color_set(TEXT_COLOR);

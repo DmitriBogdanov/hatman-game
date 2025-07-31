@@ -14,18 +14,18 @@
 namespace artifacts {
 
 // Regen
-constexpr double eldritch_battery_regen_boost = 0.10;
+constexpr double ELDRITCH_BATTERY_REGEN_BOOST = 0.10;
 
 // Damage
-constexpr double power_shard_dmg_boost = 0.1;
+constexpr double POWER_SHARD_DMG_BOOST = 0.1;
 
 // Utility
-constexpr double spider_signet_jump_boost = 0.08;
+constexpr double SPIDER_SIGNET_JUMP_BOOST = 0.08;
 
 // Resistances
-constexpr double bone_mask_phys_dmg_reduction      = 0.2;
-constexpr double magic_negator_magic_dmg_reduction = 0.2;
-constexpr double twin_souls_chaos_dmg_reduction    = 0.2;
+constexpr double BONE_MASK_PHYS_DMG_REDUCTION      = 0.2;
+constexpr double MAGIC_NEGATOR_MAGIC_DMG_REDUCTION = 0.2;
+constexpr double TWIN_SOULS_CHAOS_DMG_REDUCTION    = 0.2;
 
 } // namespace artifacts
 

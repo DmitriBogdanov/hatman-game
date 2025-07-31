@@ -28,7 +28,7 @@ const sf::SoundBuffer& Audio::getSoundBuffer(const std::string &name) {
 
 	// Sound not loaded => load and return
 	if (it == this->loadedAudio.end()) {
-		std::string filepath = paths::audio_fx + name;
+		std::string filepath = paths::AUDIO_FX + name;
 		sf::SoundBuffer buffer;
 		buffer.loadFromFile(filepath);
 		const auto emplaced_it = this->loadedAudio.try_emplace(name, std::move(buffer)).first;
@@ -94,7 +94,7 @@ void Audio::set_music(const std::string &name) {
     this->music_current = name;
     
     // Load SFML music
-    if (!music.openFromFile(paths::audio_ms + name))
+    if (!music.openFromFile(paths::AUDIO_MS + name))
     	std::cout << "Error: Could not open music file...\n";
     
     music.setLoop(true); // for some reason music doesn't loop by default

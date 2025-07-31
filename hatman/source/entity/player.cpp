@@ -15,67 +15,67 @@ using namespace ntt::player;
 // # Player #
 namespace player_consts {
 
-constexpr auto hitbox_size = Vector2d(10., 30.);
+constexpr auto HITBOX_SIZE = Vector2d(10., 30.);
 
-constexpr double mass     = 100.;
-constexpr double friction = 0.6;
+constexpr double MASS     = 100.;
+constexpr double FRICTION = 0.6;
 
-constexpr double movement_speed        = 90.;
-constexpr double movement_acceleration = 600.;
-constexpr double movement_force        = mass * movement_acceleration;
+constexpr double MOVEMENT_SPEED        = 90.;
+constexpr double MOVEMENT_ACCELERATION = 600.;
+constexpr double MOVEMENT_FORCE        = MASS * MOVEMENT_ACCELERATION;
 
-constexpr double jump_speed   = cx_math::speed_corresponding_to_jump_height(physics::gravity_acceleration, 36.);
-constexpr double jump_impulse = mass * jump_speed;
+constexpr double JUMP_SPEED   = cx_math::speed_corresponding_to_jump_height(physics::gravity_acceleration, 36.);
+constexpr double JUMP_IMPULSE = MASS * JUMP_SPEED;
 
-constexpr Milliseconds dropping_down_sticky_delay_duration =
+constexpr Milliseconds DROPPING_DOWN_STICKY_DELAY_DURATION =
     sec_to_ms(cx_math::sqrt(2 * physics::platform_epsilon / physics::gravity_acceleration) + 1e-4);
 // required time is chosen based on guaranteeing that player falls down further than platform epsilon
 // g t^2 / 2 = platform_epsilon   =>   t = sqrt(2 * platform_epsilon / g)
 
-constexpr uint base_hp        = 1000;
-constexpr sint base_regen     = 25;
-constexpr sint base_phys_res  = 0;
-constexpr sint base_magic_res = 0;
-constexpr sint base_chaos_res = 0;
+constexpr uint BASE_HP        = 1000;
+constexpr sint BASE_REGEN     = 25;
+constexpr sint BASE_PHYS_RES  = 0;
+constexpr sint BASE_MAGIC_RES = 0;
+constexpr sint BASE_CHAOS_RES = 0;
 
-constexpr Milliseconds out_of_combat_regen_timer = sec_to_ms(10.);
-constexpr double       out_of_combat_regen_multi = 8.;
+constexpr Milliseconds OUT_OF_COMBAT_REGEN_TIMER = sec_to_ms(10.);
+constexpr double       OUT_OF_COMBAT_REGEN_MULTI = 8.;
 
 // constexpr double STAND_TO_MOVE_ANIMATION_SPEEDUP = 3.;
 // constexpr double STAND_TO_ATTACK_ANIMATION_SPEEDUP = 3.;
 
 // Charges
-constexpr uint base_charges    = 3;
-constexpr uint max_charges_cap = 5;
+constexpr uint BASE_CHARGES    = 3;
+constexpr uint MAX_CHARGES_CAP = 5;
 
-constexpr uint skill_charge_cost = 2;
-constexpr uint jump_charge_cost  = 1;
+constexpr uint SKILL_CHARGE_COST = 2;
+constexpr uint JUMP_CHARGE_COST  = 1;
 
-constexpr Milliseconds charge_cd = sec_to_ms(2);
+constexpr Milliseconds CHARGE_CD = sec_to_ms(2);
 
 // Death
-constexpr int          particle_count        = 16;
-constexpr double       particle_max_speed_x  = 200.;
-constexpr double       particle_max_speed_y  = 250.;
-constexpr Milliseconds particle_duration_min = sec_to_ms(1.);
-constexpr Milliseconds particle_duration_max = sec_to_ms(6.);
+constexpr int          PARTICLE_COUNT        = 16;
+constexpr double       PARTICLE_MAX_SPEED_X  = 200.;
+constexpr double       PARTICLE_MAX_SPEED_Y  = 250.;
+constexpr Milliseconds PARTICLE_DURATION_MIN = sec_to_ms(1.);
+constexpr Milliseconds PARTICLE_DURATION_MAX = sec_to_ms(6.);
 
 } // namespace player_consts
 
 namespace camera {
 
-constexpr double trap_size_left  = 15.;
-constexpr double trap_size_right = trap_size_left;
-constexpr double trap_size_up    = 5.;
-constexpr double trap_size_down  = 40.;
+constexpr double TRAP_SIZE_LEFT  = 15.;
+constexpr double TRAP_SIZE_RIGHT = TRAP_SIZE_LEFT;
+constexpr double TRAP_SIZE_UP    = 5.;
+constexpr double TRAP_SIZE_DOWN  = 40.;
 // camera moves in a way the player stays inside 'camera trap' rectangle
 // gives camera smoother feel
 
-constexpr double speed_coef_x = 20.;
-constexpr double speed_coef_y = speed_coef_x;
+constexpr double SPEED_COEF_X = 20.;
+constexpr double SPEED_COEF_Y = SPEED_COEF_X;
 
-constexpr double epsilon_x = 5.;
-constexpr double epsilon_y = 5.;
+constexpr double EPSILON_X = 5.;
+constexpr double EPSILON_Y = 5.;
 // camera doesn't go slower if distance is less than epsilon
 // prevents camera getting ever-asymptotically-closer, makes it go no less than certain speed
 
@@ -115,7 +115,7 @@ constexpr double ult_knockback_y = 200. * 100.;
 
 
 Player::Player(const Vector2d& position)
-    : Creature(position), charges_current(player_consts::base_charges), charges_max(player_consts::base_charges) {
+    : Creature(position), charges_current(player_consts::BASE_CHARGES), charges_max(player_consts::BASE_CHARGES) {
     // Init sprite
     this->init_sprite("player", {default_animation_name, "move", "fire_chain_0", "fire_chain_1", "fire_chain_2",
                                   "fire_ult_0", "fire_ult_1"});
@@ -124,12 +124,12 @@ Player::Player(const Vector2d& position)
     this->init_effect_sprite("player_effects", {default_animation_name, "charged_jump"});
 
     // Init solid
-    this->init_solid(player_consts::hitbox_size, SolidFlags::SOLID | SolidFlags::AFFECTED_BY_GRAVITY,
-                      player_consts::mass, player_consts::friction);
+    this->init_solid(player_consts::HITBOX_SIZE, SolidFlags::SOLID | SolidFlags::AFFECTED_BY_GRAVITY,
+                      player_consts::MASS, player_consts::FRICTION);
 
     // Init health
-    this->init_health(Faction::PLAYER, player_consts::base_hp, player_consts::base_regen, player_consts::base_phys_res,
-                       player_consts::base_magic_res, player_consts::base_chaos_res);
+    this->init_health(Faction::PLAYER, player_consts::BASE_HP, player_consts::BASE_REGEN, player_consts::BASE_PHYS_RES,
+                       player_consts::BASE_MAGIC_RES, player_consts::BASE_CHAOS_RES);
 
     // Init members
     this->camera_trap_pos = this->position;
@@ -171,7 +171,7 @@ bool Player::update(Milliseconds elapsedTime) {
         this->solid->is_dropping_down = true;
         this->solid->is_grounded      = false;
 
-        this->dropping_down_sticky_delay.start(player_consts::dropping_down_sticky_delay_duration);
+        this->dropping_down_sticky_delay.start(player_consts::DROPPING_DOWN_STICKY_DELAY_DURATION);
     } else if (!input.key_held(Controls::READ->DOWN) && this->dropping_down_sticky_delay.finished()) {
         this->solid->is_dropping_down = false;
     }
@@ -198,7 +198,7 @@ bool Player::update(Milliseconds elapsedTime) {
 void Player::update_charges(Milliseconds elapsedTime) {
     // Watching eye adds + 1 max charge (up to MAX_CHARGES_CAP = 5)
     const auto newMaxCharges =
-        std::min(player_consts::base_charges + this->inventory.count("watching_eye"), player_consts::max_charges_cap);
+        std::min(player_consts::BASE_CHARGES + this->inventory.count("watching_eye"), player_consts::MAX_CHARGES_CAP);
 
     // This ensures that charges get refilled when new Eye is picked up
     if (newMaxCharges != this->charges_max) {
@@ -209,8 +209,8 @@ void Player::update_charges(Milliseconds elapsedTime) {
     if (this->charges_current < this->charges_max) {
         this->charges_time_elapsed += elapsedTime;
 
-        if (this->charges_time_elapsed > player_consts::charge_cd) {
-            this->charges_time_elapsed -= player_consts::charge_cd;
+        if (this->charges_time_elapsed > player_consts::CHARGE_CD) {
+            this->charges_time_elapsed -= player_consts::CHARGE_CD;
 
             ++this->charges_current;
         }
@@ -243,8 +243,8 @@ void Player::update_case_stand([[maybe_unused]] Milliseconds elapsedTime) {
         this->state_change(State::MOVE);
     }
 
-    if (input.key_held(Controls::READ->SKILL) && this->charges_current >= skill_charge_cost) {
-        this->charges_current -= skill_charge_cost;
+    if (input.key_held(Controls::READ->SKILL) && this->charges_current >= SKILL_CHARGE_COST) {
+        this->charges_current -= SKILL_CHARGE_COST;
 
         this->chain_progress = 0;
         this->state_change(State::SKILL);
@@ -266,7 +266,7 @@ void Player::update_case_move([[maybe_unused]] Milliseconds elapsedTime) {
         else if (this->solid->is_grounded) this->jump();
     }
 
-    this->solid->applyForceTillMaxSpeed_Horizontal(player_consts::movement_force, player_consts::movement_speed,
+    this->solid->applyForceTillMaxSpeed_Horizontal(player_consts::MOVEMENT_FORCE, player_consts::MOVEMENT_SPEED,
                                                    this->orientation);
 
     // Transitions
@@ -281,8 +281,8 @@ void Player::update_case_move([[maybe_unused]] Milliseconds elapsedTime) {
     }
 
 
-    if (input.key_held(Controls::READ->SKILL) && this->charges_current >= skill_charge_cost) {
-        this->charges_current -= skill_charge_cost;
+    if (input.key_held(Controls::READ->SKILL) && this->charges_current >= SKILL_CHARGE_COST) {
+        this->charges_current -= SKILL_CHARGE_COST;
 
         this->chain_progress = 0;
         this->state_change(State::SKILL);
@@ -305,8 +305,8 @@ void Player::update_case_attack([[maybe_unused]] Milliseconds elapsedTime) {
     const auto orientationOfInput   = leftHeld ? Orientation::LEFT : Orientation::RIGHT; // use only if input present
 
     if (movementInputPresent && orientationOfInput == this->orientation)
-        this->solid->applyForceTillMaxSpeed_Horizontal(player_consts::movement_force / 5.,
-                                                       player_consts::movement_speed / 5., this->orientation);
+        this->solid->applyForceTillMaxSpeed_Horizontal(player_consts::MOVEMENT_FORCE / 5.,
+                                                       player_consts::MOVEMENT_SPEED / 5., this->orientation);
 
     // Steps of attack chain
     switch (this->chain_progress) {
@@ -335,7 +335,7 @@ void Player::update_case_attack([[maybe_unused]] Milliseconds elapsedTime) {
                     // Calculate dmg with respect to power shards
                     // Power Shard - increases dmg by <x>% (additively)
                     const unsigned int numberOfPowerShards = this->inventory.count("twin_souls");
-                    const double       dmgModifier = 1. + numberOfPowerShards * artifacts::power_shard_dmg_boost;
+                    const double       dmgModifier = 1. + numberOfPowerShards * artifacts::POWER_SHARD_DMG_BOOST;
                     const Damage       damage      = fire::chain_0_damage * dmgModifier;
 
                     entity->health->applyDamage(damage);
@@ -394,8 +394,8 @@ void Player::update_case_attack([[maybe_unused]] Milliseconds elapsedTime) {
     }
 
     if (input.key_held(Controls::READ->SKILL) &&
-        this->charges_current >= skill_charge_cost) { // ult can interrupt attack
-        this->charges_current -= skill_charge_cost;
+        this->charges_current >= SKILL_CHARGE_COST) { // ult can interrupt attack
+        this->charges_current -= SKILL_CHARGE_COST;
 
         this->chain_progress = 0;
         this->state_change(State::SKILL);
@@ -438,7 +438,7 @@ void Player::update_case_ult([[maybe_unused]] Milliseconds elapsedTime) {
                     // Calculate dmg with respect to power shards
                     // Power Shard - increases dmg by <x>% (additively)
                     const unsigned int numberOfPowerShards = this->inventory.count("twin_souls");
-                    const double       dmgModifier = 1. + numberOfPowerShards * artifacts::power_shard_dmg_boost;
+                    const double       dmgModifier = 1. + numberOfPowerShards * artifacts::POWER_SHARD_DMG_BOOST;
                     const Damage       damage      = fire::ult_damage * dmgModifier;
 
                     entity->health->applyDamage(damage);
@@ -476,17 +476,17 @@ void Player::jump() {
     double modifier = 1.;
 
     const bool powerfullJump =
-        Game::ACCESS->input.key_held(Controls::READ->SHIFT) && this->charges_current >= jump_charge_cost;
+        Game::ACCESS->input.key_held(Controls::READ->SHIFT) && this->charges_current >= JUMP_CHARGE_COST;
 
     if (powerfullJump) {
-        this->charges_current -= jump_charge_cost;
+        this->charges_current -= JUMP_CHARGE_COST;
 
-        modifier += this->inventory.count("spider_signet") * artifacts::spider_signet_jump_boost;
+        modifier += this->inventory.count("spider_signet") * artifacts::SPIDER_SIGNET_JUMP_BOOST;
 
         this->effect_sprite->animation_play("charged_jump");
     }
 
-    const auto jumpImpulse = jump_impulse * modifier;
+    const auto jumpImpulse = JUMP_IMPULSE * modifier;
 
     this->solid->addImpulse_Up(jumpImpulse);
     this->solid->is_grounded = false;
@@ -564,16 +564,16 @@ void Player::horizontal_blink(Orientation direction, double range) {
 }
 
 void Player::update_camera_trap_pos(Milliseconds elapsedTime) {
-    if (this->position.x > this->camera_trap_pos.x + camera::trap_size_right) {
-        this->camera_trap_pos.x = this->position.x - camera::trap_size_right;
-    } else if (this->position.x < this->camera_trap_pos.x - camera::trap_size_left) {
-        this->camera_trap_pos.x = this->position.x + camera::trap_size_left;
+    if (this->position.x > this->camera_trap_pos.x + camera::TRAP_SIZE_RIGHT) {
+        this->camera_trap_pos.x = this->position.x - camera::TRAP_SIZE_RIGHT;
+    } else if (this->position.x < this->camera_trap_pos.x - camera::TRAP_SIZE_LEFT) {
+        this->camera_trap_pos.x = this->position.x + camera::TRAP_SIZE_LEFT;
     }
 
-    if (this->position.y > this->camera_trap_pos.y + camera::trap_size_up) {
-        this->camera_trap_pos.y = this->position.y - camera::trap_size_up;
-    } else if (this->position.y < this->camera_trap_pos.y - camera::trap_size_down) {
-        this->camera_trap_pos.y = this->position.y + camera::trap_size_down;
+    if (this->position.y > this->camera_trap_pos.y + camera::TRAP_SIZE_UP) {
+        this->camera_trap_pos.y = this->position.y - camera::TRAP_SIZE_UP;
+    } else if (this->position.y < this->camera_trap_pos.y - camera::TRAP_SIZE_DOWN) {
+        this->camera_trap_pos.y = this->position.y + camera::TRAP_SIZE_DOWN;
     }
 
     const auto delta    = this->camera_trap_pos - this->camera_pos;
@@ -581,12 +581,12 @@ void Player::update_camera_trap_pos(Milliseconds elapsedTime) {
 
     const double movementX = std::min(
         deltaAbs.x,
-        std::max(camera::epsilon_x, deltaAbs.x) * camera::speed_coef_x *
+        std::max(camera::EPSILON_X, deltaAbs.x) * camera::SPEED_COEF_X *
             ms_to_sec(elapsedTime)); // min() prevent camera from oscillating around stable position due to rounding
 
     const double movementY = std::min(
         deltaAbs.y,
-        std::max(camera::epsilon_y, deltaAbs.y) * camera::speed_coef_y *
+        std::max(camera::EPSILON_Y, deltaAbs.y) * camera::SPEED_COEF_Y *
             ms_to_sec(elapsedTime)); // min() prevent camera from oscillating around stable position due to rounding
 
     this->camera_pos.x += sign(delta.x) * movementX;
@@ -608,11 +608,11 @@ void Player::death_transition() {
 
     if (this->death_transition_performed) return;
 
-    for (int i = 0; i < particle_count; ++i) {
+    for (int i = 0; i < PARTICLE_COUNT; ++i) {
         Game::ACCESS->level->spawn(std::make_unique<s::particle::OnDeathParticle>(
             this->position,
-            Vector2d(rand_double(-particle_max_speed_x, particle_max_speed_x), rand_double(-particle_max_speed_y, 0.)),
-            colors::SH_BLACK, rand_double(particle_duration_min, particle_duration_max)));
+            Vector2d(rand_double(-PARTICLE_MAX_SPEED_X, PARTICLE_MAX_SPEED_X), rand_double(-PARTICLE_MAX_SPEED_Y, 0.)),
+            colors::SH_BLACK, rand_double(PARTICLE_DURATION_MIN, PARTICLE_DURATION_MAX)));
     }
 
     Game::ACCESS->request_levelReload();
@@ -647,7 +647,7 @@ void Player::init_effect_sprite(const std::string& folder, std::initializer_list
     bool defaultAnimationNotSet = true;
 
     for (auto& name : animationNames) {
-        controllableSprite->animation_add(name, parse_animation(paths::textures_entities + folder + "/" + name));
+        controllableSprite->animation_add(name, parse_animation(paths::TEXTURES_ENTITIES + folder + "/" + name));
 
         if (defaultAnimationNotSet && name == default_animation_name) {
             controllableSprite->animation_play(default_animation_name, true);
@@ -661,33 +661,33 @@ void Player::init_effect_sprite(const std::string& folder, std::initializer_list
 void Player::recalculate_stats() {
     // Out of combat regen
     const double natural_regen_multi =
-        (this->health->time_since_last_damage_received > player_consts::out_of_combat_regen_timer)
-            ? player_consts::out_of_combat_regen_multi
+        (this->health->time_since_last_damage_received > player_consts::OUT_OF_COMBAT_REGEN_TIMER)
+            ? player_consts::OUT_OF_COMBAT_REGEN_MULTI
             : 0.;
 
     // Eldritch Battery - increases regen by <x>%
     const unsigned int numberOfEldritchBatteries = this->inventory.count("eldritch_battery");
 
-    const double regenMulti = natural_regen_multi + numberOfEldritchBatteries * artifacts::eldritch_battery_regen_boost;
+    const double regenMulti = natural_regen_multi + numberOfEldritchBatteries * artifacts::ELDRITCH_BATTERY_REGEN_BOOST;
     this->health->setMulti(0, regenMulti, 0, 0, 0);
 
     // Bone Mask - every item reduces incoming physical dmg by <x>%
     const unsigned int numberOfBoneMasks = this->inventory.count("bone_mask");
 
     const sint physResFlat =
-        static_cast<sint>(100. * (1. - std::pow(1. - artifacts::bone_mask_phys_dmg_reduction, numberOfBoneMasks)));
+        static_cast<sint>(100. * (1. - std::pow(1. - artifacts::BONE_MASK_PHYS_DMG_REDUCTION, numberOfBoneMasks)));
 
     // Magic Negator - every item reduces incoming magic dmg by <x>%
     const unsigned int numberOfMagicNegators = this->inventory.count("magic_negator");
 
     const sint magicResFlat = static_cast<sint>(
-        100. * (1. - std::pow(1. - artifacts::magic_negator_magic_dmg_reduction, numberOfMagicNegators)));
+        100. * (1. - std::pow(1. - artifacts::MAGIC_NEGATOR_MAGIC_DMG_REDUCTION, numberOfMagicNegators)));
 
     // Twin Souls - every item reduces incoming chaos dmg by <x>%
     const unsigned int numberOfTwinSouls = this->inventory.count("twin_souls");
 
     const sint chaosResFlat =
-        static_cast<sint>(100. * (1. - std::pow(1. - artifacts::twin_souls_chaos_dmg_reduction, numberOfTwinSouls)));
+        static_cast<sint>(100. * (1. - std::pow(1. - artifacts::TWIN_SOULS_CHAOS_DMG_REDUCTION, numberOfTwinSouls)));
 
     this->health->setFlat(0, 0, physResFlat, magicResFlat, chaosResFlat);
 }
