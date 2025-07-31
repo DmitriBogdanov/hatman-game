@@ -50,8 +50,8 @@ Pre-built binaries are available at the corresponding [itch.io page](https://hat
 
 ## Wiki (contains spoilers)
 
-- [Items](./docs/wiki_items.md)
 - [Levels](./docs/wiki_levels.md)
+- [Artifacts](./docs/wiki_artifacts.md)
 - [Bestiary](./docs/wiki_bestiary.md)
 
 ## Dependencies
