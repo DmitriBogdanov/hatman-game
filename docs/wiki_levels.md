@@ -5,11 +5,11 @@
 
 [<- to README.md](..)
 
-<img src ="images/guide_level_progression.svg">
+<img src ="images/wiki_level_progression.png">
 
 ### Desolation
 
-<img src="images/guide_levels_desolation.png">
+<img src="images/wiki_levels_desolation.png">
 
 First level of the game, teaches basic mechanics to the player.
 
@@ -17,7 +17,7 @@ First level of the game, teaches basic mechanics to the player.
 
 ### The Great Bridge
 
-<img src="images/guide_levels_the_great_bridge.png">
+<img src="images/wiki_levels_the_great_bridge.png">
 
 Second level, significantly more difficult, involves a lot of platforming and contains many optional paths.
 
@@ -27,7 +27,7 @@ Second level, significantly more difficult, involves a lot of platforming and co
 
 ### Descent
 
-<img src="images/guide_levels_descent.png">
+<img src="images/wiki_levels_descent.png">
 
 A long descent down to the `Devouring Depths`.
 
@@ -37,9 +37,9 @@ A long descent down to the `Devouring Depths`.
 
 ### Devouring Depths
 
-<img src="images/guide_levels_devouring_depths.png">
+<img src="images/wiki_levels_devouring_depths.png">
 
-A long sprawling level with a lot of optional rooms and branching. Due to the depth, little light reaches this place. Contains a lot of `Worm`s and `Devourer`s.
+A long sprawling level with a lot of optional rooms and branching. Due to the depth, little light reaches this place. Contains a lot of `Worm` and `Devourer` enemies.
 
 **Entered from:** `Descent`
 
@@ -47,9 +47,9 @@ A long sprawling level with a lot of optional rooms and branching. Due to the de
 
 ### Plains
 
-<img src="images/guide_levels_plains.png">
+<img src="images/wiki_levels_plains.png">
 
-A mostly flat level covered in `Pygmy` fortifications. A lot of `Skeleton Halberd`s, `Pygmy Warrior`s and `Spirit Bomber`s. Some paths can taken by a player that has collected enough `Spider Signet`s to reach them. 
+A mostly flat level covered in pygmy fortifications. A lot of `Skeleton Halberd`, `Pygmy Warrior` and `Spirit Bomber` enemies. Some paths can taken by a player that has collected enough `Spider Signets` to reach them. 
 
 **Entered from:** `Devouring Depths`
 
@@ -57,9 +57,9 @@ A mostly flat level covered in `Pygmy` fortifications. A lot of `Skeleton Halber
 
 ### Floating Isles
 
-<img src="images/guide_levels_floating_isles.png">
+<img src="images/wiki_levels_floating_isles.png">
 
-Floating islands covered in an assortment of challenging setups. Some artifacts can only be collected by a player that has collected enough `Spider Signet`s to reach them. Contains an entrance to an **optional boss location**.
+Floating islands covered in an assortment of challenging setups. Some artifacts can only be collected by a player that has collected enough `Spider Signets` to reach them. Contains an entrance to an **optional boss location**.
 
 **Entered from:** `Plains`
 
@@ -67,7 +67,7 @@ Floating islands covered in an assortment of challenging setups. Some artifacts 
 
 ### Treasury
 
-<img src="images/guide_levels_treasury.png">
+<img src="images/wiki_levels_treasury.png">
 
 **Optional** location housing an ample reward and guarded by a `Hellhound`.
 
@@ -75,7 +75,7 @@ Floating islands covered in an assortment of challenging setups. Some artifacts 
 
 ### Mountainside Fortress
 
-<img src="images/guide_levels_mountainside_fortress.png">
+<img src="images/wiki_levels_mountainside_fortress.png">
 
 Location combining dungeons and multi-layered fortifications, contains a lot of combat and introduces some strong enemy types. `Hellhound` guards the entrance to the `Library`.
 
@@ -85,9 +85,9 @@ Location combining dungeons and multi-layered fortifications, contains a lot of 
 
 ### Library
 
-<img src="images/guide_levels_library.png">
+<img src="images/wiki_levels_library.png">
 
-The last non-boss location. Multi-layered layout with a lot of `Cultist`s and `Necromancer`s.
+The last non-boss location. Multi-layered layout with a lot of `Cultist` and `Necromancer` enemies.
 
 **Entered from:** `Mountainside Fortress`
 
@@ -95,11 +95,11 @@ The last non-boss location. Multi-layered layout with a lot of `Cultist`s and `N
 
 ### Cult Headquarters, Lair of Shadows & Deeper Realm
 
-<img src="images/guide_levels_cult_headquarters.png">
+<img src="images/wiki_levels_cult_headquarters.png">
 
-<img src="images/guide_levels_lair_of_shadows.png">
+<img src="images/wiki_levels_lair_of_shadows.png">
 
-<img src="images/guide_levels_deeper_realm.png">
+<img src="images/wiki_levels_deeper_realm.png">
 
 A chain of three locations corresponding to the 3 phases of the final boss.
 

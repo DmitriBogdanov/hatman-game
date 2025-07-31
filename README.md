@@ -1,6 +1,7 @@
 [<img src ="docs/images/icon_cpp_std_17.svg">](https://en.cppreference.com/w/cpp/17.html)
 [<img src ="docs/images/icon_license_mit.svg">](https://github.com/DmitriBogdanov/UTL/blob/master/LICENSE.md)
 [<img src ="docs/images/icon_itch_io.svg">](https://hatmangame.itch.io/hatman-adventure)
+[<img src ="docs/images/icon_wiki.svg">](#wiki-contains-spoilers)
 
 # Hatman
 
@@ -45,10 +46,13 @@ Pre-built binaries are available at the corresponding [itch.io page](https://hat
 
 - [Building the project](./docs/guide_building_the_project.md)
 - [In-game debug mode](./docs/guide_debug_mode.md)
-- [Items (contains spoilers)](./docs/guide_items.md)
-- [Levels (contains spoilers)](./docs/guide_levels.md)
-- [Bestiary (contains spoilers)](./docs/guide_bestiary.md)
 - [Asset credits](./docs/guide_asset_credits.md)
+
+## Wiki (contains spoilers)
+
+- [Items](./docs/wiki_items.md)
+- [Levels](./docs/wiki_levels.md)
+- [Bestiary](./docs/wiki_bestiary.md)
 
 ## Dependencies
 

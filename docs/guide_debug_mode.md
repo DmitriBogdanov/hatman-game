@@ -16,4 +16,4 @@ This is exceedingly useful for debugging and testing mechanics.
 
 **Showcase:**
 
-<img src ="images/debug_mode.png">
+<img src ="images/guide_debug_mode.png">
