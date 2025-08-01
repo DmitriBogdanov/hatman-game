@@ -7,9 +7,9 @@
 
 A classic 2D metroidvania with trichromatic artstyle.  You, a player, is a wandering spirit exploring a dark limbo-like realm. Fight your way through the enemies, discover secrets scattered generously through every map, gather power and defeat the ultimate Big Baddie! The game is extremely lightweight and should have FPS in hundreds/thousands on most machines.
 
-<img src ="docs/images/promo_enemies_large.png">
-<img src ="docs/images/promo_items_large.png">
-<img src ="docs/images/promo_boss_large.png">
+<img src ="docs/images/promo_enemies.png">
+<img src ="docs/images/promo_items.png">
+<img src ="docs/images/promo_boss.png">
 
 ## Gameplay
 
@@ -34,7 +34,14 @@ A classic 2D metroidvania with trichromatic artstyle.  You, a player, is a wande
 
 ## Screenshots
 
-TODO:
+<img src ="docs/images/screenshot_main_menu.png">
+<img src ="docs/images/screenshot_hint.png">
+<img src ="docs/images/screenshot_treasury.png">
+<img src ="docs/images/screenshot_combat_1.png">
+<img src ="docs/images/screenshot_portal.png">
+<img src ="docs/images/screenshot_tower.png">
+<img src ="docs/images/screenshot_controls.png">
+<img src ="docs/images/screenshot_combat_2.png">
 
 ## Executable
 
