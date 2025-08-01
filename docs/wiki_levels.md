@@ -55,7 +55,7 @@ A long sprawling level with a lot of optional rooms and branching. Due to the de
 
 <img src="images/wiki_levels_plains.png">
 
-A mostly flat level covered in pygmy fortifications. A lot of `Skeleton Halberd`, `Pygmy Warrior` and `Spirit Bomber` enemies. Some paths can taken by a player that has collected enough `Spider Signets` to reach them. 
+A mostly flat level covered in pygmy fortifications. A lot of `Skeleton Halberd`, `Pygmy Warrior` and `Spirit Bomber` enemies. Some paths can only be taken by a player that has collected enough `Spider Signets` to reach them. 
 
 **Entered from:** `Devouring Depths`
 
@@ -65,7 +65,7 @@ A mostly flat level covered in pygmy fortifications. A lot of `Skeleton Halberd`
 
 <img src="images/wiki_levels_floating_isles.png">
 
-Floating islands covered in an assortment of challenging setups. Some artifacts can only be collected by a player that has collected enough `Spider Signets` to reach them. Contains an entrance to an **optional boss location**.
+Floating islands covered in an assortment of challenging setups. Some artifacts can only be gathered by a player that has collected enough `Spider Signets` to reach them. Contains an entrance to an **optional boss location**.
 
 **Entered from:** `Plains`
 
@@ -75,7 +75,7 @@ Floating islands covered in an assortment of challenging setups. Some artifacts 
 
 <img src="images/wiki_levels_treasury.png">
 
-**Optional** location housing an ample reward and guarded by a `Hellhound`.
+**Optional** location housing an ample reward guarded by a `Hellhound`.
 
 **Entered from:** `Floating Isles`
 
@@ -111,7 +111,7 @@ A chain of three locations corresponding to the 3 phases of the final boss.
 
 During the **1st phase** the boss glides away from the player while spawning periodic reinforcements and attacking with shadow tentacles.
 
-For the **2nd phase** the mage teleports player to an enclosed location. The boss stays stationary in the center, surrounding platforms contain orbs which can be destroyed to deal significant damage. During this phase the player is constantly bombarded with a stream of projectiles in addition to periodic tentacle attacks, that try to disrupt player movement, baiting them into a projectile.
+For the **2nd phase** the mage teleports player to an enclosed location. The boss stays stationary in the center, surrounding platforms contain orbs which can be destroyed to deal significant damage. During this phase the player is constantly bombarded with a stream of projectiles in addition to periodic tentacle attacks that try to disrupt player movement, baiting them into a projectile.
 
 In the final **3rd phase** a similar process is repeated in another arena. During this phase the boss also launches circular waves of explosive projectiles, the player needs to use their environment in order to escape these waves as each projectile deals significant damage on hit.
 

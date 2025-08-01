@@ -951,13 +951,16 @@
     - Fixed and issue that messed up font rendering on Linux in 1920x1080 resolution
     - Made window & borderless always center on screen
     
-# 25.08.30 #
+# 25.07.30 #
     - Added a delay before the hint text disappearance
     - Removed dependency on nlohmann_json in favor of utl::json
     - Cleaned up the old README
 
-# 25.08.31 #
+# 25.07.31 #
     - Build system cleanup, switched to using CMake presets
     - Documentation, guides, wiki for in-game levels and artifacts
     - Refactored hard-coded filepaths
     - Refactored many defines into constexpr variables
+
+# 05.08.01 #
+    - Wiki entries for the bestiary

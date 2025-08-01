@@ -1,7 +1,7 @@
-[<img src ="docs/images/icon_cpp_std_17.svg">](https://en.cppreference.com/w/cpp/17.html)
-[<img src ="docs/images/icon_license_mit.svg">](https://github.com/DmitriBogdanov/UTL/blob/master/LICENSE.md)
-[<img src ="docs/images/icon_itch_io.svg">](https://hatmangame.itch.io/hatman-adventure)
-[<img src ="docs/images/icon_wiki.svg">](#wiki-contains-spoilers)
+[<img src ="docs/images/badge_cpp_std_17.svg">](https://en.cppreference.com/w/cpp/17.html)
+[<img src ="docs/images/badge_license_mit.svg">](https://github.com/DmitriBogdanov/UTL/blob/master/LICENSE.md)
+[<img src ="docs/images/badge_itch_io.svg">](https://hatmangame.itch.io/hatman-adventure)
+[<img src ="docs/images/badge_wiki.svg">](#wiki-contains-spoilers)
 
 # Hatman
 
@@ -15,11 +15,11 @@ A classic 2D metroidvania with trichromatic artstyle.  You, a player, is a wande
 
 **The player character** is a spirit trying to escape its limbo-like realm by moving forward through **an increasingly dangerous world**.
 
-**The world** itself is comprised of **12 distinct maps**, each map contains several safe zones that function a checkpoints.
+**The world** itself is comprised of **12 distinct maps**, each map contains several safe zones that function as checkpoints.
 
 **Map progression** is mostly linear, each map contains a multitude of secrets and optional pathways that **reward exploration**.
 
-**Power progression** is based around **finding stat-boosting artifacts** during the exploration, these artifacts make are crucial for being able to handle late-game enemies.
+**Power progression** is based around **finding stat-boosting artifacts** during the exploration, these artifacts are crucial for being able to handle late-game enemies.
 
 **The combat system** is mostly based around methodically **dodging enemy attacks** and striking during the safe window.
 
@@ -27,7 +27,7 @@ A classic 2D metroidvania with trichromatic artstyle.  You, a player, is a wande
 
 ## Controls
 
-<img src ="docs/images/controls.png">
+<img src ="docs/images/promo_controls.png">
 
 > [!Note]
 > This is a showcase, all controls can also be **found in-game**. 
@@ -63,7 +63,7 @@ Pre-built binaries are available at the corresponding [itch.io page](https://hat
 
 ## Changelog
 
-See [`changelog.md`](./changelog.md) for a detailed development history.
+See [`CHANGELOG.md`](./changelog.md) for a detailed development history.
 
 ## Project history
 
