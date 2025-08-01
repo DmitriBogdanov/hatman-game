@@ -5,6 +5,8 @@
 > [!Warning]
 > This page contains spoilers
 
+A listing of all enemies in the game.
+
 See [levels](./wiki_levels.md) for the details on the enemy spread.
 
 ## Sludge
@@ -59,7 +61,7 @@ See [levels](./wiki_levels.md) for the details on the enemy spread.
 
 | <img src="images/wiki_bestiary_tentacle.png"> | These squirming shadows were always considered a harbinger of madness, or, perhaps, a source of its knowledge. |
 | - | - |
-| **Description:** | TODO: |
+| **Description:** | Stationary enemy that deals damage upon contact. Usually works as an area-of-denial in conjunction with other enemies. |
 
 ## Cultist
 

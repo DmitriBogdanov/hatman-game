@@ -1,6 +1,7 @@
 [<img src ="docs/images/badge_cpp_std_17.svg">](https://en.cppreference.com/w/cpp/17.html)
 [<img src ="docs/images/badge_license_mit.svg">](https://github.com/DmitriBogdanov/UTL/blob/master/LICENSE.md)
 [<img src ="docs/images/badge_itch_io.svg">](https://hatmangame.itch.io/hatman-adventure)
+[<img src ="docs/images/badge_documentation.svg">](#executable)
 [<img src ="docs/images/badge_wiki.svg">](#wiki-contains-spoilers)
 
 # Hatman
@@ -70,7 +71,7 @@ Pre-built binaries are available at the corresponding [itch.io page](https://hat
 
 ## Changelog
 
-See [`CHANGELOG.md`](./changelog.md) for a detailed development history.
+See [`CHANGELOG.md`](./CHANGELOG.md) for a detailed development history.
 
 ## Project history
 
