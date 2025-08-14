@@ -1,4 +1,4 @@
-﻿# Setting up Visual Studio 2022
+﻿# Setting up Visual Studio 2022 & building from scratch
 
 [<- to README.md](..)
 
@@ -16,7 +16,33 @@ Visual Studio will configure the project automatically. To do so manually select
 
 In the top bar select `msvc` preset and `bin/hatman.exe` target.
 
-Upon pressing `Start with/without debugging`, VS will automatically build the project and copy its asset / dll dependencies.
+## (optional) Download dependencies
+
+**Windows (64-bit):** This step can be skipped. [SFML 2.5.1](https://www.sfml-dev.org/download/sfml/2.5.1) `dll` dependencies are embedded in the repo and will be automatically bundled with executable upon build.
+
+**Linux (64-bit):** On Ubuntu and other Debian-based distributions, SFML dependencies can be installed with the following commands:
+
+```sh
+sudo apt update
+
+sudo apt install     \
+    libxrandr-dev    \
+    libxcursor-dev   \
+    libxi-dev        \
+    libudev-dev      \
+    libfreetype-dev  \
+    libflac-dev      \
+    libvorbis-dev    \
+    libgl1-mesa-dev  \
+    libegl1-mesa-dev \
+    libfreetype-dev
+```
+
+## Build the project
+
+Press `Start with/without debugging` to build and run the project.
+
+The executable bundled with all its asset & binary dependencies will reside in `build/bin/`.
 
 ## (optional) Set up integrated bash terminal
 

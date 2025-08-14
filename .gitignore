@@ -1,26 +1,31 @@
 # Ignore everything
 *
 
-# Whitelist directories
-!*/
-# Whitelist git config
+# Whitelist
+# > Git config
 !.gitignore
 !.gitattributes
-# Whitelist toolchain configuration files
+# > Toolchain config
 !.clang-format
 !.clang-tidy
 !.clangd
 !.cppcheck
-# Whitelist project files
-!bash/**
-!dependencies/**
+# > Docs
+!README.md
+!LICENSE.md
+!CHANGELOG.md
+!docs/
 !docs/**
+# > Build
+!CMakePresets.json
+!CMakeLists.txt
+# > Scripts
+!actions.sh
+!bash/
+!bash/**
+# > Code
+!hatman/
 !hatman/**
-
-# Ignore build & temporary directories regardless of their contents
-.cache/
-.cache-cppcheck/
-.vs/
-build/
-temp/
-snippets/
+# > Assets & binaries
+!dependencies/
+!dependencies/**
