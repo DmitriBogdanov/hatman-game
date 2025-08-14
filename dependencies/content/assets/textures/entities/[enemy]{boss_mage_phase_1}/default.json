@@ -1,0 +1,83 @@
+{ "frames": [
+   {
+    "filename": "default 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 85, "h": 94 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 85, "h": 94 },
+    "sourceSize": { "w": 85, "h": 94 },
+    "duration": 70
+   },
+   {
+    "filename": "default 1.ase",
+    "frame": { "x": 85, "y": 0, "w": 85, "h": 94 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 85, "h": 94 },
+    "sourceSize": { "w": 85, "h": 94 },
+    "duration": 70
+   },
+   {
+    "filename": "default 2.ase",
+    "frame": { "x": 170, "y": 0, "w": 85, "h": 94 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 85, "h": 94 },
+    "sourceSize": { "w": 85, "h": 94 },
+    "duration": 70
+   },
+   {
+    "filename": "default 3.ase",
+    "frame": { "x": 255, "y": 0, "w": 85, "h": 94 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 85, "h": 94 },
+    "sourceSize": { "w": 85, "h": 94 },
+    "duration": 70
+   },
+   {
+    "filename": "default 4.ase",
+    "frame": { "x": 340, "y": 0, "w": 85, "h": 94 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 85, "h": 94 },
+    "sourceSize": { "w": 85, "h": 94 },
+    "duration": 70
+   },
+   {
+    "filename": "default 5.ase",
+    "frame": { "x": 425, "y": 0, "w": 85, "h": 94 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 85, "h": 94 },
+    "sourceSize": { "w": 85, "h": 94 },
+    "duration": 70
+   },
+   {
+    "filename": "default 6.ase",
+    "frame": { "x": 510, "y": 0, "w": 85, "h": 94 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 85, "h": 94 },
+    "sourceSize": { "w": 85, "h": 94 },
+    "duration": 70
+   },
+   {
+    "filename": "default 7.ase",
+    "frame": { "x": 595, "y": 0, "w": 85, "h": 94 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 85, "h": 94 },
+    "sourceSize": { "w": 85, "h": 94 },
+    "duration": 70
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "default.png",
+  "format": "RGBA8888",
+  "size": { "w": 680, "h": 94 },
+  "scale": "1"
+ }
+}

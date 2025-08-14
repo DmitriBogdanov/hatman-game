@@ -1,0 +1,56 @@
+{ "frames": [
+   {
+    "filename": "default 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 35, "h": 54 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 35, "h": 54 },
+    "sourceSize": { "w": 35, "h": 54 },
+    "duration": 500
+   },
+   {
+    "filename": "default 1.ase",
+    "frame": { "x": 35, "y": 0, "w": 35, "h": 54 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 35, "h": 54 },
+    "sourceSize": { "w": 35, "h": 54 },
+    "duration": 100
+   },
+   {
+    "filename": "default 2.ase",
+    "frame": { "x": 70, "y": 0, "w": 35, "h": 54 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 35, "h": 54 },
+    "sourceSize": { "w": 35, "h": 54 },
+    "duration": 100
+   },
+   {
+    "filename": "default 3.ase",
+    "frame": { "x": 105, "y": 0, "w": 35, "h": 54 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 35, "h": 54 },
+    "sourceSize": { "w": 35, "h": 54 },
+    "duration": 100
+   },
+   {
+    "filename": "default 4.ase",
+    "frame": { "x": 140, "y": 0, "w": 35, "h": 54 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 35, "h": 54 },
+    "sourceSize": { "w": 35, "h": 54 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "default.png",
+  "format": "RGBA8888",
+  "size": { "w": 175, "h": 54 },
+  "scale": "1"
+ }
+}

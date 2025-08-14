@@ -1,0 +1,20 @@
+{ "frames": [
+   {
+    "filename": "default.ase",
+    "frame": { "x": 0, "y": 0, "w": 4, "h": 4 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 4, "h": 4 },
+    "sourceSize": { "w": 4, "h": 4 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.39-x64",
+  "image": "default.png",
+  "format": "RGBA8888",
+  "size": { "w": 4, "h": 4 },
+  "scale": "1"
+ }
+}

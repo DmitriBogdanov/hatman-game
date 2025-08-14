@@ -20,7 +20,7 @@ FetchContent_MakeAvailable(sfml)
 
 # Create game target
 add_executable(
-    main
+    hatman
     
     "hatman/source/entity/base.cpp"
     "hatman/source/entity/player.cpp"
@@ -63,9 +63,31 @@ add_executable(
 )
 
 # Build
-target_include_directories(main PRIVATE "hatman/include"                                )
-target_include_directories(main PRIVATE "hatman/dependencies"                           )
-target_compile_features   (main PRIVATE ${HATMAN_COMPILE_FEATURES}                      )
-target_compile_options    (main PRIVATE ${HATMAN_COMPILER_FLAGS}                        )
-target_link_libraries     (main PRIVATE ${HATMAN_LINKER_FLAGS}                          )
-target_link_libraries     (main PRIVATE sfml-system sfml-window sfml-graphics sfml-audio)
+target_include_directories(hatman PRIVATE "hatman/include"                                )
+target_include_directories(hatman PRIVATE "hatman/dependencies"                           )
+target_compile_features   (hatman PRIVATE ${HATMAN_COMPILE_FEATURES}                      )
+target_compile_options    (hatman PRIVATE ${HATMAN_COMPILER_FLAGS}                        )
+target_link_options       (hatman PRIVATE ${HATMAN_LINKER_FLAGS}                          )
+target_link_libraries     (hatman PRIVATE sfml-system sfml-window sfml-graphics sfml-audio)
+
+set_target_properties(hatman PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+
+# Copy asset dependencies
+add_custom_target(
+    hatman_copy_assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory 
+            ${CMAKE_CURRENT_LIST_DIR}/dependencies/content
+            $<TARGET_PROPERTY:hatman,RUNTIME_OUTPUT_DIRECTORY>
+)
+add_dependencies(hatman hatman_copy_assets) # the command will run after every build
+
+# Copy shared library dependencies
+if(MSVC OR MSYS OR MINGW)
+    add_custom_target(
+        hatman_copy_dlls
+        COMMAND ${CMAKE_COMMAND} -E copy_directory 
+                ${CMAKE_CURRENT_LIST_DIR}/dependencies/win64
+                $<TARGET_PROPERTY:hatman,RUNTIME_OUTPUT_DIRECTORY>
+    )
+    add_dependencies(hatman hatman_copy_dlls)
+endif()

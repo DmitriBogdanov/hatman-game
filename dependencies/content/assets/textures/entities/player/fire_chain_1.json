@@ -1,0 +1,20 @@
+{ "frames": [
+   {
+    "filename": "fire_chain #1.ase",
+    "frame": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 52 },
+    "sourceSize": { "w": 63, "h": 52 },
+    "duration": 1
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.28-x64",
+  "image": "fire_chain_1.png",
+  "format": "RGBA8888",
+  "size": { "w": 63, "h": 52 },
+  "scale": "1"
+ }
+}

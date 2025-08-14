@@ -64,7 +64,7 @@ Graphics::Graphics(int width, int height, sf::Uint32 style) :
     }
     
 	// Set icon
-	this->icon.loadFromFile("icon.png");
+    if (!this->icon.loadFromFile(paths::ICON)) throw std::runtime_error("Could not load window icon");
 	this->window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
 	//this->window.setFramerateLimit(200);
@@ -77,7 +77,7 @@ Graphics::Graphics(int width, int height, sf::Uint32 style) :
 sf::Texture& Graphics::get_texture(const std::string &filePath) {
 	if (!this->loadedTextures.count(filePath)) { // image is not loaded => load it, add to the map
 		sf::Texture texture;
-		texture.loadFromFile(filePath);
+        if (!texture.loadFromFile(filePath)) throw std::runtime_error("Could not load texture at filepath: " + filePath);
 		/// ADD ERROR HANDLING
 
 		this->loadedTextures[filePath] = std::move(texture);

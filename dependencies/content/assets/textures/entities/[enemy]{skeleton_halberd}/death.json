@@ -1,0 +1,146 @@
+{ "frames": [
+   {
+    "filename": "death 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 1.ase",
+    "frame": { "x": 38, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 2.ase",
+    "frame": { "x": 76, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 3.ase",
+    "frame": { "x": 114, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 4.ase",
+    "frame": { "x": 152, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 5.ase",
+    "frame": { "x": 190, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 6.ase",
+    "frame": { "x": 228, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 7.ase",
+    "frame": { "x": 266, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 8.ase",
+    "frame": { "x": 304, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 9.ase",
+    "frame": { "x": 342, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 10.ase",
+    "frame": { "x": 380, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 11.ase",
+    "frame": { "x": 418, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 12.ase",
+    "frame": { "x": 456, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 13.ase",
+    "frame": { "x": 494, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "death 14.ase",
+    "frame": { "x": 532, "y": 0, "w": 38, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 38, "h": 40 },
+    "sourceSize": { "w": 38, "h": 40 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.28-x64",
+  "image": "death.png",
+  "format": "RGBA8888",
+  "size": { "w": 570, "h": 40 },
+  "scale": "1"
+ }
+}

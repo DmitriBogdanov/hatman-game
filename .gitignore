@@ -11,33 +11,16 @@
 !.clang-tidy
 !.clangd
 !.cppcheck
-# Whitelist allowed extensions
-# > Code
-!*.h
-!*.hpp
-!*.c
-!*.cpp
-# > Scripts
-!*.txt
-!*.sh
-# > Docs
-!*.md
-!*.svg
-!*.jpg
-!*.png
-!*.ico
-!*.ase
-!*.drawio
-# > Data
-!*.json
-# > Website
-!*.yml
-# Whitelist game assets
-!content/**
+# Whitelist project files
+!bash/**
+!dependencies/**
+!docs/**
+!hatman/**
 
 # Ignore build & temporary directories regardless of their contents
 .cache/
 .cache-cppcheck/
+.vs/
 build/
 temp/
 snippets/

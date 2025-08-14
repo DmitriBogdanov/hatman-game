@@ -8,21 +8,23 @@
 
 namespace paths {
 
-constexpr auto CONTENT = "content/";
+constexpr auto CONTENT = "assets/";
 
-constexpr auto LEVELS = "content/levels/";
+constexpr auto ICON = "assets/icon.png";
 
-constexpr auto TILESETS = "content/tilesets/";
+constexpr auto LEVELS = "assets/levels/";
 
-constexpr auto TEXTURES             = "content/textures/";
-constexpr auto TEXTURES_ENTITIES    = "content/textures/entities/";
-constexpr auto TEXTURES_ITEMS       = "content/textures/items/";
-constexpr auto TEXTURES_TILESETS    = "content/textures/tilesets/";
-constexpr auto TEXTURES_BACKGROUNDS = "content/textures/backgrounds/";
-constexpr auto TEXTURES_GUI         = "content/textures/gui/";
+constexpr auto TILESETS = "assets/tilesets/";
 
-constexpr auto AUDIO    = "content/audio/";
-constexpr auto AUDIO_MS = "content/audio/mx/";
-constexpr auto AUDIO_FX = "content/audio/fx/";
+constexpr auto TEXTURES             = "assets/textures/";
+constexpr auto TEXTURES_ENTITIES    = "assets/textures/entities/";
+constexpr auto TEXTURES_ITEMS       = "assets/textures/items/";
+constexpr auto TEXTURES_TILESETS    = "assets/textures/tilesets/";
+constexpr auto TEXTURES_BACKGROUNDS = "assets/textures/backgrounds/";
+constexpr auto TEXTURES_GUI         = "assets/textures/gui/";
+
+constexpr auto AUDIO    = "assets/audio/";
+constexpr auto AUDIO_MS = "assets/audio/mx/";
+constexpr auto AUDIO_FX = "assets/audio/fx/";
 
 } // namespace paths

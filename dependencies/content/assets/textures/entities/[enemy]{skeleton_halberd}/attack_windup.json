@@ -1,0 +1,83 @@
+{ "frames": [
+   {
+    "filename": "attack #attack 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 63, "h": 50 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 50 },
+    "sourceSize": { "w": 63, "h": 50 },
+    "duration": 60
+   },
+   {
+    "filename": "attack #attack 1.ase",
+    "frame": { "x": 63, "y": 0, "w": 63, "h": 50 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 50 },
+    "sourceSize": { "w": 63, "h": 50 },
+    "duration": 60
+   },
+   {
+    "filename": "attack #attack 2.ase",
+    "frame": { "x": 126, "y": 0, "w": 63, "h": 50 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 50 },
+    "sourceSize": { "w": 63, "h": 50 },
+    "duration": 60
+   },
+   {
+    "filename": "attack #attack 3.ase",
+    "frame": { "x": 189, "y": 0, "w": 63, "h": 50 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 50 },
+    "sourceSize": { "w": 63, "h": 50 },
+    "duration": 60
+   },
+   {
+    "filename": "attack #attack 4.ase",
+    "frame": { "x": 252, "y": 0, "w": 63, "h": 50 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 50 },
+    "sourceSize": { "w": 63, "h": 50 },
+    "duration": 60
+   },
+   {
+    "filename": "attack #attack 5.ase",
+    "frame": { "x": 315, "y": 0, "w": 63, "h": 50 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 50 },
+    "sourceSize": { "w": 63, "h": 50 },
+    "duration": 60
+   },
+   {
+    "filename": "attack #attack 6.ase",
+    "frame": { "x": 378, "y": 0, "w": 63, "h": 50 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 50 },
+    "sourceSize": { "w": 63, "h": 50 },
+    "duration": 60
+   },
+   {
+    "filename": "attack #attack 7.ase",
+    "frame": { "x": 441, "y": 0, "w": 63, "h": 50 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 63, "h": 50 },
+    "sourceSize": { "w": 63, "h": 50 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.28-x64",
+  "image": "attack_windup.png",
+  "format": "RGBA8888",
+  "size": { "w": 504, "h": 50 },
+  "scale": "1"
+ }
+}

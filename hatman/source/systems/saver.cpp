@@ -185,8 +185,9 @@ bool config_parse(int &resolution_x, int &resolution_y, std::string &screen_mode
     
     try {
 	    config_json = utl::json::from_file(CONFIG_PATH); // savefile is present => load
-    } catch (...) {
-        std::cout << "Note: Could no find CONFIG.json\n";
+    } catch (std::runtime_error& e) {
+        std::cout << "CAUGHT EXCEPTION: " << e.what() << "\n";
+        std::cout << "NOTE: Could not find CONFIG.json\n";
         return false;
     }
 

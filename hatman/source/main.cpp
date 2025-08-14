@@ -21,7 +21,7 @@
 
 // ____________________ IMPLEMENTATION ____________________
 
-int main() {
+int main() try {
     std::srand(static_cast<int>(std::time(nullptr))); // TODO: Remove this nonsense
 
     std::cout << "- Execution log -" << std::endl;
@@ -68,4 +68,7 @@ int main() {
 
         std::cout << "Exit code: " << static_cast<int>(exit_code) << "\n";
     }
+} catch (std::runtime_error& e) {
+    std::cout << "ERROR: unhandled exception in main()\n";
+    std::cout << "CAUGHT EXCEPTION: " << e.what() << "\n" << std::flush;
 }

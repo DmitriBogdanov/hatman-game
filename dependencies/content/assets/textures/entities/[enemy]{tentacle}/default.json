@@ -1,0 +1,83 @@
+{ "frames": [
+   {
+    "filename": "tentacle #Persisting 0.ase",
+    "frame": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 80
+   },
+   {
+    "filename": "tentacle #Persisting 1.ase",
+    "frame": { "x": 25, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 80
+   },
+   {
+    "filename": "tentacle #Persisting 2.ase",
+    "frame": { "x": 50, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 80
+   },
+   {
+    "filename": "tentacle #Persisting 3.ase",
+    "frame": { "x": 75, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 80
+   },
+   {
+    "filename": "tentacle #Persisting 4.ase",
+    "frame": { "x": 100, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 80
+   },
+   {
+    "filename": "tentacle #Persisting 5.ase",
+    "frame": { "x": 125, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 80
+   },
+   {
+    "filename": "tentacle #Persisting 6.ase",
+    "frame": { "x": 150, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 80
+   },
+   {
+    "filename": "tentacle #Persisting 7.ase",
+    "frame": { "x": 175, "y": 0, "w": 25, "h": 90 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 25, "h": 90 },
+    "sourceSize": { "w": 25, "h": 90 },
+    "duration": 80
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "default.png",
+  "format": "RGBA8888",
+  "size": { "w": 200, "h": 90 },
+  "scale": "1"
+ }
+}
