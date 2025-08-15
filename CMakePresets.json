@@ -62,7 +62,7 @@
             "description": "MSVC configuration variables.",
             "inherits": [ "base" ],
             "cacheVariables": {
-                "HATMAN_COMPILER_FLAGS": "/Ot;/W3;/sdl;/Zc:preprocessor",
+                "HATMAN_COMPILER_FLAGS": "/Ot;/W3;/Zc:preprocessor",
                 "HATMAN_LINKER_FLAGS": "/SUBSYSTEM:WINDOWS;/ENTRY:mainCRTStartup"
             }
         },
