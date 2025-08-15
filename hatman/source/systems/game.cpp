@@ -6,6 +6,8 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Audio/Music.hpp>
 
+#include "firstparty/UTL/log.hpp" // logging
+
 #include "graphics/graphics.h" // access to rendering updating
 #include "systems/audio.h"
 #include "systems/saver.h" // access to save loading
@@ -14,6 +16,7 @@
 #include "utility/color.hpp" // coloring F3 GUI
 #include "systems/controls.h" // controls for GUI
 #include "utility/debug_tools.hpp" // for calling 'begin_new_frame()' function
+#include "utility/filepaths.hpp"
 
 
 
@@ -37,13 +40,13 @@ Game::Game(bool fps_counter_setting) :
 	_requested_level_change(false),
 	level_change_is_reload(false)
 {
-	std::cout << "Creating game object...\n";
+	UTL_LOG_INFO("Creating game object...");
 
 	this->READ = this;
 	this->ACCESS = this;
 
 	// Load main menu
-	std::cout << "Entering main menu...\n";
+    UTL_LOG_INFO("Entering main menu...");
 	this->request_goToMainMenu();
 
 	Graphics::ACCESS->gui->FPSCounter_on();
@@ -406,12 +409,14 @@ void Game::_level_loadFromSave() {
 void Game::_drawHitboxes() {
 	const int BORDER_TEXTURE_SIZE = 16;
 
+	using namespace std::string_literals;
+
 	// Draw tile hitboxes and actionboxes
 	sf::Sprite tileHitboxBorder;
-	tileHitboxBorder.setTexture(Graphics::ACCESS->get_texture("content/textures/hitbox_border_tile.png"));
+	tileHitboxBorder.setTexture(Graphics::ACCESS->get_texture(paths::TEXTURES + "hitbox_border_tile.png"s));
 
 	sf::Sprite tileActionboxBorder;
-	tileActionboxBorder.setTexture(Graphics::ACCESS->get_texture("content/textures/actionbox_border_tile.png"));
+	tileActionboxBorder.setTexture(Graphics::ACCESS->get_texture(paths::TEXTURES + "actionbox_border_tile.png"s));
 
 	const auto& cameraPos = this->level->player->camera_trap_get_pos();
 
@@ -464,7 +469,7 @@ void Game::_drawHitboxes() {
 
 	// Draw entity hitboxes
 	sf::Sprite entityHitboxBorder;
-	entityHitboxBorder.setTexture(Graphics::ACCESS->get_texture("content/textures/hitbox_border_entity.png"));
+    entityHitboxBorder.setTexture(Graphics::ACCESS->get_texture(paths::TEXTURES + "hitbox_border_entity.png"s));
 
 	for (const auto &entity : this->level->entities_solid) {
 		const dstRect destRect = entity->solid->getHitbox().to_dstRect();

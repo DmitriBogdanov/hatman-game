@@ -27,4 +27,9 @@ constexpr auto AUDIO    = "assets/audio/";
 constexpr auto AUDIO_MS = "assets/audio/mx/";
 constexpr auto AUDIO_FX = "assets/audio/fx/";
 
+constexpr auto CONFIG = "settings.json";
+
+constexpr auto DEFAULT_SAVE = "saves/active.json";
+constexpr auto BACKUP_SAVE  = "saves/backup.json";
+
 } // namespace paths

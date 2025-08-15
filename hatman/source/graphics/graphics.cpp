@@ -6,6 +6,8 @@
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowStyle.hpp"
 
+#include "firstparty/UTL/log.hpp" // logging
+
 #include "utility/geometry.h"
 #include "utility/globalconsts.hpp" // natural consts
 #include "utility/filepaths.hpp"
@@ -21,7 +23,7 @@ Graphics::Graphics(int width, int height, sf::Uint32 style) :
 	rendering_height(height),
 	rendering_scaling_factor(static_cast<double>(width) / natural::WIDTH) // cast to double or we get integer division
 {
-	std::cout << "Creating window and renderer...\n";
+	UTL_LOG_INFO("Creating window and renderer...");
 
 	Graphics::READ = this; // init global access
 	Graphics::ACCESS = this;
@@ -34,9 +36,10 @@ Graphics::Graphics(int width, int height, sf::Uint32 style) :
     // we can "trick" the system by increasing vertical size by 1 pixel, which
     // keeps a proper borderless window wint no visual difference
     if (style == sf::Style::None && desktop_mode == sf::VideoMode(width, height)) {
-    	std::cout
-    		<< "Borderless configuration matches desktop video mode, "
-    		<< "size increased by 1 to avoid fullscreen optimization.\n";
+        UTL_LOG_INFO(
+    		"Borderless configuration matches desktop video mode, ",
+			"size increased by 1 to avoid fullscreen optimization."
+		);
     	//++height;
     }
 
@@ -51,14 +54,15 @@ Graphics::Graphics(int width, int height, sf::Uint32 style) :
     // Move window & borderless to center, some systems will position them weirdly otherwise,
     // not a huge deal for a regular window, but makes borderless unplayable
     if (style == sf::Style::None || style == (sf::Style::Titlebar | sf::Style::Close)) {
-        std::cout
-            << "Desktop size is {" << desktop_mode.width << ", " << desktop_mode.height << "}, "
-            << "window size is {" << width << ", " << height << "}, centering...\n";
+        UTL_LOG_INFO(
+            "Desktop size is {", desktop_mode.width, ", ", desktop_mode.height, "}, "
+            "window size is {", width, ", ", height, "}, centering..."
+		);
         
         const int corner_x = static_cast<int>(desktop_mode.width) / 2 - width / 2;
         const int corner_y = static_cast<int>(desktop_mode.height) / 2 - height / 2;
         
-        std::cout << "New window position -> {" << corner_x << ", " << corner_y << "}\n";
+        UTL_LOG_INFO("New window position -> {", corner_x, ", ", corner_y, "}");
     
         this->window.setPosition(sf::Vector2i{corner_x, corner_y});
     }

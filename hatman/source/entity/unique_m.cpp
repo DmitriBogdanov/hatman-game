@@ -2890,12 +2890,10 @@ void m::enemy::BossMage1::update_when_aggroed([[maybe_unused]] Milliseconds elap
 
 		// Transition
 		if (this->summon_tentacle_cd.finished()) {
-			/*std::cout << "\n[TENTACLE]";*/
 			this->state_change(State::SUMMON_TENTACLE);
 		}
 
 		if (this->summon_skeleton_cd.finished()) {
-			/*std::cout << "\n[SKELETON]";*/
 			this->state_change(State::SUMMON_SKELETON);
 		}
 
@@ -3244,12 +3242,6 @@ void m::enemy::BossMage2::update_when_aggroed([[maybe_unused]] Milliseconds elap
 					const Vector2d right_corner = spawned_tentacle->solid->getHitbox().getCornerBottomRight() + SUMMON_TENTACLE_VALIDITY_CHECK_EPSILON;
 					const Vector2 tile_index_right_corner = helpers::divide32(right_corner);
 					const bool tile_present_under_right = Game::READ->level->getTile(tile_index_right_corner.x, tile_index_right_corner.y + 1);
-
-					if (spawn_allowed) std::cout
-						<< "Tentacle [" << i << "]\n"
-						<< "SPAWN TRY [" << spawn_try << "]\n"
-						<< "tile_present_under_left = " << tile_present_under_left << "\n"
-						<< "tile_present_under_right = " << tile_present_under_right << "\n";
 
 					if (!tile_present_under_left || !tile_present_under_right) {
 						spawn_allowed = false;

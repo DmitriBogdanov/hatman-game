@@ -18,13 +18,15 @@
 #include "systems/saver.h"       // Has a storage (initialized before start)
 #include "systems/timer.h"       // Has a storage (initialized before start)
 #include "utility/launch_info.h" // 'LaunchInfo' class
+#include "firstparty/UTL/log.hpp"
 
 // ____________________ IMPLEMENTATION ____________________
 
 int main() try {
     std::srand(static_cast<int>(std::time(nullptr))); // TODO: Remove this nonsense
 
-    std::cout << "- Execution log -" << std::endl;
+    utl::log::add_file_sink("latest.log");
+    utl::log::add_ostream_sink(std::cout);
 
     ExitCode exit_code = ExitCode::NONE;
 
@@ -45,7 +47,7 @@ int main() try {
         if (!config_found) {
             config_create_default();
             if (!config_parse(resolution_x, resolution_y, screen_mode, music, sound, fps_counter, save_filepath)) {
-                std::cout << "Error: Could not read default config.";
+                UTL_LOG_ERR("Could not read default config.");
                 return -1;
             }
         }
@@ -66,9 +68,9 @@ int main() try {
         // Start the main loop
         exit_code = game.game_loop();
 
-        std::cout << "Exit code: " << static_cast<int>(exit_code) << "\n";
+        UTL_LOG_NOTE("Exit code: ", static_cast<int>(exit_code));
     }
 } catch (std::runtime_error& e) {
-    std::cout << "ERROR: unhandled exception in main()\n";
-    std::cout << "CAUGHT EXCEPTION: " << e.what() << "\n" << std::flush;
+    UTL_LOG_ERR("ERROR: unhandled exception in main()");
+    UTL_LOG_ERR("CAUGHT EXCEPTION: ", e.what());
 }

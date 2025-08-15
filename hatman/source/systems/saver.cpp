@@ -6,8 +6,11 @@
 #include <cstdio> // renaming files
 #include <filesystem>
 
+#include "firstparty/UTL/log.hpp" // logging
+
 #include "systems/game.h" // access to game state
 #include "objects/item_unique.h" // creation of items from name
+#include "utility/filepaths.hpp" // config path
 
 
 
@@ -101,11 +104,12 @@ void Saver::state_set_flags(const std::unordered_set<Flag> &flags) {
 
 void Saver::backup_and_delete_current() {
 	// Ensure directory exits
-	std::filesystem::create_directory("backups");
+    const auto backup_path = std::filesystem::path(paths::BACKUP_SAVE);
+    const auto backup_dir  = backup_path.parent_path();
+    std::filesystem::create_directory(backup_dir);
 
 	// Move current save
-	const std::string BACKUP_FILEPATH = "backups/save.json";
-	rename(this->save_filepath.data(), BACKUP_FILEPATH.data());
+    std::filesystem::rename(this->save_filepath, paths::BACKUP_SAVE);
     
     this->state = utl::json::Node{};
 	this->save_is_present = false;
@@ -159,35 +163,38 @@ void config_create(int resolution_x, int resolution_y, const std::string &screen
 	json["_COMMENTS_"] = "Non-standard resolutions can be selected manually through config. Options for 'screen_mode': 1) WINDOW; 2) BORDERLESS; 3) FULLSCREEN.";
 
 	// Create/rewrite config file
-    json.to_file(CONFIG_PATH);
+    json.to_file(paths::CONFIG);
 }
 
 void config_create_default() {
 
-	std::cout << "Creating default config...\n";
+	UTL_LOG_INFO("Creating default config...");
 
-	config_create(
-		1280,
-		720,
-		"WINDOW",
-		10,
-		10,
-		false,
-		"temp/save.json"
-	);
+	const sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+
+	// Defaults
+	const int  screen_width = desktop.width;
+    const int  scree_height = desktop.height;
+	const auto window_mode  = "BORDERLESS";
+    const int  fx_volume    = 5;
+    const int  mx_volume    = 5;
+    const bool show_fps     = false;
+    const auto save_path    = paths::DEFAULT_SAVE;
+
+	config_create(screen_width, scree_height, window_mode, fx_volume, mx_volume, show_fps, save_path);
 }
 
 bool config_parse(int &resolution_x, int &resolution_y, std::string &screen_mode, int &music, int &sound, bool &fps_counter, std::string &save_filepath) {
 	// Load 'CONFIG.json'
-	std::cout << "Parsing config...\n";
+    UTL_LOG_NOTE("Parsing config from: ", paths::CONFIG);
     
     utl::json::Node config_json;
     
     try {
-	    config_json = utl::json::from_file(CONFIG_PATH); // savefile is present => load
+        config_json = utl::json::from_file(paths::CONFIG); // savefile is present => load
     } catch (std::runtime_error& e) {
-        std::cout << "CAUGHT EXCEPTION: " << e.what() << "\n";
-        std::cout << "NOTE: Could not find CONFIG.json\n";
+        UTL_LOG_NOTE("Config parsing resulted in exception: ", e.what());
+        UTL_LOG_NOTE("Could not find config, creating default config instead.");
         return false;
     }
 

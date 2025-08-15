@@ -51,8 +51,6 @@ private:
 
 
 // # Config #
-const std::string CONFIG_PATH = "CONFIG.json";
-
 void config_create(
 	int resolution_x,
 	int resolution_y,

@@ -4,6 +4,7 @@
 
 #include "graphics/graphics.h" // access to texture loading (tileset texture loading)
 #include "utility/globalconsts.hpp" // natural consts (tile size)
+#include "utility/filepaths.hpp"
 #include "utility/tags.h"
 
 
@@ -119,7 +120,7 @@ void Tile::draw() const {
 
 // # Tileset #
 Tileset::Tileset(const std::string &fileName) {
-	this->parseFromJSON("content/tilesets/" + fileName);
+	this->parseFromJSON(paths::TILESETS + fileName);
 }
 
 void Tileset::parseFromJSON(const std::string &filePath) {

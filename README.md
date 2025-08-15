@@ -46,9 +46,7 @@ A classic 2D metroidvania with trichromatic artstyle.  You, a player, is a wande
 
 ## Executable
 
-Pre-built binaries are available at the corresponding [itch.io page](https://hatmangame.itch.io/hatman-adventure) for:
-- Windows x86-64
-- Linux x86-64 **(TODO)**
+Pre-built binaries for **Windows x86-64** are available at the corresponding [itch.io page](https://hatmangame.itch.io/hatman-adventure).
 
 ## Guides
 

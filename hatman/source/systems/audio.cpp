@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "firstparty/UTL/log.hpp" // logging
+
 #include "utility/globalconsts.hpp"
 #include "utility/filepaths.hpp"
 
@@ -15,7 +17,7 @@ Audio::Audio(int music_volume_setting, int sound_volume_setting) :
     music_volume_mod(music_volume_setting / 10.),
     sound_volume_mod(sound_volume_setting / 10.)
 {
-	std::cout << "Creating audio system...\n";
+	UTL_LOG_INFO("Creating audio system...");
 
 	Audio::READ = this; // init global access
 	Audio::ACCESS = this;
@@ -30,7 +32,9 @@ const sf::SoundBuffer& Audio::getSoundBuffer(const std::string &name) {
 	if (it == this->loadedAudio.end()) {
 		std::string filepath = paths::AUDIO_FX + name;
 		sf::SoundBuffer buffer;
-		buffer.loadFromFile(filepath);
+        if (!buffer.loadFromFile(filepath)) {
+			throw std::runtime_error("Could not load audio from file: " + filepath);
+		}
 		const auto emplaced_it = this->loadedAudio.try_emplace(name, std::move(buffer)).first;
 		// sf::SoundBuffer accepts filename to load as a constructor arg
 		return emplaced_it->second;
@@ -94,8 +98,10 @@ void Audio::set_music(const std::string &name) {
     this->music_current = name;
     
     // Load SFML music
-    if (!music.openFromFile(paths::AUDIO_MS + name))
-    	std::cout << "Error: Could not open music file...\n";
+    const std::string filepath = paths::AUDIO_MS + name;
+
+    if (!music.openFromFile(filepath))
+        throw std::runtime_error("Could not open music file: " + filepath);
     
     music.setLoop(true); // for some reason music doesn't loop by default
     

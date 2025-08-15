@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "firstparty/UTL/log.hpp" // logging
+
 #include "graphics/graphics.h" // access to rendering
 #include "utility/globalconsts.hpp" // natural consts
 
@@ -11,7 +13,7 @@
 Camera::Camera(const Vector2d &position) :
 	position(position)
 {
-	std::cout << "Creating camera graphics...\n";
+	UTL_LOG_INFO("Creating camera graphics...");
 	
 	this->set_zoom(natural::ZOOM);
 }

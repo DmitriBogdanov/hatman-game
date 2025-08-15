@@ -13,6 +13,7 @@
 #include "objects/tile_unique.h" // creation of unique tiles
 #include "entity/unique_m.h" // creation of unique entities
 #include "utility/globalconsts.hpp" // performnce-related consts
+#include "utility/filepaths.hpp" // to locate level files
 #include "systems/audio.h" // to play music
 
 
@@ -22,8 +23,11 @@ Level::Level(const std::string &name) :
 	levelName(name)
 {
     const auto start = std::chrono::steady_clock::now();
-	this->parseFromJSON("content/levels/" + name + ".json");
-    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count() << " ms\n";
+
+	const std::string filepath = paths::LEVELS + name + ".json";
+
+    this->parseFromJSON(filepath);
+    UTL_LOG_INFO("Loaded level {", filepath, "} in ", std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count(), " ms");
 }
 
 Level::Level(const std::string &name, std::unique_ptr<ntt::Entity> &&player) :

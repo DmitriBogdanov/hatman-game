@@ -2,6 +2,8 @@
 
 #include <iostream> // console output
 
+#include "firstparty/UTL/log.hpp" // logging
+
 #include "graphics/graphics.h" // access to rendering
 #include "utility/globalconsts.hpp" // natural consts
 #include "objects/item_base.h" // 'Inventory' and 'Item' classes (inventory GUI)
@@ -1917,7 +1919,7 @@ void GUI_LevelName::draw() {
 Gui::Gui() :
 	fade_override_gui(false)
 {
-	std::cout << "Creating GUI graphics...\n";
+	UTL_LOG_INFO("Creating GUI graphics...");
 
 	this->fonts["BLOCKY"] = (std::make_unique<Font>(
 		&Graphics::ACCESS->getTexture_GUI("font.png"),

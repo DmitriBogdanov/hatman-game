@@ -76,7 +76,7 @@ protected:
     void parse_animated_sprite(const std::string& folder, const std::string& filename = default_animation_name);
     void parse_controllable_sprite(const std::string& folder, std::initializer_list<std::string> animationNames);
     // if animation with default animation name is found it's set as current
-    // 'folder' refers to folder in ./content/textures/entities/, no need to write full path
+    // 'folder' refers to folder in ./assets/textures/entities/, no need to write full path
     // 'filename' does NOT include file extension
 };
 
