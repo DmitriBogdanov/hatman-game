@@ -25,20 +25,17 @@ const Saver* Saver::READ;
 Saver* Saver::ACCESS;
 
 Saver::Saver(const std::string &filePath) :
-	save_filepath(filePath),
-	save_is_present(false)
+	save_filepath(filePath)
 {
 	this->READ = this;
 	this->ACCESS = this;
-    
-    this->save_is_present = std::filesystem::exists(this->save_filepath);
 
-	if (this->save_is_present) // savefile is present => load
+	if (this->save_present()) // savefile is present => load
 		this->state = utl::json::from_file(this->save_filepath); 
 }
 
 bool Saver::save_present() const {
-	return this->save_is_present;
+    return std::filesystem::exists(this->save_filepath);
 }
 
 
@@ -112,7 +109,6 @@ void Saver::backup_and_delete_current() {
     std::filesystem::rename(this->save_filepath, paths::BACKUP_SAVE);
     
     this->state = utl::json::Node{};
-	this->save_is_present = false;
 }
 
 // Getters

@@ -44,8 +44,6 @@ public:
 private:
 	std::string save_filepath;
 
-	bool save_is_present;
-
 	utl::json::Node state;
 };
 

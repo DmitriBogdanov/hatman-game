@@ -762,6 +762,8 @@ GUI_MainMenu::GUI_MainMenu(Font* font) :
 {
 	using namespace MainMenu_consts;
 
+	UTL_LOG_INFO("Constructed main menu GUI");
+
 	this->sprite.setTexture(Graphics::ACCESS->getTexture_GUI("main_menu_background.png"));
 	this->sprite.setScale(
 		static_cast<float>(natural::DIMENSIONS.x / TEXTURE_WIDTH),
