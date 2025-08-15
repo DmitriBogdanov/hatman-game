@@ -1,0 +1,11 @@
+// The canonical way of embedding icons into the executable on Windows is thorough the
+// use of '.rc' resource files passed as source to the compiler. It is truly horrific 
+// that such a trivially simple thing requires a use of platform-specific language and
+// a bizarre workarounds that are barely documented anywhere for CMake.
+// 
+// Note 1: '.rc' files contain icon paths RELATIVE to themselves, not to the root
+// 
+// Note 2: A lot of guides suggest using 'IDI_ICON1', however it doesn't seem
+//         to affect the the task bar icon, while 'IDI_MAIN_ICON' does
+//
+IDI_MAIN_ICON ICON "icon.ico"

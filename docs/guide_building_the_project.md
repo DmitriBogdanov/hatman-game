@@ -29,6 +29,22 @@ Configure **CMake**:
 cmake --preset gcc
 ```
 
+**(Linux only)** Install dependencies for **SFML**:
+```
+sudo apt update &&
+sudo apt install     \
+    libxrandr-dev    \
+    libxcursor-dev   \
+    libxi-dev        \
+    libudev-dev      \
+    libfreetype-dev  \
+    libflac-dev      \
+    libvorbis-dev    \
+    libgl1-mesa-dev  \
+    libegl1-mesa-dev \
+    libfreetype-dev
+```
+
 Build the project:
 
 ```bash
@@ -38,8 +54,11 @@ cmake --build --preset gcc
 Launch the game:
 
 ```bash
-./build/main
+./build/bin/hatman
 ```
+
+> [!Note]
+> [Visual Studio](https://visualstudio.microsoft.com/downloads/) also handles preset-based projects quite gracefully, the only difference is that instead of running commands manually the steps will be done through a GUI. See a [step-by-step guide](./guide_set_up_sv_2022.md) on how to set up VS2022 and build the project from scratch.
 
 ## Building with a script
 

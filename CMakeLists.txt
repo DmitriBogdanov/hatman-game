@@ -18,6 +18,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sfml)
 
+# Add platform-specific resources
+#
+# There is essentially no cross-platform way to set an app icon. Windows handles
+# it throught the use of '.rc' resource files passed to the compiler. By default
+# (aka without additional configuration) only MSVC knows how to handle '.rc'.
+set(hatman_platform_resources)
+if(MSVC)
+    list(APPEND hatman_platform_resources "hatman/resources/windows/icon.rc")
+endif()
+
 # Create game target
 add_executable(
     hatman
@@ -60,6 +70,8 @@ add_executable(
     "hatman/source/utility/tags.cpp"
     
     "hatman/source/main.cpp"
+
+	${hatman_platform_resources}
 )
 
 # Build
