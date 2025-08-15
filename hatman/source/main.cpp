@@ -1,24 +1,23 @@
 // _______________________ INCLUDES _______________________
 
-// NOTE: CORRESPONDING HEADER
-
 // Includes: std
 #include <ctime>    // used to generate seed for random
 #include <iostream> // logging to console
 
 // Includes: dependencies
+#include "firstparty/UTL/log.hpp"    // logging
+#include "firstparty/UTL/predef.hpp" // debug info
 
 // Includes: project
-#include "graphics/graphics.h"   // Has a storage (initialized before start)
-#include "objects/tile_base.h"   // Has a storage (initialized before start)
-#include "systems/audio.h"       // Has a storage (initialized before start)
-#include "systems/controls.h"    // Has a storage (initialized before start)
-#include "systems/emit.h"        // Has a storage (initialized before start)
-#include "systems/game.h"        // 'Game' class
-#include "systems/saver.h"       // Has a storage (initialized before start)
-#include "systems/timer.h"       // Has a storage (initialized before start)
-#include "utility/launch_info.h" // 'LaunchInfo' class
-#include "firstparty/UTL/log.hpp"
+#include "graphics/graphics.h"    // Has a storage (initialized before start)
+#include "objects/tile_base.h"    // Has a storage (initialized before start)
+#include "systems/audio.h"        // Has a storage (initialized before start)
+#include "systems/controls.h"     // Has a storage (initialized before start)
+#include "systems/emit.h"         // Has a storage (initialized before start)
+#include "systems/game.h"         // 'Game' class
+#include "systems/saver.h"        // Has a storage (initialized before start)
+#include "systems/timer.h"        // Has a storage (initialized before start)
+#include "utility/launch_info.h"  // 'LaunchInfo' class
 
 // ____________________ IMPLEMENTATION ____________________
 
@@ -27,6 +26,8 @@ int main() try {
 
     utl::log::add_file_sink("latest.log");
     utl::log::add_ostream_sink(std::cout);
+
+	UTL_LOG_INFO("Binary info:\n", utl::predef::compilation_summary());
 
     ExitCode exit_code = ExitCode::NONE;
 

@@ -63,7 +63,8 @@
             "inherits": [ "base" ],
             "cacheVariables": {
                 "HATMAN_COMPILER_FLAGS": "/Ot;/W3;/Zc:preprocessor",
-                "HATMAN_LINKER_FLAGS": "/SUBSYSTEM:WINDOWS;/ENTRY:mainCRTStartup"
+                "HATMAN_LINKER_FLAGS": "/SUBSYSTEM:WINDOWS;/ENTRY:mainCRTStartup",
+                "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
@@ -72,7 +73,8 @@
             "inherits": [ "base" ],
             "cacheVariables": {
                 "HATMAN_COMPILER_FLAGS": "/Od;/W3;/sdl;/Zc:preprocessor",
-                "HATMAN_LINKER_FLAGS": ""
+                "HATMAN_LINKER_FLAGS": "",
+                "CMAKE_BUILD_TYPE": "Debug"
             }
         }
     ],

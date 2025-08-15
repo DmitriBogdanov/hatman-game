@@ -95,10 +95,17 @@ add_dependencies(hatman hatman_copy_assets) # the command will run after every b
 
 # Copy shared library dependencies
 if(MSVC OR MSYS OR MINGW)
+
+	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		set(hatman_dll_path ${CMAKE_CURRENT_LIST_DIR}/dependencies/win64_debug)
+	else()
+		set(hatman_dll_path ${CMAKE_CURRENT_LIST_DIR}/dependencies/win64_release)
+	endif()
+
     add_custom_target(
         hatman_copy_dlls
         COMMAND ${CMAKE_COMMAND} -E copy_directory 
-                ${CMAKE_CURRENT_LIST_DIR}/dependencies/win64
+                ${hatman_dll_path}
                 $<TARGET_PROPERTY:hatman,RUNTIME_OUTPUT_DIRECTORY>
     )
     add_dependencies(hatman hatman_copy_dlls)
