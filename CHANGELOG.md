@@ -962,5 +962,16 @@
     - Refactored hard-coded filepaths
     - Refactored many defines into constexpr variables
 
-# 05.08.01 #
+# 25.08.01 #
     - Wiki entries for the bestiary
+    
+# 25.08.14 - 25.08.16 #
+    - Set up a clean MSVC build
+    - Embedded Windows binary dependencies into the project, set up CMake to utilize them automatically if possible
+    - Fixed crashes caused by an incorrect animation JSON format for CultistMage and Fireball (used hashes instead of arrays, the bug previously went unnoticed due to nlohmann_json iterators erasing the distinction when iterating objects / arrays)
+    - Added cast and collision sounds to Fireball
+    - Moved all cout logging to a utl::log, added some more debug info and exception logging
+    - Fixed that continue button did not show up in the menu until the first restart if current session was a start of a new game
+    - Added executable icon (this was initially done with MSBuild, then abandoned, now it is done with CMake)
+    - Tested running the game with Wine and added a guide for doing so
+    - Added step-by-step docs on how to get the project running with Visual Studio 2022
