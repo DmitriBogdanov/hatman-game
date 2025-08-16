@@ -58,7 +58,7 @@ Launch the game:
 ```
 
 > [!Note]
-> [Visual Studio](https://visualstudio.microsoft.com/downloads/) also handles preset-based projects quite gracefully, the only difference is that instead of running commands manually the steps will be done through a GUI. See a [step-by-step guide](./guide_set_up_sv_2022.md) on how to set up VS2022 and build the project from scratch.
+> [Visual Studio](https://visualstudio.microsoft.com/downloads/) also handles preset-based projects quite gracefully, the only difference is that instead of running commands manually the steps will be done through a GUI. See a [step-by-step guide](./guide_set_up_vs_2022.md) on how to set up VS2022 and build the project from scratch.
 
 ## Building with a script
 

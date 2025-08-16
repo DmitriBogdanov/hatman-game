@@ -1,6 +1,6 @@
 # 20.01.05 - 20.04.10 #
 	- Implemented classes 'Vector2' and 'Vector2d' in 'geometry_utils.h' header
-	- Implemented class 'Rectangle' in 'geomentry_utils.h' header
+	- Implemented class 'Rectangle' in 'geometry_utils.h' header
 	- Implemented basic 'Graphics' class using SDL2 and SDL2_images
 	- Implemented 'consolelog' namespace containing functions for convenient debug printing
 	- Implemented basic 'Game' class
@@ -18,7 +18,7 @@
 # 20.06.17 - 20.07.04 #
 	- Changed map format from .TMX to .JSON, 'tinyxml' was abandoned in favor of
 	'nlohmann_json' for parsing new format
-	- Redone and optimised level parsing, tilesets are now stored externally instead of being
+	- Redone and optimized level parsing, tilesets are now stored externally instead of being
 	embedded in a map file. Tilisets are stored as .JSON, parsing happens inside the tileset class
 	itself
 	- Implemented 'Tileset' and 'Tile' classes, tile objects are now unique and independent objects,
@@ -71,15 +71,15 @@
 	- Started implementing GUI
 	- Implemented multiline text display with proper word wrap
 	- 'WindowSettings' class replaced by a more general and streamlined 'LaunchInfo' class
-	- Fixed a number of incorrect behaviours related to blending of transparent textures, order of rendering,
+	- Fixed a number of incorrect behaviors related to blending of transparent textures, order of rendering,
 	texture targeting and texture clearing
 
 # 20.07.16 #
 	- Implemented constructor for 'Entity' that uses std::initializer_list for more convenient creation
 	- Small changes to 'PhysicalEntity' flags
 	- Implemented logic that allows GUI to draw elements as objects on a map (rather than overlay)
-	- Improved tile interaction logic - added two-step trigger check: successfull first check puts tile into an 'activated'
-	state, successfull second check triggers tile interaction
+	- Improved tile interaction logic - added two-step trigger check: successful first check puts tile into an 'activated'
+	state, successful second check triggers tile interaction
 
 # 20.07.17 #
 	- Minor functionality added to 'Vector2' class
@@ -93,10 +93,10 @@
 # 20.07.20 #
 	- Started working on more advanced Entity system: from now on entities will be created and
 	handled through 3 headers: 'entity_base.h', 'entity_type.h', 'entity_unique.h' that will
-	contain generic methods. Class 'Entity' is drasticaly refactored, it now contains following
+	contain generic methods. Class 'Entity' is drastically refactored, it now contains following
 	classes: 'Entity::Visuals', 'Entity::Physics' - objects of these classes contains various
 	generic methods and variables related to entity logic, 'Entity' objects store pointers
-	to these helper clases - given part of logic is not present, 'Entity' holds nullptr
+	to these helper classes - given part of logic is not present, 'Entity' holds nullptr
 	- Marked all non-usable default constructors as '= delete' - apparently that's a thing
 
 # 20.07.21 #
@@ -104,7 +104,7 @@
 	- Implemented FPS counter and related GUI methods
 
 # 20.07.22 #
-	- Added enitity enabling/disabling functionality to 'entity_base.h'
+	- Added entity enabling/disabling functionality to 'entity_base.h'
 	- Added functionality that allows removing of entities from the game
 	- Started working on items
 
@@ -117,7 +117,7 @@
 	- Set up logic that allows creation and storage of unique entities in level object
 	- Implemented parsing of items from level .json
 	- Drew and implemented first unique item - Brass Relic
-	- Improved drawing of level backround, tiles and entities
+	- Improved drawing of level background, tiles and entities
 	- Fixed a bug that prevented entities from being deleted properly
 
 # 20.07.28 #
@@ -136,9 +136,9 @@
 	- Implemented 3 namespaces: 'tiles', 'entities', 'items' and
 	3 functions 'make_tile()', 'make_entity()', 'make_item()' for
 	convenient standardized creation of such objects
-	- Improved convenience of adding new unique objects and optimised functions
+	- Improved convenience of adding new unique objects and optimized functions
 	'make_tile()', 'make_entity()', 'make_item()' by accessing const unordered_map
-	of function pointers insteam of if-else chain
+	of function pointers instead of if-else chain
 	- Reformated 'manual.txt'
 	- Updated old parts of 'manual.txt' and added all new functionality
 
@@ -172,7 +172,7 @@
 	(extreme cases can be wonky)
 	- Changed inventory tab 'items' GUI to its final version
 	- Added ability to parse emit outputs to scripts
-	- Optimized 'EmitStorage' and fixed some incorrect behaviours
+	- Optimized 'EmitStorage' and fixed some incorrect behaviors
 	- Implemented 'AND' script and its parsing
 	- Changed object naming and parsing to make use of tags for convenient parsing of arrays and
 	to allow comments
@@ -190,7 +190,7 @@
 	- Fixed bug that made game crash upon instant emits
 	- Moved GUI and camera into separate headers to reduce clutter
 	- Implemented 'RGBColor' class
-	- Started implementing a more powerfull text GUI system with 'Font' and 'Text' classes
+	- Started implementing a more powerful text GUI system with 'Font' and 'Text' classes
 	- Implemented 'Font' class
 
 # 20.08.07 #
@@ -202,7 +202,7 @@
 	- Implemented text color change
 	- Implemented smooth text display (with fixed delays between each new symbol appearing)
 	- Implemented emit queue to ensure make input lifetime independent from the moment when emit was added
-	during a frame. Instant emits are now ensured to have excatly 1 full frame of lifetime.
+	during a frame. Instant emits are now ensured to have exactly 1 full frame of lifetime.
 	- Switched to C++17 standard
 
 # 20.08.08 #
@@ -211,14 +211,14 @@
 	caller with a handle to inserted element that can be used to access or erase the element.
 	'Collection' allows convenient iteration without exposing implementation through the use
 	of custom iterators
-	- Switched to the use of 'Collection<Object>' insted of 'std::vector<std::unique_ptr<Object>>'
+	- Switched to the use of 'Collection<Object>' instead of 'std::vector<std::unique_ptr<Object>>'
 	wherever necessary 
 	- Added iterator 'erase' to 'Collection<>' to allow cleanup of 'dead' objects through iteration
 	- Implemented new activation logic to 'Tile' base class, now tiles only call 'activate()' once
 	upon activation and 'deactivate()' (once upon deactivation)
 	
 # 20.08.09 #
-	- Changed 'draw_text()', 'draw_line()', 'draw_line_centered()' GUI methods to mmethods
+	- Changed 'draw_text()', 'draw_line()', 'draw_line_centered()' GUI methods to methods
 	'make_text()', 'make_line()', 'make_line_centered()' that handle creation of 'Text' objects
 	and insertion of these objects into collection
 	- Changed 'Tile_SaveOrb', and 'FPSCounter' to work with new text system
@@ -261,8 +261,8 @@
 	- Implemented '_init' methods to entity types to make creation of unique entities more simple and robust
 	- Made 'Entity::Visuals' and 'Entity::Physics' more modular by making them attachable to a position
 	instead of whole entity
-	- Implemented 'make_init_list()' function for creation of 'std::initializer_list's with a deducable
-	type (to allow usage of 'std::initizlizer_list' parameters in template functions like 'std::make_unique()')
+	- Implemented 'make_init_list()' function for creation of 'std::initializer_list's with a deducible
+	type (to allow usage of 'std::initializer_list' parameters in template functions like 'std::make_unique()')
 	- Separated 'Entity::Visuals::Animation' into a separate module 'Animation' in 'sprite.h' header
 	- Implemented 'Sprite' base class
 	- Separated 'Entity::Visuals' into a separate module 'ControllableSprite'
@@ -276,7 +276,7 @@
 	- Separated 'Entity::Physics::Flags' into 'SolidFlags'
 
 # 20.08.16 #
-	- Optimized entity drawing by allowing entities to use simplier types of sprites
+	- Optimized entity drawing by allowing entities to use simpler types of sprites
 	- Implemented entity type 'Destructible' that triggers some effect and plays an animation
 	upon being killed
 	- Implemented destructible entity 'TNT'
@@ -298,7 +298,7 @@
 	
 # 20.08.19 #
 	- Improved 'freeze' mechanic to freeze tiles and entities at different distances to prevent
-	enitities clipping through the terrain
+	entities clipping through the terrain
 	- Implemented 'Enemy' entity type
 	- Implemented first enemy with proper ai - ghost (doesn't use any abilities yet)
 
@@ -306,7 +306,7 @@
 	- Minor improvements to 'RGBColor'
 	- Fixed a bug that made fade alpha calculate incorrectly in certain cases
 	- Implemented 'Timer' class
-	- Implemented 'TimerController' class, that updates timers globaly, allowing
+	- Implemented 'TimerController' class, that updates timers globally, allowing
 	for a simple and convenient use of timers
 	- Implemented level change delay and smooth fade effect to make transitions cool and dandy
 	- Revisited includes throughout the whole project, added comments and removed redundant
@@ -334,7 +334,7 @@
 	- Implemented 'Controls' class for proper storage and possible modification of control keys
 	- Reworked player class by making it an entity type, with derived unique classes that represent various
 	forms
-	- Introduced typedef 'Milliseconds = double' to represent time, changed time recording from 'int' ti 'Millisecons'
+	- Introduced typedef 'Milliseconds = double' to represent time, changed time recording from 'int' ti 'Milliseconds'
 	which allowed better precision of calculations and a simple, robust timescale mechanic
 
 # 20.08.27 #
@@ -372,7 +372,7 @@
 	- Implemented 'KnockbackAOE' skill
 
 # 21.02.01 #
-	- Implemented more complex and robust enemy behaviour, separated aggro/deaggro conditions
+	- Implemented more complex and robust enemy behavior, separated aggro/deaggro conditions
 	and chase/attack conditions
 	- Minor additions to 'geometry_utils.h'
 	- Implemented wandering mechanic for sludge
@@ -387,8 +387,8 @@
 	- Implemented algorithm for rounding values up to 32 (tile size)
 	- Implemented hashing function for 'Vector2'
 	- Revamped tile storage to use unordered_map (tile positions as keys) instead of collection,
-	such design culls unnecessary calculations as it allows objects to iterate over only the adjastent
-	tiles without checking distance to all tiles on the map. Drastic perfomance improvement for big
+	such design culls unnecessary calculations as it allows objects to iterate over only the adjacent
+	tiles without checking distance to all tiles on the map. Drastic performance improvement for big
 	levels and situations with a lot of entities in the same spot. Further optimizations down the line.
 	- Minor fixes
 
@@ -482,7 +482,7 @@
 	- Improved entity erasion system to allow erasing after a delay, which simplifies implementing upon-destruction effects
 	- Fixed visual bug where projectiles would appear flipped vertically when fired to the left
 	- Simplified 'Faction' mechanic, removed unnecessary faction 'NONE'
-	- Separated 'makable' enities that can be parsed from map files and 'spawnable'  entities that can be only
+	- Separated 'makable' entities that can be parsed from map files and 'spawnable'  entities that can be only
 	spawned during the game into different file, refactored entity-related namespaces to be less cumbersome
 	- Since now there's a bazillion entity-related files, separated them all into a new filter
 
@@ -494,7 +494,7 @@
 
 # 21.07.17 #
 	- Implemented explosion animation for 'ArcaneProjectileBlue'
-	- Fixed projectiles to autodetect explosion animation duration and dissapear right as it ends
+	- Fixed projectiles to autodetect explosion animation duration and disappear right as it ends
 	- Implemented enemy healthbars
 
 # 21.07.19 #
@@ -514,10 +514,10 @@
 
 # 21.07.22 #
 	- Fixed 'Sludge' to apply damage/knockback directly instead of using skills
-	- Fixed particles to accept tifetime parameter correctly
+	- Fixed particles to accept lifetime parameter correctly
 	- 'Sludge' uses 'OnDeathParticles' for their intended purpose
-	- Fixed hand prite being flipped vertically when looking left
-	- Implemented methods for random ints/double
+	- Fixed hand sprite being flipped vertically when looking left
+	- Implemented methods for random integers/doubles
 
 # 21.07.23 #
 	- Implemented .color_mod for sprites
@@ -968,10 +968,13 @@
 # 25.08.14 - 25.08.16 #
     - Set up a clean MSVC build
     - Embedded Windows binary dependencies into the project, set up CMake to utilize them automatically if possible
-    - Fixed crashes caused by an incorrect animation JSON format for CultistMage and Fireball (used hashes instead of arrays, the bug previously went unnoticed due to nlohmann_json iterators erasing the distinction when iterating objects / arrays)
+    - Fixed crashes caused by an incorrect animation JSON format for CultistMage and Fireball (used hashes
+    instead of arrays, the bug previously went unnoticed due to nlohmann_json iterators erasing the
+    distinction when iterating objects / arrays)
     - Added cast and collision sounds to Fireball
     - Moved all cout logging to a utl::log, added some more debug info and exception logging
-    - Fixed that continue button did not show up in the menu until the first restart if current session was a start of a new game
+    - Fixed that continue button did not show up in the menu until the first restart
+    if current session was a start of a new game
     - Added executable icon (this was initially done with MSBuild, then abandoned, now it is done with CMake)
     - Tested running the game with Wine and added a guide for doing so
     - Added step-by-step docs on how to get the project running with Visual Studio 2022
