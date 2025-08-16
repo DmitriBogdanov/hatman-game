@@ -50,8 +50,9 @@ Pre-built binaries for **Windows x86-64** are available at the corresponding [it
 
 ## Guides
 
-- [Building the project](./docs/guide_building_the_project.md)
+- [Running the game on Linux](./docs/guide_running_on_linux.md)
 - [In-game debug mode](./docs/guide_debug_mode.md)
+- [Building the project](./docs/guide_building_the_project.md)
 - [Asset credits](./docs/guide_asset_credits.md)
 
 ## Wiki (contains spoilers)

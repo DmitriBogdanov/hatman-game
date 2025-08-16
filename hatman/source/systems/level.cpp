@@ -26,8 +26,9 @@ Level::Level(const std::string &name) :
 
 	const std::string filepath = paths::LEVELS + name + ".json";
 
+	UTL_LOG_INFO("Parsing level file {", filepath, "}");
     this->parseFromJSON(filepath);
-    UTL_LOG_INFO("Loaded level {", filepath, "} in ", std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count(), " ms");
+    UTL_LOG_INFO("Parsed level file {", filepath, "} in ", std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start).count(), " ms");
 }
 
 Level::Level(const std::string &name, std::unique_ptr<ntt::Entity> &&player) :

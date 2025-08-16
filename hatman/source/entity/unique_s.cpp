@@ -36,6 +36,9 @@ projectile::Fireball::Fireball(const Vector2d& position, const Vector2d& speed, 
 	constexpr auto HITBOX_SIZE = Vector2d(12., 12.);
 
 	this->_init_solid(HITBOX_SIZE, speed, false, false);
+	
+	this->_init_spawn_sound("fire_cast.wav", 0.4);
+	this->_init_collision_sound("fire_impact.wav");
 }
 
 void projectile::Fireball::onCollision() {

@@ -72,7 +72,7 @@
             "description": "MSVC configuration variables.",
             "inherits": [ "base" ],
             "cacheVariables": {
-                "HATMAN_COMPILER_FLAGS": "/Od;/W3;/sdl;/Zc:preprocessor",
+                "HATMAN_COMPILER_FLAGS": "/Od;/W3;/sdl;/Zc:preprocessor;/fsanitize=address",
                 "HATMAN_LINKER_FLAGS": "",
                 "CMAKE_BUILD_TYPE": "Debug"
             }

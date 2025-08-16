@@ -71,7 +71,7 @@ int main() try {
 
         UTL_LOG_NOTE("Exit code: ", static_cast<int>(exit_code));
     }
-} catch (std::runtime_error& e) {
+} catch (std::exception& e) {
     UTL_LOG_ERR("ERROR: unhandled exception in main()");
     UTL_LOG_ERR("CAUGHT EXCEPTION: ", e.what());
 }

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21.0...3.22.1)
 
 project(
     Hatman
-    VERSION 3.4.1
+    VERSION 3.5.1
     DESCRIPTION "2D metroidvania with trichromatic artstyle."
     HOMEPAGE_URL "https://github.com/DmitriBogdanov/hatman-game"
 )
